@@ -14,13 +14,23 @@
 
 <!-- Responsibilities -->
 ## Responsibilities
+| Person                  | Responsibilities                              |         
+| ------------------------|:---------------------------------------------:|
+| Alexander Hum           | Elevator.java, UML Diagram, README.md         |
+| Emily Tang              | HardwareDevice.java, Main.java, README.md     | 
+| Nicole Lim              | Scheduler.java, Sequence Diagram, README.md   |
+| Nivetha Sivasaravanan   | Floor.java, UML Diagram, README.md            |
+| Rimsha Atif             | Scheduler.java, Sequence Diagram, README.md   |
+
+
 
 <!-- Files -->
 ## Files
-* Elevator
-* Floor
-* Scheduler
-* HardwareDevice
+* Elevator.java
+* Floor.java
+* Scheduler.java
+* HardwareDevice.java
+* ElevatorSystem.java
 
 <!-- Set-up Instructions -->
 ## Set-up Instructions
