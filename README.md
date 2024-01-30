@@ -26,10 +26,11 @@
 
 <!-- Files -->
 ## Files
-* Elevator
-* Floor
-* Scheduler
-* HardwareDevice
+* Elevator.java
+* Floor.java
+* Scheduler.java
+* HardwareDevice.java
+* ElevatorSystem.java
 
 <!-- Set-up Instructions -->
 ## Set-up Instructions
