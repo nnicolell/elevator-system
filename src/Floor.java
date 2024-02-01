@@ -1,2 +1,48 @@
+import java.io.*;
+import java.util.Arrays;
+import java.time.LocalTime;
+
 public class Floor {
+    //need to press button
+    //receive message when elevator arrives to the floor --> send message that it wants to go to this floor
+    //sending message elevator was requested
+    //have to send the data about which floor to go after to the scheduler
+
+    private Scheduler scheduler;
+    public Floor(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
+
+    /**
+     * Reads input from text file and creates a HardwareDevice object to pass into Scheduler
+     * to add to the queue
+     */
+    public void readData() {
+        try {
+            File file = new File("input.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] info = line.split(" ");
+                scheduler.addFloorEvent(createHardwareDevice(info));
+            }
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+    /**
+     * Returns a HardwareDevice with the information provided
+     * @param info Array of information including time elevator requester, floor from where it was requested
+     *             whether it is going up or down, and floor it is going to
+     * @return new HardwareDevice with properties given
+     */
+    private HardwareDevice createHardwareDevice(String[] info) {
+        LocalTime l = LocalTime.parse(info[0]);
+        int floorFrom = Integer.parseInt(info[1]);
+        FloorButton button = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
+        int floorTo = Integer.parseInt(info[3]);
+        return new HardwareDevice(l, floorFrom, button, floorTo);
+    }
 }
+
