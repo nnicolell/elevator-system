@@ -12,10 +12,11 @@ public class ElevatorSystem {
         System.out.println(time);
         // testing accessor methods for HardwareDevice
         HardwareDevice device = new HardwareDevice(time, 2, FloorButton.UP, 4);
-        System.out.println(device.time());
-        System.out.println(device.floor());
-        System.out.println(device.floorButton());
-        System.out.println(device.carButton());
+        System.out.println(device.getTime());
+        System.out.println(device.getFloor());
+        System.out.println(device.getFloorButton());
+        System.out.println(device.getCarButton());
+        System.out.println(device.getArrived());
 
         // TODO: create a test case showing that your program can read the input file and pass the data back and forth
         // Scheduler is only being used as a communication channel from the Floor to the Elevator and back again

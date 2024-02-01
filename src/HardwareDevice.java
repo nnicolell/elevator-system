@@ -1,7 +1,7 @@
 import java.time.LocalTime;
 
 /**
- * A record to represent the necessary information to pass to the Scheduler.
+ * A class to represent the necessary information to pass to the Scheduler.
  */
 public class HardwareDevice {
 
@@ -77,6 +77,7 @@ public class HardwareDevice {
 
     /**
      * Returns an integer representing the floor number a passenger would like to move to.
+     *
      * @return An integer representing the floor number a passenger would like to move to.
      */
     public int getCarButton() {
@@ -85,6 +86,7 @@ public class HardwareDevice {
 
     /**
      * Returns True if the elevator has arrived at the floor number a passenger would like to move to. False if not.
+     *
      * @return True if the elevator has arrived at the floor number a passenger would like to move to. False if not.
      */
     public boolean getArrived() {
