@@ -1,8 +1,11 @@
 import java.util.*;
 public class Scheduler implements Runnable {
-    private Queue<HardwareDevice> floorQueue = new ArrayDeque<>(); //Queue to store the floor events
+    private Queue<HardwareDevice> floorQueue; //Queue to store the floor events
     private HardwareDevice currentFloorEvent;
 
+    public Scheduler(){
+        floorQueue = new ArrayDeque<>();
+    }
 
     public synchronized void checkForFloorEvent() throws InterruptedException { //get next pending request from floor
         while(floorQueue.isEmpty() && currentFloorEvent != null){
@@ -28,16 +31,38 @@ public class Scheduler implements Runnable {
         notifyAll();
     }
 
+    public synchronized void checkElevatorStatus(HardwareDevice device){
+        while (!device.getArrived()){
+            try{
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("Elevator has arrived.");
+        notifyFloorSubsystem();
+    }
+
+    public synchronized HardwareDevice getElevatorRequest(){
+        if (currentFloorEvent == null){
+            try {
+                wait();
+            }catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
+        notifyAll();
+        return currentFloorEvent;
+    }
 
     @Override
     public void run() {
         while(true){
             try {
                 checkForFloorEvent();
-                notifyFloorSubsystem();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
-    }
-}
+    }}
