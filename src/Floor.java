@@ -19,7 +19,7 @@ public class Floor implements Runnable {
     }
 
     /**
-     *
+     * Read data and push to queue
      */
     public void run() {
         readData();
@@ -40,6 +40,7 @@ public class Floor implements Runnable {
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(" ");
                 sleep(1000);
+                System.out.println(info[2] + " button pushed at floor " + info[1]);
                 scheduler.addFloorEvent(createHardwareDevice(info));
             }
         } catch (IOException e) {
