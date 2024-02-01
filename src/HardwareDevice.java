@@ -1,7 +1,7 @@
 import java.time.LocalTime;
 
 /**
- * A record to represent the necessary information to pass to the Scheduler.
+ * A class to represent the necessary information to pass to the Scheduler.
  */
 public class HardwareDevice {
 
