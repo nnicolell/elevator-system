@@ -2,13 +2,15 @@ import java.util.*;
 public class Scheduler implements Runnable {
     private Queue<HardwareDevice> floorQueue; //Queue to store the floor events
     private HardwareDevice currentFloorEvent;
+    private boolean lastRequest;
 
     public Scheduler(){
         floorQueue = new ArrayDeque<>();
+        lastRequest = false;
     }
 
     public synchronized void checkForFloorEvent() throws InterruptedException { //get next pending request from floor
-        while(floorQueue.isEmpty() || currentFloorEvent != null){
+        while((floorQueue.isEmpty() || currentFloorEvent != null )){
             try{
                 wait();
             }
@@ -16,13 +18,16 @@ public class Scheduler implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
-        currentFloorEvent = floorQueue.poll();
-        System.out.print("Scheduler received floor request : " + currentFloorEvent.toString());
 
+        currentFloorEvent = floorQueue.poll();
+        System.out.println(floorQueue.size() + " " + currentFloorEvent.getTime());
+        //System.out.println("Scheduler received floor request : " + currentFloorEvent.toString());
+        System.out.println("Elevator requested at floor " + currentFloorEvent.getFloor() + " at " + currentFloorEvent.getTime()+" going " + currentFloorEvent.getFloorButton()+" to " + currentFloorEvent.getCarButton());
+        notifyAll();
     }
 
     private synchronized void notifyFloorSubsystem() {//send alert back to floor thread
-        System.out.print("Floor Event : " + currentFloorEvent + " has been completed");
+        System.out.println("Floor Event : " + currentFloorEvent + " has been completed");
         currentFloorEvent = null;
         notifyAll();
     }
@@ -44,7 +49,7 @@ public class Scheduler implements Runnable {
     }
 
     public synchronized HardwareDevice getElevatorRequest(){
-        if (currentFloorEvent == null){
+        while (currentFloorEvent == null){
             try {
                 wait();
             }catch(InterruptedException e){
@@ -54,6 +59,10 @@ public class Scheduler implements Runnable {
 
         notifyAll();
         return currentFloorEvent;
+    }
+
+    public void setLastRequest(boolean last){
+        lastRequest = last;
     }
 
     @Override

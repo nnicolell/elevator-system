@@ -22,14 +22,16 @@ public class Elevator implements Runnable {
      */
     @Override
     public void run() {
-        HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
-        movingMessage(hardwareDevice);
-        try {
-            sleep(10);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        while(true){
+            HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
+            movingMessage(hardwareDevice);
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            hardwareDevice.setArrived();
+            scheduler.checkElevatorStatus(hardwareDevice);
         }
-        hardwareDevice.setArrived();
-        scheduler.checkElevatorStatus(hardwareDevice);
     }
 }
