@@ -8,7 +8,7 @@ public class Scheduler implements Runnable {
     }
 
     public synchronized void checkForFloorEvent() throws InterruptedException { //get next pending request from floor
-        while(floorQueue.isEmpty() && currentFloorEvent != null){
+        while(floorQueue.isEmpty() || currentFloorEvent != null){
             try{
                 wait();
             }
