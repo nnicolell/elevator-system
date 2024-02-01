@@ -8,9 +8,6 @@ public class ElevatorSystem {
     public static void main(String[] args) {
         // TODO: delete this chunk of code before pushing to master
         // testing how LocalTime can be created using a CharSequence
-        Scheduler s = new Scheduler();
-        Floor f = new Floor(s);
-        f.readData();
         LocalTime time = LocalTime.parse("14:05:15.0");
         System.out.println(time);
         // testing accessor methods for HardwareDevice
