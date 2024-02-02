@@ -100,4 +100,12 @@ public class HardwareDevice {
         this.arrived = true;
     }
 
+    /**
+     * Returns a string version of HardwareDevice
+     */
+    public String toString() {
+        return "{Time: " + getTime() + ", Requested Floor: " + getFloor() +
+                ", Direction: " + getFloorButton() + ", Car Button: " + getCarButton()+"}";
+    }
+
 }

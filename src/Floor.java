@@ -30,9 +30,9 @@ public class Floor implements Runnable {
      */
     private void readData() {
         try {
-//
-//            List<String> lines = Files.readAllLines(Paths.get("input.txt"));
-//            System.out.println(lines.size());
+
+            List<String> lines = Files.readAllLines(Paths.get("input.txt"));
+            scheduler.setNumReqs(lines.size());
 
             File file = new File("input.txt");
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -43,6 +43,7 @@ public class Floor implements Runnable {
                 System.out.println(info[2] + " button pushed at floor " + info[1]);
                 scheduler.addFloorEvent(createHardwareDevice(info));
             }
+            scheduler.setLastRequest(true);
         } catch (IOException e) {
             System.err.println(e);
         } catch (InterruptedException e) {
