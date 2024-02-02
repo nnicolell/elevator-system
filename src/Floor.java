@@ -39,7 +39,7 @@ public class Floor implements Runnable {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] info = line.split(" ");
-                sleep(1000);
+                sleep(10);
                 System.out.println(info[2] + " button pushed at floor " + info[1]);
                 scheduler.addFloorEvent(createHardwareDevice(info));
             }

@@ -4,6 +4,7 @@ import java.time.LocalTime;
  * A class to test the ElevatorSystem.
  */
 public class ElevatorSystem {
+
     public static void main(String[] args) {
         // TODO: delete this chunk of code before pushing to master
         // testing how LocalTime can be created using a CharSequence
@@ -16,6 +17,15 @@ public class ElevatorSystem {
         System.out.println(device.getFloorButton());
         System.out.println(device.getCarButton());
         System.out.println(device.getArrived());
+
+        Scheduler scheduler = new Scheduler();
+        Thread schedulerThread = new Thread(scheduler, "Scheduler");
+        Thread floor = new Thread(new Floor(scheduler),"Floor");
+        Thread elevator = new Thread(new Elevator(scheduler),"Elevator Thread");
+
+        schedulerThread.start();
+        elevator.start();
+        floor.start();
 
         // TODO: create a test case showing that your program can read the input file and pass the data back and forth
         // Scheduler is only being used as a communication channel from the Floor to the Elevator and back again
