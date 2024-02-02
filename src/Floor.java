@@ -34,16 +34,12 @@ public class Floor implements Runnable {
             List<String> lines = Files.readAllLines(Paths.get("input.txt"));
             scheduler.setNumReqs(lines.size());
 
-            File file = new File("input.txt");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] info = line.split(" ");
+            for (String s : lines) {
+                String[] info = s.split(" ");
                 sleep(10);
                 System.out.println(info[2] + " button pushed at floor " + info[1]);
                 scheduler.addFloorEvent(createHardwareDevice(info));
             }
-            scheduler.setLastRequest(true);
         } catch (IOException e) {
             System.err.println(e);
         } catch (InterruptedException e) {

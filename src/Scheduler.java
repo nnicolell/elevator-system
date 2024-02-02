@@ -2,15 +2,13 @@ import java.util.*;
 public class Scheduler implements Runnable {
     private Queue<HardwareDevice> floorQueue; //Queue to store the floor events
     private HardwareDevice currentFloorEvent;
-    private boolean lastRequest;
     private int numReqs;
     private int numReqsHandled;
 
     public Scheduler(){
         floorQueue = new ArrayDeque<>();
-        lastRequest = false;
         numReqsHandled = 1;
-        numReqs = 10000;
+        numReqs = 10000 ;
     }
 
     public synchronized void checkForFloorEvent() throws InterruptedException { //get next pending request from floor
@@ -25,9 +23,7 @@ public class Scheduler implements Runnable {
 
         currentFloorEvent = floorQueue.poll();
         System.out.println("Scheduler received floor request : " + currentFloorEvent.toString());
-//        System.out.println("Elevator requested at floor " + currentFloorEvent.getFloor() + " at " + currentFloorEvent.getTime()+" going " + currentFloorEvent.getFloorButton()+" to " + currentFloorEvent.getCarButton());
         notifyAll();
-
     }
 
     private synchronized void notifyFloorSubsystem() {//send alert back to floor thread
@@ -64,10 +60,6 @@ public class Scheduler implements Runnable {
 
         notifyAll();
         return currentFloorEvent;
-    }
-
-    public void setLastRequest(boolean last){
-        lastRequest = last;
     }
 
     public void setNumReqs(int req) {
