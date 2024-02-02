@@ -22,7 +22,7 @@ public class Elevator implements Runnable {
      */
     @Override
     public void run() {
-        while(scheduler.getNumReqsHandled() < scheduler.getNumReqs()){
+        while(scheduler.getNumReqsHandled() <= scheduler.getNumReqs()){
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
             movingMessage(hardwareDevice);
             try {

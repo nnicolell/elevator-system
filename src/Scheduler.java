@@ -14,7 +14,7 @@ public class Scheduler implements Runnable {
     }
 
     public synchronized void checkForFloorEvent() throws InterruptedException { //get next pending request from floor
-        while((floorQueue.isEmpty() || currentFloorEvent != null ) && (numReqsHandled < numReqs || currentFloorEvent == null)){
+        while((floorQueue.isEmpty() || currentFloorEvent != null ) && (numReqsHandled <= numReqs || currentFloorEvent == null)){
             try{
                 wait();
             }
@@ -42,7 +42,7 @@ public class Scheduler implements Runnable {
     }
 
     public synchronized void checkElevatorStatus(HardwareDevice device){
-        while (!device.getArrived() && (numReqsHandled < numReqs || currentFloorEvent == null)){
+        while (!device.getArrived() && (numReqsHandled <= numReqs || currentFloorEvent == null)){
             try{
                 wait();
             } catch (InterruptedException e) {
