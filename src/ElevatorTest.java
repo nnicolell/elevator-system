@@ -1,7 +1,9 @@
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * A class to test the Elevator.
+ */
 class ElevatorTest {
 
     /**

@@ -14,6 +14,7 @@ public class Floor implements Runnable {
     //need to know when the last one is read
 
     private Scheduler scheduler;
+
     public Floor(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
@@ -30,7 +31,6 @@ public class Floor implements Runnable {
      */
     private void readData() {
         try {
-
             List<String> lines = Files.readAllLines(Paths.get("input.txt"));
             scheduler.setNumReqs(lines.size());
 
@@ -60,5 +60,5 @@ public class Floor implements Runnable {
         int floorTo = Integer.parseInt(info[3]);
         return new HardwareDevice(l, floorFrom, button, floorTo);
     }
-}
 
+}
