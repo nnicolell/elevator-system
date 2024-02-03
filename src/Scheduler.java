@@ -9,12 +9,13 @@ public class Scheduler implements Runnable {
 
     public Scheduler() {
         floorQueue = new ArrayDeque<>();
+        currentFloorEvent = null;
         numReqsHandled = 1;
-        numReqs = 10000 ;
+        numReqs = 10000;
     }
 
     public synchronized void checkForFloorEvent() throws InterruptedException { // get next pending request from floor
-        while((floorQueue.isEmpty() || currentFloorEvent != null)
+        while ((floorQueue.isEmpty() || currentFloorEvent != null)
                 && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
             try {
                 wait();
@@ -80,13 +81,21 @@ public class Scheduler implements Runnable {
 
     @Override
     public void run() {
-        while(numReqsHandled < numReqs) {
+        while (numReqsHandled < numReqs) {
             try {
                 checkForFloorEvent();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public Queue<HardwareDevice> getFloorQueue() {
+        return floorQueue;
+    }
+
+    public HardwareDevice getCurrentFloorEvent() {
+        return currentFloorEvent;
     }
 
 }

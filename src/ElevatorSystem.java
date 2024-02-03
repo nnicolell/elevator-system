@@ -1,5 +1,3 @@
-import java.time.LocalTime;
-
 /**
  * A class to test the ElevatorSystem.
  */
