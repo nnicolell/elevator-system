@@ -1,38 +1,43 @@
 import static java.lang.Thread.sleep;
 
 /**
- * An Elevator to represent the elevator car moving either up or down floors.
+ * An Elevator to represent the elevator car moving up or down floors.
  */
 public class Elevator implements Runnable {
-    /**
-     * A scheduler representing the elevator scheduler to give and send events to
-     */
-    private Scheduler scheduler;
 
     /**
-     * Constructor for the elevator
-     * @param scheduler A Scheduler representing a scheduler for the elevator car
+     * A Scheduler representing the elevator scheduler to receive and send events to.
+     */
+    private final Scheduler scheduler;
+
+    /**
+     * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
+     *
+     * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
     public Elevator(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * Prints a message which floor and if the elevator car is going up or down
-     * @param hardwareDevice to pass necessary information
+     * Prints a message describing which floor the Elevator is moving to, and if the Elevator is going up or down.
+     *
+     * @param hardwareDevice A HardwareDevice representing the current event.
      */
-    private void movingMessage(HardwareDevice hardwareDevice) {
-        System.out.println("Elevator Car Currently Moving " + hardwareDevice.getFloorButton() + " to the " + hardwareDevice.getCarButton() + " floor...");
+    private void printMovingMessage(HardwareDevice hardwareDevice) {
+        System.out.println("Elevator Car Currently Moving " + hardwareDevice.getFloorButton() + " to the "
+                + hardwareDevice.getCarButton() + " floor...");
     }
 
     /**
-     * Reads from Scheduler and changes the arrived variable in the HardwareDevice to true and sends it back to the Scheduler.
+     * Receives an Elevator event from the Scheduler and executes it. Sends a message back to the Scheduler once it is
+     * done executing the event.
      */
     @Override
     public void run() {
-        while(scheduler.getNumReqsHandled() < scheduler.getNumReqs()) {
+        while (scheduler.getNumReqsHandled() < scheduler.getNumReqs()) {
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
-            movingMessage(hardwareDevice);
+            printMovingMessage(hardwareDevice);
             try {
                 sleep(100);
             } catch (InterruptedException e) {
@@ -41,5 +46,14 @@ public class Elevator implements Runnable {
             hardwareDevice.setArrived();
             scheduler.checkElevatorStatus(hardwareDevice);
         }
+    }
+
+    /**
+     * Returns a Scheduler representing the elevator scheduler to receive and send events to.
+     *
+     * @return A Scheduler representing the elevator scheduler to receive and send events to.
+     */
+    public Scheduler getScheduler() {
+        return scheduler;
     }
 }
