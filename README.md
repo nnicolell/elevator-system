@@ -45,7 +45,7 @@ JDK version 21.0.1 was used to develop the code.
 
 #### Test Files
 * [ElevatorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorTest.java)
-* [FloorTest.java]()
+* [FloorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorTest.java)
 * [HardwareDeviceTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDeviceTest.java)
 * [SchedulerTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerTest.java)
 
