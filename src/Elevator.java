@@ -4,13 +4,21 @@ import static java.lang.Thread.sleep;
  * An Elevator to represent the elevator car moving either up or down floors.
  */
 public class Elevator implements Runnable {
+    /**
+     * A scheduler representing the elevator scheduler to give and send events to
+     */
     private Scheduler scheduler;
+
+    /**
+     * Constructor for the elevator
+     * @param scheduler A Scheduler representing a scheduler for the elevator car
+     */
     public Elevator(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
     /**
-     * Prints a message on where the elevator car is going
+     * Prints a message which floor and if the elevator car is going up or down
      * @param hardwareDevice to pass necessary information
      */
     private void movingMessage(HardwareDevice hardwareDevice) {
@@ -22,7 +30,7 @@ public class Elevator implements Runnable {
      */
     @Override
     public void run() {
-        while(scheduler.getNumReqsHandled() < scheduler.getNumReqs()){
+        while(scheduler.getNumReqsHandled() < scheduler.getNumReqs()) {
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
             movingMessage(hardwareDevice);
             try {
