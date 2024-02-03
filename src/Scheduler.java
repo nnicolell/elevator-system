@@ -8,7 +8,7 @@ public class Scheduler implements Runnable {
     /**
      * A Queue of HardwareDevices representing the floor events.
      */
-    private Queue<HardwareDevice> floorQueue;
+    private final Queue<HardwareDevice> floorQueue;
 
     /**
      * A HardwareDevice representing the current floor event that is being handled.

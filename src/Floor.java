@@ -7,18 +7,18 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 /**
- * Floor to represent the floors the elevator car stops at
+ * A Floor to represent the floors the elevator car stops at.
  */
-
 public class Floor implements Runnable {
 
     /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
      */
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
     /**
-     * Initializes a new Floor object
+     * Initializes a new Floor with a Scheduler representing the elevator scheduler to receive and send events to.
+     *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
     public Floor(Scheduler scheduler) {
@@ -26,8 +26,7 @@ public class Floor implements Runnable {
     }
 
     /**
-     * Reads input from text file and creates a HardwareDevice objects to pass into Scheduler
-     * to add to the queue
+     * Reads input from text file and creates a HardwareDevice objects to pass into Scheduler to add to the queue.
      */
     public void run() {
         try {
@@ -48,10 +47,11 @@ public class Floor implements Runnable {
     }
 
     /**
-     * Returns a HardwareDevice with the information provided
-     * @param info Array of information including time elevator requester, floor from where it was requested
-     *             whether it is going up or down, and floor it is going to
-     * @return new HardwareDevice with properties given
+     * Returns a HardwareDevice with the information provided.
+     *
+     * @param info An array of String information including time elevator requester, floor from where it was requested
+     * whether it is going up or down, and floor it is going to
+     * @return A HardwareDevice with the specified properties.
      */
     public HardwareDevice createHardwareDevice(String[] info) {
         LocalTime l = LocalTime.parse(info[0]);
