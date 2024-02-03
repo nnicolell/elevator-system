@@ -31,11 +31,17 @@ JDK version 21.0.1 was used to develop the code.
 <!-- Files -->
 ### Files
 * [Elevator.java](https://github.com/nnicolell/elevator-system/blob/master/src/Elevator.java)
+  * The Elevator class represents the elevator car moving up or down floors.
 * [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java)
+  * The ElevatorSystem class contains the main method and is used to test the ElevatorSystem.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
+  * The Floor class represents the floor where the requests happen. 
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
+  * The FloorButton file is an enumerator to represent whether a passenger would like to move up or down.
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
+  * The HardwareDevice class represents the necessary information to pass to the Scheduler.
 * [Scheduler.java](https://github.com/nnicolell/elevator-system/blob/master/src/Scheduler.java)
+  * The Scheduler class handles the messaging between the elevator and floor and schedules the requests.
 
 <!-- Responsibilities -->
 ### Responsibilities
