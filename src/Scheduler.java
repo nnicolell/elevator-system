@@ -1,4 +1,5 @@
 import java.util.*;
+
 public class Scheduler implements Runnable {
 
     private Queue<HardwareDevice> floorQueue; // Queue to store the floor events
@@ -34,12 +35,13 @@ public class Scheduler implements Runnable {
         numReqsHandled++;
         notifyAll();
     }
+
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) { // add request to the floor queue
         floorQueue.add(hardwareDevice);
         notifyAll();
     }
 
-    public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice){
+    public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
         while (!hardwareDevice.getArrived() && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
             try {
                 wait();
