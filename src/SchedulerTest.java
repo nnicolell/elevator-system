@@ -1,5 +1,6 @@
 import java.time.LocalTime;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,12 +9,21 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchedulerTest {
 
+    private Scheduler scheduler;
+    private HardwareDevice hardwareDevice;
+
+    @BeforeEach
+    void setUp() {
+        scheduler = new Scheduler();
+        LocalTime localTime = LocalTime.parse("13:02:56.0");
+        hardwareDevice = new HardwareDevice(localTime, 4, FloorButton.UP, 6);
+    }
+
     /**
      * Tests the initialization of Scheduler.
      */
     @Test
     void testScheduler() {
-        Scheduler scheduler = new Scheduler();
         assertTrue(scheduler.getFloorQueue().isEmpty());
         assertNull(scheduler.getCurrentFloorEvent());
         assertEquals(1, scheduler.getNumReqsHandled());
@@ -25,11 +35,10 @@ class SchedulerTest {
      */
     @Test
     void testAddFloorEvent() {
-        Scheduler scheduler = new Scheduler();
         assertTrue(scheduler.getFloorQueue().isEmpty());
 
         LocalTime time = LocalTime.parse("14:05:15.0");
-        HardwareDevice hardwareDevice = new HardwareDevice(time,2, FloorButton.UP, 4);
+        hardwareDevice = new HardwareDevice(time,2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
 
         assertEquals(hardwareDevice, scheduler.getFloorQueue().poll());
@@ -40,7 +49,6 @@ class SchedulerTest {
      */
     @Test
     void testSetNumReqs() {
-        Scheduler scheduler = new Scheduler();
         assertEquals(10000, scheduler.getNumReqs());
 
         scheduler.setNumReqs(2);
