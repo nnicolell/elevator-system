@@ -43,7 +43,7 @@ public class FloorTest {
     }
 
     @Test
-    void testReadCorrectNumberofLines() {
+    void testReadCorrectNumberOfLines() {
         assertEquals(lines.size(), 4);
     }
 }
