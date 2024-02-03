@@ -25,7 +25,7 @@ The system will consist of an elevator controller, a simulator for the elevator 
 <!-- Set-up Instructions -->
 ### Setup and Usage
 
-Open the folder 'elevator-system' in IntelliJ and run the main method in [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java).
+Open the folder 'L1G6_milestone_1' in IntelliJ and run the main method in [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java).
 
 <!-- Files -->
 ### Files
