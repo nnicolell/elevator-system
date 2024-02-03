@@ -1,10 +1,27 @@
 import java.util.*;
 
+/**
+ * A Scheduler to handle the messaging between the elevator and floor.
+ */
+
 public class Scheduler implements Runnable {
 
-    private Queue<HardwareDevice> floorQueue; // Queue to store the floor events
+    /**
+     * The queue to store the floor events
+     */
+    private Queue<HardwareDevice> floorQueue;
+
+    /**
+     * The current floor event that is being handled
+     */
     private HardwareDevice currentFloorEvent;
+    /**
+     * The number of requests
+     */
     private int numReqs;
+    /**
+     * The number of requests that have been handled
+     */
     private int numReqsHandled;
 
     public Scheduler() {
@@ -42,6 +59,13 @@ public class Scheduler implements Runnable {
         notifyAll();
     }
 
+    /**
+     * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator
+     * is still running and the number of requests handled is lower than the number of requests or the
+     * currentFloorEvent is null, the thread should wait. Once the elevator has arrived, the floor subsystem should be
+     * notified.
+     * @param hardwareDevice The updated hardwareDevice
+     */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
         while (!hardwareDevice.getArrived() && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
             try {
@@ -54,6 +78,11 @@ public class Scheduler implements Runnable {
         notifyFloorSubsystem();
     }
 
+    /**
+     * Returns the currentFloorEvent to the elevator if it is not null. If it is null, the thread
+     * should wait.
+     * @return the currentFloorEvent to the elevator
+     */
     public synchronized HardwareDevice getElevatorRequest() {
         while (currentFloorEvent == null) {
             try {
@@ -67,14 +96,26 @@ public class Scheduler implements Runnable {
         return currentFloorEvent;
     }
 
+    /**
+     * Sets the number of requests
+     * @param numReqs The number of requests
+     */
     public void setNumReqs(int numReqs) {
         this.numReqs = numReqs;
     }
 
+    /**
+     * Gets the number of requests
+     * @return The number of requests
+     */
     public int getNumReqs()  {
         return numReqs;
     }
 
+    /**
+     * Gets the number of requests that have been handled
+     * @return The number of handled requests
+     */
     public int getNumReqsHandled() {
         return numReqsHandled;
     }
@@ -90,10 +131,18 @@ public class Scheduler implements Runnable {
         }
     }
 
+    /**
+     * Returns the floorQueue field
+     * @return the floorQueue
+     */
     public Queue<HardwareDevice> getFloorQueue() {
         return floorQueue;
     }
 
+    /**
+     * Returns the currentFloorEvent field
+     * @return What the currentFloorEvent is
+     */
     public HardwareDevice getCurrentFloorEvent() {
         return currentFloorEvent;
     }
