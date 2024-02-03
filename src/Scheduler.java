@@ -31,6 +31,12 @@ public class Scheduler implements Runnable {
         numReqs = 10000;
     }
 
+    /**
+     * This method receives the next floor event to be processed. The method will run as long as
+     * there are more requests pending, it will wait until there is an event added to the floor queue and no floor event is current
+     * beign processed.
+     ** @throws InterruptedException
+     */
     public synchronized void checkForFloorEvent() throws InterruptedException { // get next pending request from floor
         while ((floorQueue.isEmpty() || currentFloorEvent != null)
                 && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
@@ -47,6 +53,10 @@ public class Scheduler implements Runnable {
         notifyAll();
     }
 
+    /**
+     * Once the elevator subsytem has completed its task (arrived to the desired floor),
+     * the floor subsytem will be notified, and the currentFloorEvent will be cleared.
+     */
     private synchronized void notifyFloorSubsystem() { // send alert back to floor thread
         System.out.println("Floor Event : " + currentFloorEvent + " has been completed");
         currentFloorEvent = null;
@@ -54,6 +64,10 @@ public class Scheduler implements Runnable {
         notifyAll();
     }
 
+    /**
+     * Add a new floor event to the floorQueue
+     * @param hardwareDevice
+     */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) { // add request to the floor queue
         floorQueue.add(hardwareDevice);
         notifyAll();
