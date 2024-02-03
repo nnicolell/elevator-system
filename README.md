@@ -37,18 +37,24 @@ JDK version 21.0.1 was used to develop the code.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
   * The Floor class represents the floor where the requests happen. 
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
-  * The FloorButton file is an enumerator to represent whether a passenger would like to move up or down.
+  * The FloorButton enumerator represents whether a passenger would like to move up or down.
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
   * The HardwareDevice class represents the necessary information to pass to the Scheduler.
 * [Scheduler.java](https://github.com/nnicolell/elevator-system/blob/master/src/Scheduler.java)
   * The Scheduler class handles the messaging between the elevator and floor and schedules the requests.
 
+#### Test Files
+* [ElevatorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorTest.java)
+* [FloorTest.java]()
+* [HardwareDeviceTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDeviceTest.java)
+* [SchedulerTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerTest.java)
+
 <!-- Responsibilities -->
 ### Responsibilities
-| Person                   | Responsibilities                                                      |         
-| ------------------------ |:---------------------------------------------------------------------:|
-| Alexander Hum            | Elevator.java, UML Class Diagram, README.md                           |
-| Emily Tang               | HardwareDevice.java, FloorButton.java, ElevatorSystem.java, README.md | 
-| Nicole Lim               | Scheduler.java, UML Sequence Diagram, README.md                       |
-| Nivetha Sivasaravanan    | Floor.java, FloorTest.java, README.md                                 |
-| Rimsha Atif              | Scheduler.java, UML Sequence Diagram, README.md                       |
+| Person                   |                                        Responsibilities                                        |         
+| ------------------------ |:----------------------------------------------------------------------------------------------:|
+| Alexander Hum            |                 Elevator.java, ElevatorTest.java, UML Class Diagram, README.md                 |
+| Emily Tang               | HardwareDevice.java, HardwareDeviceTest.java, FloorButton.java, ElevatorSystem.java, README.md | 
+| Nicole Lim               |              Scheduler.java, SchedulerTest.java, UML Sequence Diagram, README.md               |
+| Nivetha Sivasaravanan    |                             Floor.java, FloorTest.java, README.md                              |
+| Rimsha Atif              |              Scheduler.java, SchedulerTest.java, UML Sequence Diagram, README.md               |

@@ -10,8 +10,8 @@ public class ElevatorSystem {
         Thread elevator = new Thread(new Elevator(scheduler),"Elevator");
 
         schedulerThread.start();
-        elevator.start();
         floor.start();
+        elevator.start();
     }
 }
 
