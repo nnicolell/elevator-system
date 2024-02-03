@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FloorTest {
 
     private List<String> lines;
+
+
+    /**
+     * Setup before each method to read from test input file
+     */
     @BeforeEach
     void setup() {
         try {
@@ -42,8 +48,12 @@ public class FloorTest {
 
     }
 
+    /**
+     * Tests if the correct number of lines are read from the test_input file
+     */
     @Test
     void testReadCorrectNumberOfLines() {
         assertEquals(lines.size(), 4);
     }
+
 }

@@ -12,6 +12,9 @@ class SchedulerTest {
     private Scheduler scheduler;
     private HardwareDevice hardwareDevice;
 
+    /**
+     * Setup before each method to instantiate new scheduler and hardware device
+     */
     @BeforeEach
     void setUp() {
         scheduler = new Scheduler();

@@ -107,8 +107,8 @@ public class HardwareDevice {
      */
     @Override
     public String toString() {
-        return "{ Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
-                + ", Car Button: " + getCarButton() + " }";
+        return "{Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
+                + ", Car Button: " + getCarButton() + "}";
     }
 
 }
