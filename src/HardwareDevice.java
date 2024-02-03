@@ -101,11 +101,14 @@ public class HardwareDevice {
     }
 
     /**
-     * Returns a string version of HardwareDevice
+     * Returns a string representing the HardwareDevice.
+     *
+     * @return A String representing the HardwareDevice.
      */
+    @Override
     public String toString() {
-        return "{Time: " + getTime() + ", Requested Floor: " + getFloor() +
-                ", Direction: " + getFloorButton() + ", Car Button: " + getCarButton()+"}";
+        return "{ Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
+                + ", Car Button: " + getCarButton() + " }";
     }
 
 }

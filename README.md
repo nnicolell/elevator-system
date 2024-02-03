@@ -25,14 +25,15 @@ The system will consist of an elevator controller, a simulator for the elevator 
 <!-- Set-up Instructions -->
 ### Setup and Usage
 
-Open the folder 'elevator-system' in IntelliJ and run the main method in [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java).
+Open the folder 'L1G6_milestone_1' in IntelliJ and run the main method in [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java).
+JDK version 21.0.1 was used to develop the code.
 
 <!-- Files -->
 ### Files
 * [Elevator.java](https://github.com/nnicolell/elevator-system/blob/master/src/Elevator.java)
 * [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java)
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
-* FloorButton.java
+* [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
 * [Scheduler.java](https://github.com/nnicolell/elevator-system/blob/master/src/Scheduler.java)
 
@@ -43,5 +44,5 @@ Open the folder 'elevator-system' in IntelliJ and run the main method in [Elevat
 | Alexander Hum            | Elevator.java, UML Class Diagram, README.md                           |
 | Emily Tang               | HardwareDevice.java, FloorButton.java, ElevatorSystem.java, README.md | 
 | Nicole Lim               | Scheduler.java, UML Sequence Diagram, README.md                       |
-| Nivetha Sivasaravanan    | Floor.java, UML Class Diagram, README.md                              |
+| Nivetha Sivasaravanan    | Floor.java, FloorTest.java, README.md                                 |
 | Rimsha Atif              | Scheduler.java, UML Sequence Diagram, README.md                       |
