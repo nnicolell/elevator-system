@@ -81,7 +81,7 @@ public class Scheduler implements Runnable {
 
     @Override
     public void run() {
-        while (numReqsHandled < numReqs) {
+        while (numReqsHandled <= numReqs) {
             try {
                 checkForFloorEvent();
             } catch (InterruptedException e) {
