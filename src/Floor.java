@@ -42,7 +42,7 @@ public class Floor implements Runnable {
             for (String s : lines) {
                 String[] info = s.split(" ");
                 sleep(100);
-                System.out.println("[Floor]" + " Elevator requested to go " + info[2] + " at floor " + info[1]);
+                System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
                 scheduler.addFloorEvent(createHardwareDevice(info));
             }
         } catch (IOException | InterruptedException e) {

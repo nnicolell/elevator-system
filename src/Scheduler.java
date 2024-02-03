@@ -52,7 +52,7 @@ public class Scheduler implements Runnable {
         }
 
         currentFloorEvent = floorQueue.poll();
-        System.out.println("[Scheduler]" + " Received floor request : " + currentFloorEvent.toString());
+        System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
         notifyAll();
     }
 
@@ -61,7 +61,7 @@ public class Scheduler implements Runnable {
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
     private synchronized void notifyFloorSubsystem() {
-        System.out.println("[Scheduler]" +" Floor Event : " + currentFloorEvent + " has been completed");
+        System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
         currentFloorEvent = null;
         numReqsHandled++;
         notifyAll();
@@ -92,7 +92,7 @@ public class Scheduler implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("[Scheduler]" + " Elevator has arrived.");
+        System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         notifyFloorSubsystem();
     }
 

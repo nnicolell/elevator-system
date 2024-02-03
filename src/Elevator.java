@@ -25,8 +25,8 @@ public class Elevator implements Runnable {
      * @param hardwareDevice A HardwareDevice representing the current event.
      */
     private void printMovingMessage(HardwareDevice hardwareDevice) {
-        System.out.println("[Elevator]" + " Elevator Car Currently Moving " + hardwareDevice.getFloorButton() + " to the "
-                + hardwareDevice.getCarButton() + " floor...");
+        System.out.println("[" + Thread.currentThread().getName() + "] Elevator Car currently moving "
+                + hardwareDevice.getFloorButton() + " to floor " + hardwareDevice.getCarButton() + "...");
     }
 
     /**
