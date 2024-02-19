@@ -25,6 +25,8 @@ public class Scheduler implements Runnable {
      */
     private int numReqsHandled;
 
+    private SchedulerState currentState;
+
     /**
      * Initializes a Scheduler.
      */
@@ -33,6 +35,32 @@ public class Scheduler implements Runnable {
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
+        this.currentState = new IdleState();
+    }
+
+    /**
+     * Sets current state of the state machine
+     * @param newState
+     */
+    public void setState(SchedulerState newState) {
+        this.currentState = newState;
+        System.out.println("State changed to: " + newState);
+    }
+
+    /**
+     * to handle when the floor requests
+     * @param floorNumber
+     */
+    public void handleFloorRequest(int floorNumber) {
+        currentState.handleFloorRequest(floorNumber, this);
+    }
+
+    /**
+     * To handle when the elevator arrives
+     * @param floorNumber
+     */
+    public void handleElevatorArrival(int floorNumber) {
+        currentState.handleElevatorArrival(floorNumber, this);
     }
 
     /**
