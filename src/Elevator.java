@@ -65,7 +65,9 @@ public class Elevator implements Runnable {
             }
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // reached destination
+
             hardwareDevice.setArrived();
+
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // doors opening
             currentState.handleRequest(this,hardwareDevice);

@@ -7,38 +7,8 @@ public class MovingBetweenFloorsState implements ElevatorState{
         context.setState("ReachedDestination");
     }
 
-//    @Override
-//    public void receivedRequest(Elevator context, HardwareDevice request) {
-//        System.out.print("Request "+ request + "has been added to the queue");
-//    }
-//
-//    @Override
-//    public void notifyScheduler(Elevator context) {
-//        System.out.println("Elevator is still moving");
-//    }
-//
-//    @Override
-//    public void floorReached(Elevator context) {
-//        System.out.println("The elevator has reached the floor");
-//        context.setState("Reached Destination");
-//    }
-//
     @Override
     public void displayState() {
         System.out.println("State: Elevator is Moving Between Floors");
     }
-
-//    @Override
-//    public void carStopped(Elevator context) {
-//    }
-//    @Override
-//    public void waitingForRequest() {
-//
-//    }
-//
-//    @Override
-//    public void doorOpening(Elevator context){}
-//
-//    @Override
-//    public void doorClosing(Elevator context){}
 }
