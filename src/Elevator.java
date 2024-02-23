@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 import static java.lang.Thread.sleep;
 
 /**
@@ -10,6 +12,9 @@ public class Elevator implements Runnable {
      */
     private final Scheduler scheduler;
 
+    private HashMap<String, ElevatorState> states;
+    private ElevatorState currentState;
+
     /**
      * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
      *
@@ -17,6 +22,11 @@ public class Elevator implements Runnable {
      */
     public Elevator(Scheduler scheduler) {
         this.scheduler = scheduler;
+        states = new HashMap<>();
+        addState("Waiting For Elevator Request", new WaitingForElevatorRequestState());
+        addState("Moving Between Floors", new MovingBetweenFloors());
+        addState("Reached Destination", new ReachedDestination());
+        setState("Waiting For Elevator Request");
     }
 
     /**
@@ -56,4 +66,14 @@ public class Elevator implements Runnable {
     public Scheduler getScheduler() {
         return scheduler;
     }
+
+    public void setState(String stateName){
+        currentState = states.get(stateName);
+    }
+
+    public void addState(String name, ElevatorState state){
+        states.put(name, state);
+    }
+
 }
+
