@@ -1,4 +1,4 @@
-public class NotifyFloorState implements State {
+public class NotifyFloorState implements SchedulerState {
     @Override
     public void handleRequest(Scheduler scheduler) {
         scheduler.notifyFloorSubsystem();

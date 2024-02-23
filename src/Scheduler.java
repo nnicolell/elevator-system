@@ -25,8 +25,8 @@ public class Scheduler implements Runnable {
      */
     private int numReqsHandled;
 
-    private State currentState;
-    private HashMap<String, State> states;
+    private SchedulerState currentSchedulerState;
+    private HashMap<String, SchedulerState> states;
 
     /**
      * Initializes a Scheduler.
@@ -40,7 +40,7 @@ public class Scheduler implements Runnable {
         states.put("WaitingForElevator", new WaitingForElevatorState());
         states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
         states.put("NotifyFloor", new NotifyFloorState());
-        this.currentState = states.get("WaitingForFloorEvent");
+        this.currentSchedulerState = states.get("WaitingForFloorEvent");
 
     }
 
@@ -49,7 +49,7 @@ public class Scheduler implements Runnable {
      * @param newState
      */
     public void setState(String newState) {
-        this.currentState = states.get(newState);
+        this.currentSchedulerState = states.get(newState);
         System.out.println("State changed to: " + newState);
     }
 
@@ -175,7 +175,7 @@ public class Scheduler implements Runnable {
 //            } catch (InterruptedException e) {
 //                throw new RuntimeException(e);
 //            }
-            currentState.handleRequest(this);
+            currentSchedulerState.handleRequest(this);
         }
     }
 
