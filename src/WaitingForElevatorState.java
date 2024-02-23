@@ -1,13 +1,11 @@
-public class WaitingForElevatorState implements SchedulerState {
+public class WaitingForElevatorState implements State {
+    @Override
+    public void handleRequest(Scheduler scheduler) {
+        //im pre sure this is where we switch to the first elevator state and wait for that to finish???
 
-    public void handleFloorRequest(int floorNumber, Scheduler scheduler) {
-        //add new additional floor events and queue them into the array deque
+//        scheduler.checkElevatorStatus(scheduler.getCurrentFloorEvent());
+        //the last elevator state should call ^ and then set state to notify floor
+        scheduler.setState("NotifyFloor");
     }
 
-    public void handleElevatorArrival(int floorNumber, Scheduler scheduler) {
-        System.out.println("Elevator arrived at floor " + floorNumber);
-        //set the state back to the IdleState when the elevator arrives
-        scheduler.setState(new IdleState());
-        //i am not sure what to add here for handling the arrival event
-    }
 }

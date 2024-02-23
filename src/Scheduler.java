@@ -25,7 +25,8 @@ public class Scheduler implements Runnable {
      */
     private int numReqsHandled;
 
-    private SchedulerState currentState;
+    private State currentState;
+    private HashMap<String, State> states;
 
     /**
      * Initializes a Scheduler.
@@ -35,32 +36,21 @@ public class Scheduler implements Runnable {
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
-        this.currentState = new IdleState();
+        states = new HashMap<>();
+        states.put("WaitingForElevator", new WaitingForElevatorState());
+        states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
+        states.put("NotifyFloor", new NotifyFloorState());
+        this.currentState = states.get("WaitingForFloorEvent");
+
     }
 
     /**
      * Sets current state of the state machine
      * @param newState
      */
-    public void setState(SchedulerState newState) {
-        this.currentState = newState;
+    public void setState(String newState) {
+        this.currentState = states.get(newState);
         System.out.println("State changed to: " + newState);
-    }
-
-    /**
-     * to handle when the floor requests
-     * @param floorNumber
-     */
-    public void handleFloorRequest(int floorNumber) {
-        currentState.handleFloorRequest(floorNumber, this);
-    }
-
-    /**
-     * To handle when the elevator arrives
-     * @param floorNumber
-     */
-    public void handleElevatorArrival(int floorNumber) {
-        currentState.handleElevatorArrival(floorNumber, this);
     }
 
     /**
@@ -88,7 +78,7 @@ public class Scheduler implements Runnable {
      * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
-    private synchronized void notifyFloorSubsystem() {
+    public synchronized void notifyFloorSubsystem() {
         System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
         currentFloorEvent = null;
         numReqsHandled++;
@@ -121,7 +111,8 @@ public class Scheduler implements Runnable {
             }
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
-        notifyFloorSubsystem();
+//        notifyFloorSubsystem();
+//        notifyAll();
     }
 
     /**
@@ -179,11 +170,12 @@ public class Scheduler implements Runnable {
     @Override
     public void run() {
         while (numReqsHandled < numReqs) {
-            try {
-                checkForFloorEvent();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                checkForFloorEvent();
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+            currentState.handleRequest(this);
         }
     }
 
