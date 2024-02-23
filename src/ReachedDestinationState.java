@@ -1,12 +1,10 @@
-import jdk.jfr.Percentage;
-
 /**
  * This class represents the elevator once it has reached the desired floow
  */
-public class ReachedDestination implements ElevatorState{
+public class ReachedDestinationState implements ElevatorState{
     @Override
-    public void handleRequest(Elevator context) {
-        context.setState("Doors Opening");
+    public void handleRequest(Elevator context, HardwareDevice request) {
+        context.setState("DoorOpening");
     }
 
 //    @Override
@@ -29,11 +27,11 @@ public class ReachedDestination implements ElevatorState{
 //
 //    }
 //
-//    @Override
-//    public void displayState() {
-//        System.out.println("Elevator has Reached Destination");
-//    }
-//
+    @Override
+    public void displayState() {
+        System.out.println("Elevator has Reached Destination");
+    }
+
 //    @Override
 //    public void carStopped(Elevator context) {
 //        System.out.println("The cart has fully stopped");

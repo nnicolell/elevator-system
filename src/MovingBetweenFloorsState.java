@@ -1,10 +1,10 @@
 /**
  * This class represents the elevator as it is moving from one floor to another
  */
-public class MovingBetweenFloors implements ElevatorState{
+public class MovingBetweenFloorsState implements ElevatorState{
     @Override
-    public void handleRequest(Elevator context) {
-        context.setState("Reached Destination");
+    public void handleRequest(Elevator context, HardwareDevice request) {
+        context.setState("ReachedDestination");
     }
 
 //    @Override
@@ -23,11 +23,11 @@ public class MovingBetweenFloors implements ElevatorState{
 //        context.setState("Reached Destination");
 //    }
 //
-//    @Override
-//    public void displayState() {
-//        System.out.println("Elevator is Moving Between Floors");
-//    }
-//
+    @Override
+    public void displayState() {
+        System.out.println("State: Elevator is Moving Between Floors");
+    }
+
 //    @Override
 //    public void carStopped(Elevator context) {
 //    }

@@ -23,9 +23,13 @@ public class Elevator implements Runnable {
     public Elevator(Scheduler scheduler) {
         this.scheduler = scheduler;
         states = new HashMap<>();
-        addState("Waiting For Elevator Request", new WaitingForElevatorRequestState());
-        addState("Moving Between Floors", new MovingBetweenFloors());
-        addState("Reached Destination", new ReachedDestination());
+        addState("WaitingForElevatorRequest", new WaitingForElevatorRequestState());
+        addState("MovingBetweenFloors", new MovingBetweenFloorsState());
+        addState("ReachedDestination", new ReachedDestinationState());
+        addState("DoorClosing", new DoorClosingState());
+        addState("DoorOpening", new DoorOpeningState());
+        addState("NotifyScheduler", new ReachedDestinationState());
+
         setState("Waiting For Elevator Request");
     }
 
@@ -47,14 +51,31 @@ public class Elevator implements Runnable {
     public void run() {
         while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // doors opening
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // doors closing
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // moving
             printMovingMessage(hardwareDevice);
             try {
                 sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // reached destination
             hardwareDevice.setArrived();
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // doors opening
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // doors closing
+            currentState.handleRequest(this,hardwareDevice);
+            currentState.displayState(); // notify
+
             scheduler.checkElevatorStatus(hardwareDevice);
+
+            currentState.handleRequest(this,hardwareDevice);
         }
     }
 

@@ -1,6 +1,7 @@
 public interface ElevatorState {
 
-        void handleRequest(Elevator context);
+        void handleRequest(Elevator context, HardwareDevice request);
+
 //        void waitingForRequest();
 //
 //        void receivedRequest(Elevator context, HardwareDevice request);
@@ -13,7 +14,7 @@ public interface ElevatorState {
 //        /**
 //         * Displays the current state information.
 //         */
-//        void displayState();
+        void displayState();
 //
 //        void carStopped(Elevator context);
 }
