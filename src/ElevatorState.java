@@ -1,13 +1,15 @@
 public interface ElevatorState {
+        void waitingForRequest();
 
-    void waitingForRequest();
+        void receivedRequest(Elevator context, HardwareDevice request);
 
-    void receivedRequest();
+        void notifyScheduler(Elevator context);
 
-    void notifyScheduler();
+        void floorReached(Elevator context);
+        /**
+         * Displays the current state information.
+         */
+        void displayState();
 
-    /**
-     * Displays the current state information.
-     */
-    void displayState();
+        void carStopped(Elevator context);
 }
