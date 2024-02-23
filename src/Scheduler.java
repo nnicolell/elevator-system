@@ -1,84 +1,106 @@
 import java.util.*;
 
 /**
- * A Scheduler to handle the messaging between the elevator and floor.
+ * A Scheduler to handle communication between the Elevator and Floor.
  */
-
 public class Scheduler implements Runnable {
 
     /**
-     * The queue to store the floor events
+     * A Queue of HardwareDevices representing the floor events.
      */
-    private Queue<HardwareDevice> floorQueue;
+    private final Queue<HardwareDevice> floorQueue;
 
     /**
-     * The current floor event that is being handled
+     * A HardwareDevice representing the current floor event that is being handled.
      */
     private HardwareDevice currentFloorEvent;
+
     /**
-     * The number of requests
+     * An integer representing the total number of requests.
      */
     private int numReqs;
+
     /**
-     * The number of requests that have been handled
+     * An integer representing the number of requests that have been handled.
      */
     private int numReqsHandled;
 
+    private State currentState;
+    private HashMap<String, State> states;
+
+    /**
+     * Initializes a Scheduler.
+     */
     public Scheduler() {
         floorQueue = new ArrayDeque<>();
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
+        states = new HashMap<>();
+        states.put("WaitingForElevator", new WaitingForElevatorState());
+        states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
+        states.put("NotifyFloor", new NotifyFloorState());
+        this.currentState = states.get("WaitingForFloorEvent");
+
     }
 
     /**
-     * This method receives the next floor event to be processed. The method will run as long as
-     * there are more requests pending, it will wait until there is an event added to the floor queue and no floor event is current
-     * beign processed.
-     ** @throws InterruptedException
+     * Sets current state of the state machine
+     * @param newState
      */
-    public synchronized void checkForFloorEvent() throws InterruptedException { // get next pending request from floor
+    public void setState(String newState) {
+        this.currentState = states.get(newState);
+        System.out.println("State changed to: " + newState);
+    }
+
+    /**
+     * Receives the next floor event to be processed. Runs as long as there are more requests pending, it will wait
+     * until there is an event added to the floor queue and no floor event is current being processed.
+     *
+     * @throws InterruptedException When a thread is interrupted while it is in a blocked state.
+     */
+    public synchronized void checkForFloorEvent() throws InterruptedException {
         while ((floorQueue.isEmpty() || currentFloorEvent != null)
                 && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
             try {
                 wait();
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
 
         currentFloorEvent = floorQueue.poll();
-        System.out.println("Scheduler received floor request : " + currentFloorEvent.toString());
+        System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
         notifyAll();
     }
 
     /**
-     * Once the elevator subsytem has completed its task (arrived to the desired floor),
-     * the floor subsytem will be notified, and the currentFloorEvent will be cleared.
+     * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
+     * The number of requests handled will be incremented and the current floor event is cleared.
      */
-    private synchronized void notifyFloorSubsystem() { // send alert back to floor thread
-        System.out.println("Floor Event : " + currentFloorEvent + " has been completed");
+    public synchronized void notifyFloorSubsystem() {
+        System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
         currentFloorEvent = null;
         numReqsHandled++;
         notifyAll();
     }
 
     /**
-     * Add a new floor event to the floorQueue
-     * @param hardwareDevice
+     * Adds the specified floor event into the floor queue.
+     *
+     * @param hardwareDevice A HardwareDevice representing the floor event.
      */
-    public synchronized void addFloorEvent(HardwareDevice hardwareDevice) { // add request to the floor queue
+    public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
         floorQueue.add(hardwareDevice);
         notifyAll();
     }
 
     /**
-     * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator
-     * is still running and the number of requests handled is lower than the number of requests or the
-     * currentFloorEvent is null, the thread should wait. Once the elevator has arrived, the floor subsystem should be
-     * notified.
-     * @param hardwareDevice The updated hardwareDevice
+     * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator is still
+     * running and the number of requests handled is lower than the number of requests or the currentFloorEvent is null,
+     * the thread should wait. Once the elevator has arrived, the floor subsystem should be notified.
+     *
+     * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
         while (!hardwareDevice.getArrived() && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
@@ -88,14 +110,15 @@ public class Scheduler implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.out.println("Elevator has arrived.");
-        notifyFloorSubsystem();
+        System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
+//        notifyFloorSubsystem();
+//        notifyAll();
     }
 
     /**
-     * Returns the currentFloorEvent to the elevator if it is not null. If it is null, the thread
-     * should wait.
-     * @return the currentFloorEvent to the elevator
+     * Returns the currentFloorEvent to the Elevator if it is not null. If it is null, the thread should wait.
+     *
+     * @return A HardwareDevice representing the current floor event.
      */
     public synchronized HardwareDevice getElevatorRequest() {
         while (currentFloorEvent == null) {
@@ -111,51 +134,64 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Sets the number of requests
-     * @param numReqs The number of requests
+     * Sets the number of requests.
+     *
+     * @param numReqs An integer representing the number of requests.
      */
     public void setNumReqs(int numReqs) {
         this.numReqs = numReqs;
     }
 
     /**
-     * Gets the number of requests
-     * @return The number of requests
+     * Returns an integer representing the number of requests.
+     *
+     * @return An integer representing the number of requests.
      */
     public int getNumReqs()  {
         return numReqs;
     }
 
     /**
-     * Gets the number of requests that have been handled
-     * @return The number of handled requests
+     * Returns an integer representing the number of requests that have been handled.
+     *
+     * @return An integer representing the number of requests that have been handled.
      */
     public int getNumReqsHandled() {
         return numReqsHandled;
     }
 
+    public void setNumReqsHandled(int n) {
+        numReqsHandled = n;
+    }
+
+    /**
+     * Checks for the next floor event from the Floor subsystem.
+     */
     @Override
     public void run() {
         while (numReqsHandled < numReqs) {
-            try {
-                checkForFloorEvent();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                checkForFloorEvent();
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+            currentState.handleRequest(this);
         }
     }
 
     /**
-     * Returns the floorQueue field
-     * @return the floorQueue
+     * Returns a Queue of HardwareDevices representing the floor events.
+     *
+     * @return A Queue of HardwareDevices representing the floor events.
      */
     public Queue<HardwareDevice> getFloorQueue() {
         return floorQueue;
     }
 
     /**
-     * Returns the currentFloorEvent field
-     * @return What the currentFloorEvent is
+     * Returns a HardwareDevice representing the current floor event that is being handled.
+     *
+     * @return A HardwareDevice representing the current floor event that is being handled.
      */
     public HardwareDevice getCurrentFloorEvent() {
         return currentFloorEvent;
