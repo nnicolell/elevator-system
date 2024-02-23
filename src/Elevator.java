@@ -28,7 +28,7 @@ public class Elevator implements Runnable {
         addState("ReachedDestination", new ReachedDestinationState());
         addState("DoorClosing", new DoorClosingState());
         addState("DoorOpening", new DoorOpeningState());
-        addState("NotifyScheduler", new ReachedDestinationState());
+        addState("NotifyScheduler", new NotifySchedulerState());
 
         setState("WaitingForElevatorRequest");
     }
