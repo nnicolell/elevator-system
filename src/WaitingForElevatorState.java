@@ -1,4 +1,4 @@
-public class WaitingForElevatorState implements State {
+public class WaitingForElevatorState implements SchedulerState {
     @Override
     public void handleRequest(Scheduler scheduler) {
         //im pre sure this is where we switch to the first elevator state and wait for that to finish???

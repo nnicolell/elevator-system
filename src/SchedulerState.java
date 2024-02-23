@@ -1,3 +1,3 @@
-public interface State {
+public interface SchedulerState {
     void handleRequest(Scheduler scheduler);
 }

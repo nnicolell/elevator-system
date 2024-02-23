@@ -1,4 +1,4 @@
-public class WaitingForFloorEventState implements State {
+public class WaitingForFloorEventState implements SchedulerState {
     @Override
     public void handleRequest(Scheduler scheduler) {
         try {
