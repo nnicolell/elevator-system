@@ -30,7 +30,7 @@ public class Elevator implements Runnable {
         addState("DoorOpening", new DoorOpeningState());
         addState("NotifyScheduler", new ReachedDestinationState());
 
-        setState("Waiting For Elevator Request");
+        setState("WaitingForElevatorRequest");
     }
 
     /**
