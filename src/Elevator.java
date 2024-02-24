@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 import static java.lang.Thread.sleep;
 
 /**
@@ -11,12 +13,31 @@ public class Elevator implements Runnable {
     private final Scheduler scheduler;
 
     /**
+     * A HashMap of states in the Elevator state machine.
+     */
+    private final HashMap<String, ElevatorState> states;
+
+    /**
+     * The current state of the Elevator state machine.
+     */
+    private ElevatorState currentState;
+
+    /**
      * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
     public Elevator(Scheduler scheduler) {
         this.scheduler = scheduler;
+
+        states = new HashMap<>();
+        addState("WaitingForElevatorRequest", new WaitingForElevatorRequestState());
+        addState("MovingBetweenFloors", new MovingBetweenFloorsState());
+        addState("ReachedDestination", new ReachedDestinationState());
+        addState("DoorClosing", new DoorClosingState());
+        addState("DoorOpening", new DoorOpeningState());
+        addState("NotifyScheduler", new NotifySchedulerState());
+        setState("WaitingForElevatorRequest");
     }
 
     /**
@@ -37,14 +58,32 @@ public class Elevator implements Runnable {
     public void run() {
         while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
-            printMovingMessage(hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // doors opening
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // doors closing
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // moving
             try {
                 sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // reached destination
+
             hardwareDevice.setArrived();
+
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // doors opening
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // doors closing
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // notify
+
             scheduler.checkElevatorStatus(hardwareDevice);
+
+            currentState.handleRequest(this, hardwareDevice);
         }
     }
 
@@ -56,4 +95,41 @@ public class Elevator implements Runnable {
     public Scheduler getScheduler() {
         return scheduler;
     }
+
+    /**
+     * Sets the current state of the Elevator state machine.
+     *
+     * @param stateName A string representing the name of the state to set.
+     */
+    public void setState(String stateName) {
+        currentState = states.get(stateName);
+    }
+
+    /**
+     * Adds the given state to the Elevator state machine.
+     *
+     * @param name A String representing the name of the state.
+     * @param elevatorState An ElevatorState to be added to the Elevator state machine.
+     */
+    public void addState(String name, ElevatorState elevatorState) {
+        states.put(name, elevatorState);
+    }
+
+    /**
+     * Returns the current state of the Elevator state machine.
+     *
+     * @return The current state of the Elevator state machine.
+     */
+    public ElevatorState getCurrentState() { return currentState; }
+
+    /**
+     * Returns a HashMap of states in the Elevator state machine.
+     *
+     * @return A HashMap of states in the Elevator state machine.
+     */
+    public HashMap<String, ElevatorState> getStates() {
+        return states;
+    }
+
 }
+

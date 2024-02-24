@@ -26,6 +26,16 @@ public class Scheduler implements Runnable {
     private int numReqsHandled;
 
     /**
+     * The current state of the Scheduler state machine.
+     */
+    private SchedulerState currentState;
+
+    /**
+     * A HashMap of states in the Scheduler state machine.
+     */
+    private final HashMap<String, SchedulerState> states;
+
+    /**
      * Initializes a Scheduler.
      */
     public Scheduler() {
@@ -33,6 +43,50 @@ public class Scheduler implements Runnable {
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
+
+        states = new HashMap<>();
+        addState("NotifyElevator", new NotifyElevatorState());
+        addState("WaitingForFloorEvent", new WaitingForFloorEventState());
+        addState("NotifyFloor", new NotifyFloorState());
+        setState("WaitingForFloorEvent");
+    }
+
+    /**
+     * Returns the current state of the Scheduler state machine.
+     *
+     * @return The current state of the Scheduler state machine.
+     */
+    public SchedulerState getCurrentState() {
+        return currentState;
+    }
+
+    /**
+     * Returns a HashMap of states in the Scheduler state machine.
+     *
+     * @return A HashMap of states in the Scheduler state machine.
+     */
+    public HashMap<String, SchedulerState> getStates() {
+        return states;
+    }
+
+    /**
+     * Sets current state of the Scheduler state machine.
+     *
+     * @param stateName A string representing the name of the state to set.
+     */
+    public void setState(String stateName) {
+        currentState = states.get(stateName);
+        currentState.displayState();
+    }
+
+    /**
+     * Adds the given state to the Scheduler state machine.
+     *
+     * @param name A String representing the name of the state.
+     * @param schedulerState A SchedulerState to be added to the Scheduler state machine.
+     */
+    public void addState(String name, SchedulerState schedulerState) {
+        states.put(name, schedulerState);
     }
 
     /**
@@ -60,7 +114,7 @@ public class Scheduler implements Runnable {
      * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
-    private synchronized void notifyFloorSubsystem() {
+    public synchronized void notifyFloorSubsystem() {
         System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
         currentFloorEvent = null;
         numReqsHandled++;
@@ -93,7 +147,9 @@ public class Scheduler implements Runnable {
             }
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
+        setState("NotifyFloor");
         notifyFloorSubsystem();
+        notifyAll();
     }
 
     /**
@@ -141,21 +197,13 @@ public class Scheduler implements Runnable {
         return numReqsHandled;
     }
 
-    public void setNumReqsHandled(int n) {
-        numReqsHandled = n;
-    }
-
     /**
      * Checks for the next floor event from the Floor subsystem.
      */
     @Override
     public void run() {
         while (numReqsHandled < numReqs) {
-            try {
-                checkForFloorEvent();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            currentState.handleRequest(this);
         }
     }
 
