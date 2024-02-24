@@ -37,9 +37,8 @@ public class Scheduler implements Runnable {
         numReqsHandled = 1;
         numReqs = 10000;
         states = new HashMap<>();
-        states.put("WaitingForElevator", new WaitingForElevatorState());
+        states.put("NotifyElevator", new NotifyElevatorState());
         states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
-        states.put("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
 
     }
@@ -79,14 +78,6 @@ public class Scheduler implements Runnable {
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
     public synchronized void notifyFloorSubsystem() {
-        while ((currentSchedulerState != states.get("NotifyFloor")) && (!currentFloorEvent.getArrived())) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
         currentFloorEvent = null;
         numReqsHandled++;
@@ -119,7 +110,6 @@ public class Scheduler implements Runnable {
             }
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
-//        setState("NotifyFloor");
         notifyFloorSubsystem();
         notifyAll();
     }
@@ -169,21 +159,12 @@ public class Scheduler implements Runnable {
         return numReqsHandled;
     }
 
-    public void setNumReqsHandled(int n) {
-        numReqsHandled = n;
-    }
-
     /**
      * Checks for the next floor event from the Floor subsystem.
      */
     @Override
     public void run() {
         while (numReqsHandled < numReqs) {
-//            try {
-//                checkForFloorEvent();
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
             currentSchedulerState.handleRequest(this);
         }
     }
@@ -205,5 +186,4 @@ public class Scheduler implements Runnable {
     public HardwareDevice getCurrentFloorEvent() {
         return currentFloorEvent;
     }
-
 }
