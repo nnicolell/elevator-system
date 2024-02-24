@@ -116,5 +116,12 @@ public class Elevator implements Runnable {
         states.put(name, elevatorState);
     }
 
+    /**
+     * Returns the current state of the Elevator state machine.
+     *
+     * @return The current state of the Elevator state machine.
+     */
+    public ElevatorState getCurrentState() { return currentState; }
+
 }
 

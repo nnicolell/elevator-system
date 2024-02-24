@@ -1,11 +1,13 @@
-class DoorClosingState implements ElevatorState{
+/**
+ * This class represents a state in the Elevator state machine where the elevator doors are closing.
+ */
+class DoorClosingState implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        if (!request.getArrived()){
+        if (!request.getArrived()) {
             context.setState("MovingBetweenFloors");
-        }
-        else{
+        } else {
             context.setState("NotifyScheduler");
         }
     }
@@ -14,24 +16,31 @@ class DoorClosingState implements ElevatorState{
     public void displayState() {
         System.out.print("State: Doors Closing");
     }
+
 }
 
-class DoorOpeningState implements ElevatorState{
+/**
+ * This class represents a state in the Elevator state machine where the elevator doors are opening.
+ */
+class DoorOpeningState implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         context.setState("DoorClosing");
     }
+
     @Override
     public void displayState() {
         System.out.print("State: Doors Opening");
     }
+
 }
 
 /**
- * This class represents the elevator once it has reached the desired floow
+ * This class represents a state in the Elevator state machine where the elevator has reached the desired floor.
  */
-class ReachedDestinationState implements ElevatorState{
+class ReachedDestinationState implements ElevatorState {
+
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         context.setState("DoorOpening");
@@ -41,9 +50,15 @@ class ReachedDestinationState implements ElevatorState{
     public void displayState() {
         System.out.println("Elevator has Reached Destination");
     }
+
 }
 
-class NotifySchedulerState implements ElevatorState{
+/**
+ * This class represents a state in the Elevator state machine where the elevator has notified the scheduler that it has
+ * reached the desired floor.
+ */
+class NotifySchedulerState implements ElevatorState {
+
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         context.setState("WaitingForElevatorRequest");
@@ -53,12 +68,15 @@ class NotifySchedulerState implements ElevatorState{
     public void displayState() {
         System.out.print("State: Notifying Scheduler");
     }
+
 }
 
 /**
- * This class represents the Elevator while it is waiting for a request
+ * This class represents a state in the Elevator state machine where the elevator is waiting for a floor request from
+ * the scheduler.
  */
-class WaitingForElevatorRequestState implements ElevatorState{
+class WaitingForElevatorRequestState implements ElevatorState {
+
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         context.setState("DoorOpening");
@@ -72,9 +90,10 @@ class WaitingForElevatorRequestState implements ElevatorState{
 }
 
 /**
- * This class represents the elevator as it is moving from one floor to another
+ * This class represents a state in the Elevator state machine where the elevator is moving from one floor to another.
  */
-class MovingBetweenFloorsState implements ElevatorState{
+class MovingBetweenFloorsState implements ElevatorState {
+
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         context.setState("ReachedDestination");
@@ -84,4 +103,5 @@ class MovingBetweenFloorsState implements ElevatorState{
     public void displayState() {
         System.out.println("State: Elevator is Moving Between Floors");
     }
+
 }
