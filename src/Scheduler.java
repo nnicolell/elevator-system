@@ -39,6 +39,7 @@ public class Scheduler implements Runnable {
         states = new HashMap<>();
         states.put("NotifyElevator", new NotifyElevatorState());
         states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
+        states.put("NotifyFloor", new NotifyFloor());
         setState("WaitingForFloorEvent");
 
     }
@@ -110,6 +111,7 @@ public class Scheduler implements Runnable {
             }
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
+        setState("NotifyFloor");
         notifyFloorSubsystem();
         notifyAll();
     }

@@ -34,3 +34,19 @@ class WaitingForFloorEventState implements SchedulerState {
         System.out.println("Scheduler State: Waiting for Floor Event");
     }
 }
+
+/**
+ * This class represents a state in Scheduler that notifies a floor after an elevator
+ * has finished moving and reaches that floor
+ */
+class NotifyFloor implements SchedulerState {
+    @Override
+    public void handleRequest(Scheduler scheduler) {
+        scheduler.setState("WaitingForFloorEvent");
+    }
+
+    @Override
+    public void displayState() {
+        System.out.println("Scheduler State: Notifying Floor of Elevator arrival");
+    }
+}
