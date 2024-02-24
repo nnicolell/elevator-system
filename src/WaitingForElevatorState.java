@@ -6,6 +6,7 @@ public class WaitingForElevatorState implements SchedulerState {
         //the last elevator state should call ^ and then set state to notify floor
 //        scheduler.setState("NotifyFloor");
 //        displayState();
+        scheduler.setState("WaitingForFloorEvent");
     }
 
     @Override

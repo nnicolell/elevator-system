@@ -58,15 +58,15 @@ public class Elevator implements Runnable {
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // moving
 //            printMovingMessage(hardwareDevice);
-//            try {
-//                sleep(100);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // reached destination
 
-//            hardwareDevice.setArrived();
+            hardwareDevice.setArrived();
 
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // doors opening
@@ -75,7 +75,6 @@ public class Elevator implements Runnable {
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // notify
 
-            hardwareDevice.setArrived();
             scheduler.checkElevatorStatus(hardwareDevice);
 
             currentState.handleRequest(this,hardwareDevice);
