@@ -29,6 +29,7 @@ public class Elevator implements Runnable {
      */
     public Elevator(Scheduler scheduler) {
         this.scheduler = scheduler;
+
         states = new HashMap<>();
         addState("WaitingForElevatorRequest", new WaitingForElevatorRequestState());
         addState("MovingBetweenFloors", new MovingBetweenFloorsState());
@@ -36,7 +37,6 @@ public class Elevator implements Runnable {
         addState("DoorClosing", new DoorClosingState());
         addState("DoorOpening", new DoorOpeningState());
         addState("NotifyScheduler", new NotifySchedulerState());
-
         setState("WaitingForElevatorRequest");
     }
 

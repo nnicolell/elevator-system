@@ -25,8 +25,15 @@ public class Scheduler implements Runnable {
      */
     private int numReqsHandled;
 
-    private SchedulerState currentSchedulerState;
-    private HashMap<String, SchedulerState> states;
+    /**
+     * The current state of the Scheduler state machine.
+     */
+    private SchedulerState currentState;
+
+    /**
+     * A HashMap of states in the Scheduler state machine.
+     */
+    private final HashMap<String, SchedulerState> states;
 
     /**
      * Initializes a Scheduler.
@@ -36,21 +43,32 @@ public class Scheduler implements Runnable {
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
-        states = new HashMap<>();
-        states.put("NotifyElevator", new NotifyElevatorState());
-        states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
-        states.put("NotifyFloor", new NotifyFloor());
-        setState("WaitingForFloorEvent");
 
+        states = new HashMap<>();
+        addState("NotifyElevator", new NotifyElevatorState());
+        addState("WaitingForFloorEvent", new WaitingForFloorEventState());
+        addState("NotifyFloor", new NotifyFloor());
+        setState("WaitingForFloorEvent");
     }
 
     /**
-     * Sets current state of the state machine
-     * @param newState
+     * Sets current state of the Scheduler state machine.
+     *
+     * @param stateName A string representing the name of the state to set.
      */
-    public void setState(String newState) {
-        this.currentSchedulerState = states.get(newState);
-        this.currentSchedulerState.displayState();
+    public void setState(String stateName) {
+        currentState = states.get(stateName);
+        currentState.displayState();
+    }
+
+    /**
+     * Adds the given state to the Scheduler state machine.
+     *
+     * @param name A String representing the name of the state.
+     * @param schedulerState A SchedulerState to be added to the Scheduler state machine.
+     */
+    public void addState(String name, SchedulerState schedulerState) {
+        states.put(name, schedulerState);
     }
 
     /**
@@ -167,7 +185,7 @@ public class Scheduler implements Runnable {
     @Override
     public void run() {
         while (numReqsHandled < numReqs) {
-            currentSchedulerState.handleRequest(this);
+            currentState.handleRequest(this);
         }
     }
 
@@ -188,4 +206,5 @@ public class Scheduler implements Runnable {
     public HardwareDevice getCurrentFloorEvent() {
         return currentFloorEvent;
     }
+
 }
