@@ -14,7 +14,7 @@ class DoorClosingState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.print("State: Doors Closing");
+        System.out.println("Elevator State: Doors Closing");
     }
 
 }
@@ -31,7 +31,7 @@ class DoorOpeningState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.print("State: Doors Opening");
+        System.out.println("Elevator State: Doors Opening");
     }
 
 }
@@ -48,7 +48,7 @@ class ReachedDestinationState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.println("Elevator has Reached Destination");
+        System.out.println("Elevator State: Reached Destination");
     }
 
 }
@@ -66,7 +66,7 @@ class NotifySchedulerState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.print("State: Notifying Scheduler");
+        System.out.println("Elevator State: Notifying Scheduler");
     }
 
 }
@@ -84,7 +84,7 @@ class WaitingForElevatorRequestState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.print("State: Waiting For Elevator Request");
+        System.out.println("Elevator State: Waiting For Elevator Request");
     }
 
 }
@@ -101,7 +101,7 @@ class MovingBetweenFloorsState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.println("State: Elevator is Moving Between Floors");
+        System.out.println("Elevator State: Elevator is Moving Between Floors");
     }
 
 }

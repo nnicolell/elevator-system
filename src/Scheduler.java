@@ -37,10 +37,10 @@ public class Scheduler implements Runnable {
         numReqsHandled = 1;
         numReqs = 10000;
         states = new HashMap<>();
-        states.put("WaitingForElevator", new WaitingForElevatorState());
+        states.put("NotifyElevator", new NotifyElevatorState());
         states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
-        states.put("NotifyFloor", new NotifyFloorState());
-        this.currentSchedulerState = states.get("WaitingForFloorEvent");
+        states.put("NotifyFloor", new NotifyFloor());
+        setState("WaitingForFloorEvent");
 
     }
 
@@ -50,7 +50,7 @@ public class Scheduler implements Runnable {
      */
     public void setState(String newState) {
         this.currentSchedulerState = states.get(newState);
-        System.out.println("State changed to: " + newState);
+        this.currentSchedulerState.displayState();
     }
 
     /**
@@ -111,8 +111,9 @@ public class Scheduler implements Runnable {
             }
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
-//        notifyFloorSubsystem();
-//        notifyAll();
+        setState("NotifyFloor");
+        notifyFloorSubsystem();
+        notifyAll();
     }
 
     /**
@@ -160,21 +161,12 @@ public class Scheduler implements Runnable {
         return numReqsHandled;
     }
 
-    public void setNumReqsHandled(int n) {
-        numReqsHandled = n;
-    }
-
     /**
      * Checks for the next floor event from the Floor subsystem.
      */
     @Override
     public void run() {
         while (numReqsHandled < numReqs) {
-//            try {
-//                checkForFloorEvent();
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
             currentSchedulerState.handleRequest(this);
         }
     }
@@ -196,5 +188,4 @@ public class Scheduler implements Runnable {
     public HardwareDevice getCurrentFloorEvent() {
         return currentFloorEvent;
     }
-
 }
