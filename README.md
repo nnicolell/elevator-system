@@ -38,7 +38,7 @@ JDK version 21.0.1 was used to develop the code.
 * [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java)
   * The ElevatorSystem class contains the main method and is used to test the ElevatorSystem.
 * [ElevatorStates.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorStates.java)
-  * The ElevatorStates class contains classes representing the different states for the Elevator, these classes implement the     ElevatorStates interface.
+  * The ElevatorStates class contains classes representing the different states for the Elevator, these classes implement the ElevatorStates interface.
 * [ElevatorState.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
   * This interface provides methods to handle the events that cause state transitions for the Elevator.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
@@ -50,8 +50,7 @@ JDK version 21.0.1 was used to develop the code.
 * [Scheduler.java](https://github.com/nnicolell/elevator-system/blob/master/src/Scheduler.java)
   * The Scheduler class handles the messaging between the elevator and floor and schedules the requests.
 * [SchedulerStates.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerStates.java)
-  * The SchedulerStates class represents the different states in the Scheduler machine; the class implements the     
-    SchedulerState interface.
+  * The SchedulerStates class represents the different states in the Scheduler machine; the class implements the SchedulerState interface.
 * [SchedulerState.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerState.java)
   * The SchedulerStates interface provides methods to handle state transitions for the Scheduler.
 
@@ -64,13 +63,13 @@ JDK version 21.0.1 was used to develop the code.
   
 <!-- Responsibilities -->
 ### Responsibilities
-| Person                   |                                        Responsibilities                                        |         
-| ------------------------ |:----------------------------------------------------------------------------------------------:|
-| Alexander Hum            |                Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md           |
-| Emily Tang               |                    Floor.java, FloorTest.java, Floor State Diagram, README.md                  | 
-| Nicole Lim               |              Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md               |
-| Nivetha Sivasaravanan    |           Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md                |
-| Rimsha Atif              |              Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md               |
+| Person                   |                                Responsibilities                                |         
+| ------------------------ |:------------------------------------------------------------------------------:|
+| Alexander Hum            |     Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md      |
+| Emily Tang               | ElevatorTest.java, SchedulerTest.java, UML Class + Sequence Diagram, README.md | 
+| Nicole Lim               |      Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md       |
+| Nivetha Sivasaravanan    |     Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md      |
+| Rimsha Atif              |      Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md       |
 
 
 <!-- Iteration 1 -->
