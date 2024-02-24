@@ -3,17 +3,17 @@
  */
 public interface ElevatorState {
 
-        /**
-         * Handles the event based on the specified request.
-         *
-         * @param context An Elevator representing the context of the state machine.
-         * @param request A HardwareDevice representing the request to complete.
-         */
-        void handleRequest(Elevator context, HardwareDevice request);
+    /**
+     * Handles the event in the Elevator state machine based on the specified request.
+     *
+     * @param context An Elevator representing the context of the state machine.
+     * @param request A HardwareDevice representing the request to complete.
+     */
+    void handleRequest(Elevator context, HardwareDevice request);
 
-        /**
-         * Displays the current state information.
-         */
-        void displayState();
+    /**
+     * Displays the current state information.
+     */
+    void displayState();
 
 }
