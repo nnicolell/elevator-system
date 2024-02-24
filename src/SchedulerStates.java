@@ -11,7 +11,7 @@ class NotifyElevatorState implements SchedulerState {
 
     @Override
     public void displayState() {
-        System.out.println("Scheduler State: Notifying Elevator of request");
+        System.out.println("[SchedulerState] Notifying Elevator of request");
     }
 
 }
@@ -33,7 +33,7 @@ class WaitingForFloorEventState implements SchedulerState {
 
     @Override
     public void displayState() {
-        System.out.println("Scheduler State: Waiting for Floor Event");
+        System.out.println("[SchedulerState] Waiting for Floor Event");
     }
 
 }
@@ -51,7 +51,7 @@ class NotifyFloorState implements SchedulerState {
 
     @Override
     public void displayState() {
-        System.out.println("Scheduler State: Notifying Floor of Elevator arrival");
+        System.out.println("[SchedulerState] Notifying Floor of Elevator arrival");
     }
 
 }
