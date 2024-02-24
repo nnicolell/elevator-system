@@ -39,7 +39,7 @@ JDK version 21.0.1 was used to develop the code.
   * The ElevatorSystem class contains the main method and is used to test the ElevatorSystem.
 * [ElevatorStates.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorStates.java)
   * The ElevatorStates class contains classes representing the different states for the Elevator, these classes implement the     ElevatorStates interface.
-* [ElevatorState](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
+* [ElevatorState.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
   * This interface provides methods to handle the events that cause state transitions for the Elevator.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
   * The Floor class represents the floor where the requests happen. 
@@ -49,6 +49,12 @@ JDK version 21.0.1 was used to develop the code.
   * The HardwareDevice class represents the necessary information to pass to the Scheduler.
 * [Scheduler.java](https://github.com/nnicolell/elevator-system/blob/master/src/Scheduler.java)
   * The Scheduler class handles the messaging between the elevator and floor and schedules the requests.
+* [SchedulerStates.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerStates.java)
+  * The SchedulerStates class represents the different states in the Scheduler machine; the class implements the     
+    SchedulerState interface.
+* [SchedulerState.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerState.java)
+  * The SchedulerStates interface provides methods to handle state transitions for the Scheduler.
+
 
 #### Test Files
 * [ElevatorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorTest.java)
