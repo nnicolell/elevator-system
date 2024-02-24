@@ -12,7 +12,14 @@ public class Elevator implements Runnable {
      */
     private final Scheduler scheduler;
 
-    private HashMap<String, ElevatorState> states;
+    /**
+     * A HashMap of states in the Elevator state machine.
+     */
+    private final HashMap<String, ElevatorState> states;
+
+    /**
+     * The current state of the Elevator state machine.
+     */
     private ElevatorState currentState;
 
     /**
@@ -51,11 +58,11 @@ public class Elevator implements Runnable {
     public void run() {
         while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors closing
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // moving
             printMovingMessage(hardwareDevice);
             try {
@@ -63,21 +70,21 @@ public class Elevator implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // reached destination
 
             hardwareDevice.setArrived();
 
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors closing
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // notify
 
             scheduler.checkElevatorStatus(hardwareDevice);
 
-            currentState.handleRequest(this,hardwareDevice);
+            currentState.handleRequest(this, hardwareDevice);
         }
     }
 
@@ -90,12 +97,23 @@ public class Elevator implements Runnable {
         return scheduler;
     }
 
-    public void setState(String stateName){
+    /**
+     * Sets the current state of the Elevator state machine.
+     *
+     * @param stateName A string representing the name of the state to set.
+     */
+    public void setState(String stateName) {
         currentState = states.get(stateName);
     }
 
-    public void addState(String name, ElevatorState state){
-        states.put(name, state);
+    /**
+     * Adds the given state to the Elevator state machine.
+     *
+     * @param name A String representing the name of the state.
+     * @param elevatorState An ElevatorState to be added to the Elevator state machine.
+     */
+    public void addState(String name, ElevatorState elevatorState) {
+        states.put(name, elevatorState);
     }
 
 }
