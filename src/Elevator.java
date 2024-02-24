@@ -38,7 +38,7 @@ public class Elevator implements Runnable {
      *
      * @param hardwareDevice A HardwareDevice representing the current event.
      */
-    private void printMovingMessage(HardwareDevice hardwareDevice) {
+    public void printMovingMessage(HardwareDevice hardwareDevice) {
         System.out.println("[" + Thread.currentThread().getName() + "] Elevator Car currently moving "
                 + hardwareDevice.getFloorButton() + " to floor " + hardwareDevice.getCarButton() + "...");
     }
@@ -57,16 +57,16 @@ public class Elevator implements Runnable {
             currentState.displayState(); // doors closing
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // moving
-            printMovingMessage(hardwareDevice);
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//            printMovingMessage(hardwareDevice);
+//            try {
+//                sleep(100);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // reached destination
 
-            hardwareDevice.setArrived();
+//            hardwareDevice.setArrived();
 
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // doors opening
@@ -75,6 +75,7 @@ public class Elevator implements Runnable {
             currentState.handleRequest(this,hardwareDevice);
             currentState.displayState(); // notify
 
+            hardwareDevice.setArrived();
             scheduler.checkElevatorStatus(hardwareDevice);
 
             currentState.handleRequest(this,hardwareDevice);

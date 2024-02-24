@@ -40,7 +40,7 @@ public class Scheduler implements Runnable {
         states.put("WaitingForElevator", new WaitingForElevatorState());
         states.put("WaitingForFloorEvent", new WaitingForFloorEventState());
         states.put("NotifyFloor", new NotifyFloorState());
-        this.currentSchedulerState = states.get("WaitingForFloorEvent");
+        setState("WaitingForFloorEvent");
 
     }
 
@@ -50,7 +50,7 @@ public class Scheduler implements Runnable {
      */
     public void setState(String newState) {
         this.currentSchedulerState = states.get(newState);
-        System.out.println("State changed to: " + newState);
+        this.currentSchedulerState.displayState();
     }
 
     /**
@@ -79,6 +79,14 @@ public class Scheduler implements Runnable {
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
     public synchronized void notifyFloorSubsystem() {
+        while ((currentSchedulerState != states.get("NotifyFloor")) && (!currentFloorEvent.getArrived())) {
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
         currentFloorEvent = null;
         numReqsHandled++;
@@ -111,8 +119,9 @@ public class Scheduler implements Runnable {
             }
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
-//        notifyFloorSubsystem();
-//        notifyAll();
+//        setState("NotifyFloor");
+        notifyFloorSubsystem();
+        notifyAll();
     }
 
     /**

@@ -5,4 +5,9 @@ public class NotifyFloorState implements SchedulerState {
         scheduler.setState("WaitingForFloorEvent");
     }
 
+    @Override
+    public void displayState() {
+        System.out.println("State: Notify Floor scheduler");
+    }
+
 }

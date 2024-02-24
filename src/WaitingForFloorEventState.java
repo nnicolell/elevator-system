@@ -9,5 +9,10 @@ public class WaitingForFloorEventState implements SchedulerState {
         scheduler.setState("WaitingForElevator");
     }
 
+    @Override
+    public void displayState() {
+        System.out.println("State: Waiting for Floor Event");
+    }
+
 
 }
