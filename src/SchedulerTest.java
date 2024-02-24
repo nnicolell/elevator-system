@@ -1,7 +1,9 @@
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Queue;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -9,17 +11,23 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchedulerTest {
 
+    /**
+     * A Scheduler to test with.
+     */
     private Scheduler scheduler;
+
+    /**
+     * A HardwareDevice to test with.
+     */
     private HardwareDevice hardwareDevice;
 
     /**
-     * Setup before each method to instantiate new scheduler and hardware device
+     * Instantiates Scheduler and HardwareDevice.
      */
     @BeforeEach
     void setUp() {
         scheduler = new Scheduler();
-        LocalTime localTime = LocalTime.parse("13:02:56.0");
-        hardwareDevice = new HardwareDevice(localTime, 4, FloorButton.UP, 6);
+        hardwareDevice = new HardwareDevice(LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
     }
 
     /**
@@ -31,6 +39,53 @@ class SchedulerTest {
         assertNull(scheduler.getCurrentFloorEvent());
         assertEquals(1, scheduler.getNumReqsHandled());
         assertEquals(10000, scheduler.getNumReqs());
+        assertEquals(3, scheduler.getStates().size());
+        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+    }
+
+    /**
+     * Tests getting the current state of the Scheduler state machine.
+     */
+    @Test
+    void testGetCurrentState() {
+        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        scheduler.setState("NotifyElevator");
+        assertTrue(scheduler.getCurrentState() instanceof NotifyElevatorState);
+    }
+
+    /**
+     * Tests getting the states of the Scheduler state machine.
+     */
+    @Test
+    void testGetStates() {
+        HashMap<String, SchedulerState> states = scheduler.getStates();
+        assertNotNull(states);
+        assertEquals(3, states.size());
+    }
+
+    /**
+     * Tests setting the state of the Scheduler state machine.
+     */
+    @Test
+    void testSetState() {
+        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        scheduler.setState("NotifyFloor");
+        assertTrue(scheduler.getCurrentState() instanceof NotifyFloorState);
+        scheduler.setState("NotifyElevator");
+        assertTrue(scheduler.getCurrentState() instanceof NotifyElevatorState);
+    }
+
+    /**
+     * Tests adding a state to the Scheduler state machine.
+     */
+    @Test
+    void testAddState() {
+        String testStateName = "TestState";
+        assertEquals(3, scheduler.getStates().size());
+        scheduler.addState(testStateName, new WaitingForFloorEventState());
+        HashMap<String, SchedulerState> states = scheduler.getStates();
+        assertEquals(4, states.size());
+        assertTrue(states.containsKey(testStateName));
     }
 
     /**
@@ -40,8 +95,7 @@ class SchedulerTest {
     void testAddFloorEvent() {
         assertTrue(scheduler.getFloorQueue().isEmpty());
 
-        LocalTime time = LocalTime.parse("14:05:15.0");
-        hardwareDevice = new HardwareDevice(time,2, FloorButton.UP, 4);
+        hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
 
         assertEquals(hardwareDevice, scheduler.getFloorQueue().poll());
@@ -51,7 +105,7 @@ class SchedulerTest {
      * Tests setting the number of requests.
      */
     @Test
-    void testSetNumReqs() {
+    void testSetAndGetNumReqs() {
         assertEquals(10000, scheduler.getNumReqs());
 
         scheduler.setNumReqs(2);
@@ -62,6 +116,41 @@ class SchedulerTest {
 
         scheduler.setNumReqs(101);
         assertEquals(101, scheduler.getNumReqs());
+    }
+
+    /**
+     * Tests getting an integer representing the number of requests that have been handled.
+     */
+    @Test
+    void testGetNumReqsHandled() {
+        assertEquals(1, scheduler.getNumReqsHandled());
+    }
+
+    /**
+     * Tests getting a Queue of HardwareDevices representing the floor events.
+     */
+    @Test
+    void testGetFloorQueue() {
+        assertTrue(scheduler.getFloorQueue().isEmpty());
+    }
+
+    /**
+     * Tests getting a HardwareDevice representing the current floor event that is being handled.
+     */
+    @Test
+    void testGetCurrentFloorEvent() {
+        assertNull(scheduler.getCurrentFloorEvent());
+    }
+
+    /**
+     * Tests notifying Floor subsystem.
+     */
+    @Test
+    void testNotifyFloorSubsystem() {
+        assertEquals(1, scheduler.getNumReqsHandled());
+        scheduler.notifyFloorSubsystem();
+        assertNull(scheduler.getCurrentFloorEvent());
+        assertEquals(2, scheduler.getNumReqsHandled());
     }
 
 }

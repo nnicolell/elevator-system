@@ -47,8 +47,26 @@ public class Scheduler implements Runnable {
         states = new HashMap<>();
         addState("NotifyElevator", new NotifyElevatorState());
         addState("WaitingForFloorEvent", new WaitingForFloorEventState());
-        addState("NotifyFloor", new NotifyFloor());
+        addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
+    }
+
+    /**
+     * Returns the current state of the Scheduler state machine.
+     *
+     * @return The current state of the Scheduler state machine.
+     */
+    public SchedulerState getCurrentState() {
+        return currentState;
+    }
+
+    /**
+     * Returns a HashMap of states in the Scheduler state machine.
+     *
+     * @return A HashMap of states in the Scheduler state machine.
+     */
+    public HashMap<String, SchedulerState> getStates() {
+        return states;
     }
 
     /**

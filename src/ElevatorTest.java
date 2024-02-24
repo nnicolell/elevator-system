@@ -25,6 +25,7 @@ public class ElevatorTest {
     @Test
     void testElevator() {
         assertEquals(scheduler, elevator.getScheduler());
+        assertEquals(6, elevator.getStates().size());
         assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
     }
 
@@ -87,6 +88,7 @@ public class ElevatorTest {
     @Test
     void testAddState() {
         String testStateName = "TestState";
+        assertEquals(6, elevator.getStates().size());
         elevator.addState(testStateName, new WaitingForElevatorRequestState());
         HashMap<String, ElevatorState> states = elevator.getStates();
         assertEquals(7, states.size());
@@ -101,6 +103,16 @@ public class ElevatorTest {
         HashMap<String, ElevatorState> states = elevator.getStates();
         assertNotNull(states);
         assertEquals(6, states.size());
+    }
+
+    /**
+     * Tests getting the current state of the Elevator state machine.
+     */
+    @Test
+    void testGetCurrentState() {
+        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
+        elevator.setState("MovingBetweenFloors");
+        assertTrue(elevator.getCurrentState() instanceof MovingBetweenFloorsState);
     }
 
 }
