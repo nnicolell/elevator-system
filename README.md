@@ -37,6 +37,10 @@ JDK version 21.0.1 was used to develop the code.
   * The Elevator class represents the elevator car moving up or down floors.
 * [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java)
   * The ElevatorSystem class contains the main method and is used to test the ElevatorSystem.
+* [ElevatorStates.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorStates.java)
+  * The ElevatorStates class contains classes representing the different states for the Elevator, these classes implement the     ElevatorStates interface.
+* [ElevatorState](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
+  * This interface provides methods to handle the events that cause state transitions for the Elevator.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
   * The Floor class represents the floor where the requests happen. 
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
