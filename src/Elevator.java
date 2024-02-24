@@ -123,5 +123,14 @@ public class Elevator implements Runnable {
      */
     public ElevatorState getCurrentState() { return currentState; }
 
+    /**
+     * Returns a HashMap of states in the Elevator state machine.
+     *
+     * @return A HashMap of states in the Elevator state machine.
+     */
+    public HashMap<String, ElevatorState> getStates() {
+        return states;
+    }
+
 }
 
