@@ -148,6 +148,7 @@ public class Scheduler implements Runnable {
         }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
+        currentState.handleRequest(this);
         notifyFloorSubsystem();
         notifyAll();
     }
