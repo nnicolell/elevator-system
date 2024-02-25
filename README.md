@@ -63,13 +63,13 @@ JDK version 21.0.1 was used to develop the code.
   
 <!-- Responsibilities -->
 ### Responsibilities
-| Person                   |                                Responsibilities                                |         
-| ------------------------ |:------------------------------------------------------------------------------:|
-| Alexander Hum            |     Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md      |
-| Emily Tang               | ElevatorTest.java, SchedulerTest.java, UML Class + Sequence Diagram, README.md | 
-| Nicole Lim               |      Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md       |
-| Nivetha Sivasaravanan    |     Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md      |
-| Rimsha Atif              |      Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md       |
+| Person                   |                                      Responsibilities                                       |         
+| ------------------------ |:-------------------------------------------------------------------------------------------:|
+| Alexander Hum            |            Scheduler.java, SchdulerTest.java, Scheduler State Diagram, README.md            |
+| Emily Tang               |       ElevatorTest.java, SchedulerTest.java, UML Class + Sequence Diagram, README.md        | 
+| Nicole Lim               |             Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md             |
+| Nivetha Sivasaravanan    | Scheduler.java, SchdulerTest.java, Scheduler State Diagram, UML Sequence Diagram, README.md |
+| Rimsha Atif              |             Elevator.java, ElevatorTest.java, Elevator State Diagram, README.md             |
 
 
 <!-- Iteration 1 -->
