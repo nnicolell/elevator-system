@@ -28,18 +28,43 @@ public class Floor implements Runnable {
         this.scheduler = scheduler;
         try {
             sendReceiveSocket = new DatagramSocket();
-        } catch(SocketException se) {
+        } catch (SocketException se) {
             se.printStackTrace();
             System.exit(1);
         }
     }
 
+    /**
+     * Create a DatagramPacket to send to the Scheduler
+     * @param hardwareDevice the HardwareDevice representing the floor event we want to send
+     */
+    private void  prepareSendPacket(HardwareDevice hardwareDevice) {
+        String message = hardwareDevice.toString(); //create message
+        byte msg[] = message.getBytes(); //convert message to byte array
+        try {
+            sendPacket = new DatagramPacket(msg, msg.length,
+                    InetAddress.getLocalHost(), 5000); //create packet with destination port 5000
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+
+    /**
+     * Send and Receive DatagramPacket to and from the Scheduler.
+     */
     private void sendAndReceive() {
+        ///////SENDING TO SCHEDULER//////////////////
+        try {
+            sendReceiveSocket.send(sendPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
-        // send packet to scheduler - rimsha part here
 
-
-
+        ////////////RECEIVING FROM SCHEDULER///////////////////////
         // creates a byte array given a capacity of bytes as 100
         byte receiveData[] = new byte[100];
         // creates new receive datagram packet
@@ -83,6 +108,8 @@ public class Floor implements Runnable {
                 String[] info = s.split(" ");
                 sleep(100);
                 System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
+                prepareSendPacket(createHardwareDevice(info));
+                sendAndReceive();
                 scheduler.addFloorEvent(createHardwareDevice(info));
             }
         } catch (IOException | InterruptedException e) {
