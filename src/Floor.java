@@ -1,6 +1,8 @@
 import java.io.*;
+import java.net.*;
 import java.nio.file.*;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -9,6 +11,8 @@ import static java.lang.Thread.sleep;
  * A Floor to represent the floors the elevator car stops at.
  */
 public class Floor implements Runnable {
+    DatagramPacket sendPacket, receivePacket;
+    DatagramSocket sendReceiveSocket;
 
     /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
@@ -22,6 +26,43 @@ public class Floor implements Runnable {
      */
     public Floor(Scheduler scheduler) {
         this.scheduler = scheduler;
+        try {
+            sendReceiveSocket = new DatagramSocket();
+        } catch(SocketException se) {
+            se.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    private void sendAndReceive() {
+
+        // send packet to scheduler - rimsha part here
+
+
+
+        // creates a byte array given a capacity of bytes as 100
+        byte receiveData[] = new byte[100];
+        // creates new receive datagram packet
+        receivePacket = new DatagramPacket(receiveData, receiveData.length);
+
+        try {
+            // receives the datagram packet
+            sendReceiveSocket.receive(receivePacket);
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // creates a new byte array and copy's the bytes into the new array giving the new array that specific size
+        byte temp[] = new byte[receivePacket.getLength()];
+        for (int j = 0; j < receivePacket.getLength(); j++) {
+            temp[j] = receiveData[j];
+        }
+        // prints that the Floor received the packet from scheduler
+        System.out.println("Floor: Receives Packet Containing: \n" + Arrays.toString(temp));
+
+        // close socket
+        sendReceiveSocket.close();
     }
 
     /**
