@@ -109,7 +109,7 @@ public class HardwareDevice {
     @Override
     public String toString() {
         return "{Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
-                + ", Car Button: " + getCarButton() + "}";
+                + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + "}";
     }
 
     /**
@@ -118,8 +118,8 @@ public class HardwareDevice {
      * @param hardwareDeviceString The string to be changed to a HardwareDevice
      * @return A HardwareDevice created from the parameter string.
      */
-    public HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
-        String[] hardwareDeviceStringArray = new String[4];
+    public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
+        String[] hardwareDeviceStringArray = new String[5];
         int i = 0;
         hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
 
@@ -137,7 +137,12 @@ public class HardwareDevice {
         int f = Integer.parseInt(hardwareDeviceStringArray[1]);
         FloorButton fb = hardwareDeviceStringArray[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int cb = Integer.parseInt(hardwareDeviceStringArray[3]);
-        return (new HardwareDevice(t, f, fb, cb));
+        boolean a = hardwareDeviceStringArray[4].equalsIgnoreCase("true");
+        HardwareDevice hardwareDevice = new HardwareDevice(t, f, fb,cb);
+        if (a){
+            hardwareDevice.setArrived();
+        }
+        return hardwareDevice;
     }
 
 }
