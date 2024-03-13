@@ -45,4 +45,13 @@ class HardwareDeviceTest {
                 hardwareDevice.toString());
     }
 
+    @Test
+    void testStringToHardwareDevice() {
+        LocalTime time = LocalTime.parse("13:14:15.6");
+        HardwareDevice hardwareDevice = new HardwareDevice(time,1, FloorButton.UP, 2);
+        String hardwareDeviceString = hardwareDevice.toString();
+        assertEquals(hardwareDevice,
+                hardwareDevice.stringToHardwareDevice(hardwareDeviceString));
+    }
+
 }

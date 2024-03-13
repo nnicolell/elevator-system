@@ -111,4 +111,28 @@ public class HardwareDevice {
                 + ", Car Button: " + getCarButton() + "}";
     }
 
+    public HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
+        String[] hardwareDeviceStringArray = new String[4];
+        int i = 0;
+        hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
+
+
+        String[] hdArray = hardwareDeviceString.split(",");
+
+        for (String s : hdArray){
+            String[] deviceArray = s.split(":");
+            String value = deviceArray[1].trim();
+            System.out.println(value);
+            hardwareDeviceStringArray[i] = value;
+            i++;
+        }
+
+        System.out.println(hardwareDeviceStringArray[0]);
+        LocalTime t = LocalTime.parse(hardwareDeviceStringArray[0]);
+        int f = Integer.parseInt(hardwareDeviceStringArray[1]);
+        FloorButton fb = hardwareDeviceStringArray[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
+        int cb = Integer.parseInt(hardwareDeviceStringArray[3]);
+        return (new HardwareDevice(t, f, fb, cb));
+    }
+
 }
