@@ -17,7 +17,7 @@ public class Floor implements Runnable {
     /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
      */
-    private final Scheduler scheduler;
+    private static Scheduler scheduler;
 
     /**
      * Initializes a new Floor with a Scheduler representing the elevator scheduler to receive and send events to.
@@ -127,4 +127,13 @@ public class Floor implements Runnable {
         return new HardwareDevice(l, floorFrom, button, floorTo);
     }
 
+    private static Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    public static void main(String args[])
+    {
+        Floor f = new Floor(getScheduler());
+        f.sendAndReceive();
+    }
 }
