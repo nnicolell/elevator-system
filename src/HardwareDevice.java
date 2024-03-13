@@ -112,6 +112,8 @@ public class HardwareDevice {
                 + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + "}";
     }
 
+    // TODO: toByte[] method
+
     /**
      * Returns a HardwareDevice created from a string.
      *
