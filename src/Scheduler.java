@@ -1,4 +1,4 @@
-import javax.net.ssl.HandshakeCompletedEvent;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -38,7 +38,7 @@ public class Scheduler implements Runnable {
      */
     private final HashMap<String, SchedulerState> states;
     DatagramPacket sendPacketElevator, receivePacketElevator;
-    DatagramSocket sendReceiveSocket;
+    DatagramSocket receiveSocket, sendReceiveSocket;
     List<List<HardwareDevice>> floorRequests;
 
     /**
@@ -50,19 +50,20 @@ public class Scheduler implements Runnable {
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
-        try{
-            sendReceiveSocket = new DatagramSocket();
-        } catch (SocketException se){
-            se.printStackTrace();
-            System.exit(1);
-        }
-
 
         states = new HashMap<>();
         addState("NotifyElevator", new NotifyElevatorState());
         addState("WaitingForFloorEvent", new WaitingForFloorEventState());
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
+
+        try {
+            receiveSocket = new DatagramSocket(23);
+            sendReceiveSocket = new DatagramSocket();
+        } catch (SocketException se){
+            se.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -110,6 +111,8 @@ public class Scheduler implements Runnable {
      * @throws InterruptedException When a thread is interrupted while it is in a blocked state.
      */
     public synchronized void checkForFloorEvent() throws InterruptedException {
+        // wait while the queue is empty or the elevator is already running, and the number of requests handled is less
+        // than the total number of requests or the elevator is not running
         while ((floorQueue.isEmpty() || currentFloorEvent != null)
                 && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
             try {
@@ -119,7 +122,25 @@ public class Scheduler implements Runnable {
             }
         }
 
-        // DatagramSocket receive goes here
+        // construct a DatagramPacket for receiving packets up to 100 bytes long
+        byte[] floorData = new byte[100];
+        DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
+
+        // block until a DatagramPacket is received from receiveSocket
+        System.out.println("[Scheduler] Waiting for packet from floor...");
+        try {
+            receiveSocket.receive(floorPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // process the received DatagramPacket from the Floor subsystem
+        String floorPacketString = new String(floorData, 0, floorPacket.getLength());
+        System.out.println("[Scheduler] Received packet from floor containing: " + floorPacketString);
+        // TODO: somehow convert floorPacketString into a usable HardwareDevice to add to a specific list in 2D
+
+        // TODO: add floor event would need to be called here instead of in the Floor subsystem
 
         currentFloorEvent = floorQueue.poll();
         System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
@@ -242,49 +263,47 @@ public class Scheduler implements Runnable {
         return currentFloorEvent;
     }
 
-    public void sendElevatorMessage(HardwareDevice hardwareDevice){
-
-        byte[] data = hardwareDevice.toString().getBytes();
-        try{
-            sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),69);
-        } catch (UnknownHostException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        System.out.println("SCHEDULER: SENDING FLOOR EVENT TO ELEVATOR");
-        System.out.println("----------------------------------------------------");
-        System.out.println("FLOOR REQUEST:");
-        System.out.println("Byte: " + Arrays.toString(data));
-        System.out.println("String: " + new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
-        try{
-            // Sends packet to Server
-            sendReceiveSocket.send(sendPacketElevator);
-        } catch (IOException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public void receiveElevatorMessage(){
-        byte data[] = new byte[100];
-        receivePacketElevator = new DatagramPacket(data, data.length);
-
-        try {
-            // Waits to receive a packet from the Server
-            System.out.println("SCHEDULER: WAITING FOR FLOOR EVENT FROM ELEVATOR");
-            System.out.println("----------------------------------------------------");
-            sendReceiveSocket.receive(receivePacketElevator);
-        } catch (IOException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        System.out.println("SCHEDULER: FLOOR EVENT RECEIVED FROM ELEVATOR");
-        System.out.println("PACKET:");
-        System.out.println("Byte: " + Arrays.toString(data));
-        String hdString = new String(data,0,receivePacketElevator.getLength());
-        System.out.println("String: " + hdString + "\n");
-
-        HardwareDevice device = HardwareDevice.stringToHardwareDevice(hdString);
-    }
+//    public void sendElevatorMessage(HardwareDevice hardwareDevice){
+//
+//        try{
+//            sendPacketElevator = new DatagramPacket(receivePacketClient.getData(), receivePacketClient.getLength(), InetAddress.getLocalHost(),69);
+//        } catch (UnknownHostException e){
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
+//        System.out.println("SCHEDULER: SENDING PACKET TO ELEVATOR");
+//        System.out.println("----------------------------------------------------");
+//        System.out.println("PACKET:");
+//        //formattedByteRequest = formatRequest.formatByte(sendPacket);
+//        //System.out.println("Byte: " + Arrays.toString(formattedByteRequest));
+//        //System.out.println("String: " + formatRequest.formatString(formattedByteRequest) + "\n");
+//        try{
+//            // Sends packet to Server
+//            sendReceiveSocket.send(sendPacketElevator);
+//        } catch (IOException e){
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
+//    }
+//
+//    public void getElevatorMessage(){
+//        //byte dataServer[] = new byte[4];
+//        receivePacketElevator = new DatagramPacket(dataServer, dataServer.length);
+//
+//        try {
+//            // Waits to receive a packet from the Server
+//            System.out.println("SCHEDULER: WAITING FOR PACKET FROM ELEVATOR");
+//            System.out.println("----------------------------------------------------");
+//            sendReceiveSocket.receive(receivePacketElevator);
+//        } catch (IOException e){
+//            e.printStackTrace();
+//            System.exit(1);
+//        }
+//        System.out.println("SCHEDULER: PACKET RECEIVED FROM ELEVATOR");
+//        System.out.println("PACKET:");
+//        // formattedByteRequest = formatRequest.formatByte(receivePacketServer);
+//        // System.out.println("Byte: " + Arrays.toString(formattedByteRequest));
+//        // System.out.println("String: " + formatRequest.formatString(formattedByteRequest) + "\n");
+//    }
 
 }
