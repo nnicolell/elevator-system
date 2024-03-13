@@ -1,4 +1,5 @@
 import java.time.LocalTime;
+import java.util.Arrays;
 
 /**
  * A class to represent the necessary information to pass to the Scheduler.
@@ -111,6 +112,12 @@ public class HardwareDevice {
                 + ", Car Button: " + getCarButton() + "}";
     }
 
+    /**
+     * Returns a HardwareDevice created from a string.
+     *
+     * @param hardwareDeviceString The string to be changed to a HardwareDevice
+     * @return A HardwareDevice created from the parameter string.
+     */
     public HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
         String[] hardwareDeviceStringArray = new String[4];
         int i = 0;
@@ -120,14 +127,12 @@ public class HardwareDevice {
         String[] hdArray = hardwareDeviceString.split(",");
 
         for (String s : hdArray){
-            String[] deviceArray = s.split(":");
+            String[] deviceArray = s.split(": ");
             String value = deviceArray[1].trim();
-            System.out.println(value);
             hardwareDeviceStringArray[i] = value;
             i++;
         }
 
-        System.out.println(hardwareDeviceStringArray[0]);
         LocalTime t = LocalTime.parse(hardwareDeviceStringArray[0]);
         int f = Integer.parseInt(hardwareDeviceStringArray[1]);
         FloorButton fb = hardwareDeviceStringArray[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
