@@ -1,4 +1,3 @@
-import javax.net.ssl.HandshakeCompletedEvent;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -12,6 +11,11 @@ public class Scheduler implements Runnable {
      * A Queue of HardwareDevices representing the floor events.
      */
     private final Queue<HardwareDevice> floorQueue;
+
+    /**
+     * A HardwareDevice representing the current floor event that is being handled.
+     */
+    private HardwareDevice currentFloorEvent;
 
     /**
      * An integer representing the total number of requests.
@@ -75,6 +79,13 @@ public class Scheduler implements Runnable {
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
 
+        try {
+            receiveSocket = new DatagramSocket(23);
+            sendReceiveSocket = new DatagramSocket();
+        } catch (SocketException se){
+            se.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
