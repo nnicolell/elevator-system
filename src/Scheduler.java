@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -37,23 +36,39 @@ public class Scheduler implements Runnable {
      * A HashMap of states in the Scheduler state machine.
      */
     private final HashMap<String, SchedulerState> states;
-    DatagramPacket sendPacketElevator, receivePacketElevator;
-    DatagramSocket receiveSocket, sendReceiveSocket;
-    List<List<HardwareDevice>> floorRequests;
+    private DatagramPacket sendPacketElevator, receivePacketElevator;
+    private DatagramSocket sendReceiveSocket;
+
+    /**
+     * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
+     */
+    private DatagramSocket receiveSocket;
+
+    /**
+     * A List of List of HardwareDevices representing the floor events to handle. Each element of the List represents
+     * the floor events to handle for a floor in the building.
+     *
+     * For example, the 0th index of the List represents the floor events to handle for the first floor of the building,
+     * the 1st index the second floor, and so on.
+     */
+    private List<List<HardwareDevice>> floorEventsToHandle;
 
     /**
      * Initializes a Scheduler.
      */
-    public Scheduler() {
-        floorQueue = new ArrayDeque<>();
-        floorRequests = new ArrayList<List<HardwareDevice>>();
+    public Scheduler(int numFloors) {
+        floorQueue = new ArrayDeque<>(); // TODO: we don't need this anymore now that we have floorEventsToHandle
+        floorEventsToHandle = new ArrayList<>(numFloors);
+        for (int i = 0; i < numFloors; i++) {
+            floorEventsToHandle.set(i, new ArrayList<>());
+        }
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
 
         states = new HashMap<>();
-        addState("NotifyElevator", new NotifyElevatorState());
         addState("WaitingForFloorEvent", new WaitingForFloorEventState());
+        addState("NotifyElevator", new NotifyElevatorState());
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
 
@@ -111,6 +126,7 @@ public class Scheduler implements Runnable {
      * @throws InterruptedException When a thread is interrupted while it is in a blocked state.
      */
     public synchronized void checkForFloorEvent() throws InterruptedException {
+        // TODO: if we're using UDP, do we need all this wait() stuff??? also secured by the state machine...
         // wait while the queue is empty or the elevator is already running, and the number of requests handled is less
         // than the total number of requests or the elevator is not running
         while ((floorQueue.isEmpty() || currentFloorEvent != null)
@@ -138,11 +154,13 @@ public class Scheduler implements Runnable {
         // process the received DatagramPacket from the Floor subsystem
         String floorPacketString = new String(floorData, 0, floorPacket.getLength());
         System.out.println("[Scheduler] Received packet from floor containing: " + floorPacketString);
-        // TODO: somehow convert floorPacketString into a usable HardwareDevice to add to a specific list in 2D
+        HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
 
-        // TODO: add floor event would need to be called here instead of in the Floor subsystem
+        // add the floor event to the appropriate list of floor events to handle
+        floorEventsToHandle.get(floorEvent.getFloor() - 1).add(floorEvent);
 
-        currentFloorEvent = floorQueue.poll();
+        // TODO: no longer need a currentFloorEvent since multiple elevators are running at the same time
+        currentFloorEvent = floorQueue.poll(); // currentFloorEvent is taken from the beginning of floorQueue
         System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
         notifyAll();
     }
@@ -164,7 +182,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice A HardwareDevice representing the floor event.
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
-        floorRequests.get(hardwareDevice.getFloor()-1).add(hardwareDevice);
+        floorEventsToHandle.get(hardwareDevice.getFloor() - 1).add(hardwareDevice);
         notifyAll();
     }
 
