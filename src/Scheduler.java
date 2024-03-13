@@ -105,6 +105,8 @@ public class Scheduler implements Runnable {
             }
         }
 
+        // DatagramSocket receive goes here
+
         currentFloorEvent = floorQueue.poll();
         System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
         notifyAll();
