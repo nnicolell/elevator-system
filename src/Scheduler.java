@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -37,7 +38,7 @@ public class Scheduler implements Runnable {
      */
     private final HashMap<String, SchedulerState> states;
     DatagramPacket sendPacketElevator, receivePacketElevator;
-    DatagramSocket sendReceiveSocket;
+    DatagramSocket receiveSocket, sendReceiveSocket;
     List<List<HardwareDevice>> floorRequests;
 
     /**
@@ -49,19 +50,20 @@ public class Scheduler implements Runnable {
         currentFloorEvent = null;
         numReqsHandled = 1;
         numReqs = 10000;
-        try{
-            sendReceiveSocket = new DatagramSocket();
-        } catch (SocketException se){
-            se.printStackTrace();
-            System.exit(1);
-        }
-
 
         states = new HashMap<>();
         addState("NotifyElevator", new NotifyElevatorState());
         addState("WaitingForFloorEvent", new WaitingForFloorEventState());
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
+
+        try {
+            receiveSocket = new DatagramSocket(23);
+            sendReceiveSocket = new DatagramSocket();
+        } catch (SocketException se){
+            se.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -109,6 +111,8 @@ public class Scheduler implements Runnable {
      * @throws InterruptedException When a thread is interrupted while it is in a blocked state.
      */
     public synchronized void checkForFloorEvent() throws InterruptedException {
+        // wait while the queue is empty or the elevator is already running, and the number of requests handled is less
+        // than the total number of requests or the elevator is not running
         while ((floorQueue.isEmpty() || currentFloorEvent != null)
                 && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
             try {
@@ -118,7 +122,25 @@ public class Scheduler implements Runnable {
             }
         }
 
-        // DatagramSocket receive goes here
+        // construct a DatagramPacket for receiving packets up to 100 bytes long
+        byte[] floorData = new byte[100];
+        DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
+
+        // block until a DatagramPacket is received from receiveSocket
+        System.out.println("[Scheduler] Waiting for packet from floor...");
+        try {
+            receiveSocket.receive(floorPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        // process the received DatagramPacket from the Floor subsystem
+        String floorPacketString = new String(floorData, 0, floorPacket.getLength());
+        System.out.println("[Scheduler] Received packet from floor containing: " + floorPacketString);
+        // TODO: somehow convert floorPacketString into a usable HardwareDevice to add to a specific list in 2D
+
+        // TODO: add floor event would need to be called here instead of in the Floor subsystem
 
         currentFloorEvent = floorQueue.poll();
         System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
