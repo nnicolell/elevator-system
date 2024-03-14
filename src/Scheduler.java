@@ -13,11 +13,6 @@ public class Scheduler implements Runnable {
     private final Queue<HardwareDevice> floorQueue;
 
     /**
-     * A HardwareDevice representing the current floor event that is being handled.
-     */
-    private HardwareDevice currentFloorEvent;
-
-    /**
      * An integer representing the total number of requests.
      */
     private int numReqs;
@@ -50,6 +45,16 @@ public class Scheduler implements Runnable {
     private List<HardwareDevice> floorEventsToHandle;
 
     /**
+     * A List of Elevators representing the elevators that are not currently running
+     */
+    private List<Elevator> availableElevators;
+
+    /**
+     * A List of Elevators representing the elevators that are currently running
+     */
+    private List<Elevator> busyElevators;
+
+    /**
      * Initializes a Scheduler.
      */
     public Scheduler() {
@@ -64,20 +69,8 @@ public class Scheduler implements Runnable {
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
 
-        try {
-            receiveSocket = new DatagramSocket(23);
-            sendReceiveSocket = new DatagramSocket();
-        } catch (SocketException se){
-            se.printStackTrace();
-            System.exit(1);
-        }
-
-
-        states = new HashMap<>();
-        addState("NotifyElevator", new NotifyElevatorState());
-        addState("WaitingForFloorEvent", new WaitingForFloorEventState());
-        addState("NotifyFloor", new NotifyFloorState());
-        setState("WaitingForFloorEvent");
+        availableElevators = new ArrayList<>();
+        busyElevators = new ArrayList<>();
 
         try {
             receiveSocket = new DatagramSocket(23);
@@ -187,19 +180,11 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
-        while (!hardwareDevice.getArrived() && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
         notifyFloorSubsystem(hardwareDevice);
         notifyAll();
-        return currentFloorEvent;
     }
 
     /**
@@ -249,19 +234,44 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Returns a HardwareDevice representing the current floor event that is being handled.
-     *
-     * @return A HardwareDevice representing the current floor event that is being handled.
+     * Sorting the elevators into lists depending on their running status
+     * @param elevator The elevator that is going to be sorted
      */
-    public HardwareDevice getCurrentFloorEvent() {
-        return currentFloorEvent;
+    public void sortElevators(Elevator elevator){
+        if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+            availableElevators.add(elevator);
+            busyElevators.remove(elevator);
+        }
     }
 
-    public void sendElevatorMessage(HardwareDevice hardwareDevice){
+    /**
+     * Returns the list of the floor events to handle
+     * @return The list of the floor events to handle
+     */
+    public List<HardwareDevice> getFloorEventsToHandle() {
+        return floorEventsToHandle;
+    }
+
+    /**
+     * Distrubutes the floor events to the closest available elevator
+     */
+    public void distributeFloorEvents(HardwareDevice floorEvent){
+        int distance = 0;
+        for (Elevator e : availableElevators){
+            int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+            if (elevatorDistance < distance){
+                distance = elevatorDistance;
+            }
+            sendElevatorMessage(e, floorEvent);
+        }
+    }
+
+
+    public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
 
         byte[] data = hardwareDevice.toString().getBytes();
         try{
-            sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),69);
+            sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),elevator.getPort());
         } catch (UnknownHostException e){
             e.printStackTrace();
             System.exit(1);
@@ -280,8 +290,8 @@ public class Scheduler implements Runnable {
         }
     }
 
-    public void receiveElevatorMessage(){
-        byte data[] = new byte[100];
+    public HardwareDevice receiveElevatorMessage(){
+        byte[] data = new byte[100];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
         try {
@@ -299,7 +309,6 @@ public class Scheduler implements Runnable {
         String hdString = new String(data,0,receivePacketElevator.getLength());
         System.out.println("String: " + hdString + "\n");
 
-        HardwareDevice device = HardwareDevice.stringToHardwareDevice(hdString);
+        return HardwareDevice.stringToHardwareDevice(hdString);
     }
-
 }
