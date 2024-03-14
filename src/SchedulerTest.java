@@ -36,6 +36,7 @@ class SchedulerTest {
     @Test
     void testScheduler() {
         assertTrue(scheduler.getFloorQueue().isEmpty());
+        assertNull(scheduler.getCurrentFloorEvent());
         assertEquals(1, scheduler.getNumReqsHandled());
         assertEquals(10000, scheduler.getNumReqs());
         assertEquals(3, scheduler.getStates().size());
@@ -133,6 +134,7 @@ class SchedulerTest {
         assertTrue(scheduler.getFloorQueue().isEmpty());
     }
 
+
     /**
      * Tests notifying Floor subsystem.
      */
@@ -140,6 +142,7 @@ class SchedulerTest {
     void testNotifyFloorSubsystem() {
         assertEquals(1, scheduler.getNumReqsHandled());
         scheduler.notifyFloorSubsystem();
+        assertNull(scheduler.getCurrentFloorEvent());
         assertEquals(2, scheduler.getNumReqsHandled());
     }
 

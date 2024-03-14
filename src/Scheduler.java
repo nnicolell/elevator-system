@@ -45,6 +45,16 @@ public class Scheduler implements Runnable {
     private List<HardwareDevice> floorEventsToHandle;
 
     /**
+     * A List of Elevators representing the elevators that are not currently running
+     */
+    private List<Elevator> availableElevators;
+
+    /**
+     * A List of Elevators representing the elevators that are currently running
+     */
+    private List<Elevator> busyElevators;
+
+    /**
      * Initializes a Scheduler.
      */
     public Scheduler() {
@@ -58,6 +68,9 @@ public class Scheduler implements Runnable {
         addState("NotifyElevator", new NotifyElevatorState());
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
+
+        availableElevators = new ArrayList<>();
+        busyElevators = new ArrayList<>();
 
         try {
             receiveSocket = new DatagramSocket(23);
@@ -220,47 +233,82 @@ public class Scheduler implements Runnable {
         return floorQueue;
     }
 
-//    public void sendElevatorMessage(HardwareDevice hardwareDevice) {
-//
-//        try{
-//            sendPacketElevator = new DatagramPacket(receivePacketClient.getData(), receivePacketClient.getLength(), InetAddress.getLocalHost(),69);
-//        } catch (UnknownHostException e){
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-//        System.out.println("SCHEDULER: SENDING PACKET TO ELEVATOR");
-//        System.out.println("----------------------------------------------------");
-//        System.out.println("PACKET:");
-//        //formattedByteRequest = formatRequest.formatByte(sendPacket);
-//        //System.out.println("Byte: " + Arrays.toString(formattedByteRequest));
-//        //System.out.println("String: " + formatRequest.formatString(formattedByteRequest) + "\n");
-//        try{
-//            // Sends packet to Server
-//            sendReceiveSocket.send(sendPacketElevator);
-//        } catch (IOException e){
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-//    }
-//
-//    public void getElevatorMessage(){
-//        //byte dataServer[] = new byte[4];
-//        receivePacketElevator = new DatagramPacket(dataServer, dataServer.length);
-//
-//        try {
-//            // Waits to receive a packet from the Server
-//            System.out.println("SCHEDULER: WAITING FOR PACKET FROM ELEVATOR");
-//            System.out.println("----------------------------------------------------");
-//            sendReceiveSocket.receive(receivePacketElevator);
-//        } catch (IOException e){
-//            e.printStackTrace();
-//            System.exit(1);
-//        }
-//        System.out.println("SCHEDULER: PACKET RECEIVED FROM ELEVATOR");
-//        System.out.println("PACKET:");
-//        // formattedByteRequest = formatRequest.formatByte(receivePacketServer);
-//        // System.out.println("Byte: " + Arrays.toString(formattedByteRequest));
-//        // System.out.println("String: " + formatRequest.formatString(formattedByteRequest) + "\n");
-//    }
+    /**
+     * Sorting the elevators into lists depending on their running status
+     * @param elevator The elevator that is going to be sorted
+     */
+    public void sortElevators(Elevator elevator){
+        if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+            availableElevators.add(elevator);
+            busyElevators.remove(elevator);
+        }
+    }
 
+    /**
+     * Returns the list of the floor events to handle
+     * @return The list of the floor events to handle
+     */
+    public List<HardwareDevice> getFloorEventsToHandle() {
+        return floorEventsToHandle;
+    }
+
+    /**
+     * Distrubutes the floor events to the closest available elevator
+     */
+    public void distributeFloorEvents(HardwareDevice floorEvent){
+        int distance = 0;
+        for (Elevator e : availableElevators){
+            int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+            if (elevatorDistance < distance){
+                distance = elevatorDistance;
+            }
+            sendElevatorMessage(e, floorEvent);
+        }
+    }
+
+
+    public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
+
+        byte[] data = hardwareDevice.toString().getBytes();
+        try{
+            sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),elevator.getPort());
+        } catch (UnknownHostException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("SCHEDULER: SENDING FLOOR EVENT TO ELEVATOR");
+        System.out.println("----------------------------------------------------");
+        System.out.println("FLOOR REQUEST:");
+        System.out.println("Byte: " + Arrays.toString(data));
+        System.out.println("String: " + new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
+        try{
+            // Sends packet to Server
+            sendReceiveSocket.send(sendPacketElevator);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public HardwareDevice receiveElevatorMessage(){
+        byte[] data = new byte[100];
+        receivePacketElevator = new DatagramPacket(data, data.length);
+
+        try {
+            // Waits to receive a packet from the Server
+            System.out.println("SCHEDULER: WAITING FOR FLOOR EVENT FROM ELEVATOR");
+            System.out.println("----------------------------------------------------");
+            sendReceiveSocket.receive(receivePacketElevator);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("SCHEDULER: FLOOR EVENT RECEIVED FROM ELEVATOR");
+        System.out.println("PACKET:");
+        System.out.println("Byte: " + Arrays.toString(data));
+        String hdString = new String(data,0,receivePacketElevator.getLength());
+        System.out.println("String: " + hdString + "\n");
+
+        return HardwareDevice.stringToHardwareDevice(hdString);
+    }
 }
