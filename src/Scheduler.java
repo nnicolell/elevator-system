@@ -1,3 +1,4 @@
+import javax.net.ssl.HandshakeCompletedEvent;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -58,6 +59,9 @@ public class Scheduler implements Runnable {
      * Initializes a Scheduler.
      */
     public Scheduler() {
+        floorQueue = new ArrayDeque<>();
+        floorRequests = new ArrayList<List<HardwareDevice>>();
+        currentFloorEvent = null;
         //floorQueue = new ArrayDeque<>(); // TODO: we don't need this anymore now that we have floorEventsToHandle
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
@@ -169,6 +173,7 @@ public class Scheduler implements Runnable {
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
         floorEventsToHandle.add(hardwareDevice);
+        //floorRequests.get(hardwareDevice.getFloor()-1).add(hardwareDevice);
         notifyAll();
     }
 
