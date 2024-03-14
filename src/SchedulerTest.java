@@ -35,7 +35,6 @@ class SchedulerTest {
      */
     @Test
     void testScheduler() {
-        assertTrue(scheduler.getFloorQueue().isEmpty());
         assertEquals(1, scheduler.getNumReqsHandled());
         assertEquals(10000, scheduler.getNumReqs());
         assertEquals(3, scheduler.getStates().size());
@@ -92,12 +91,8 @@ class SchedulerTest {
      */
     @Test
     void testAddFloorEvent() {
-        assertTrue(scheduler.getFloorQueue().isEmpty());
-
         hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
-
-        assertEquals(hardwareDevice, scheduler.getFloorQueue().poll());
     }
 
     /**
@@ -124,15 +119,6 @@ class SchedulerTest {
     void testGetNumReqsHandled() {
         assertEquals(1, scheduler.getNumReqsHandled());
     }
-
-    /**
-     * Tests getting a Queue of HardwareDevices representing the floor events.
-     */
-    @Test
-    void testGetFloorQueue() {
-        assertTrue(scheduler.getFloorQueue().isEmpty());
-    }
-
 
     /**
      * Tests notifying Floor subsystem.

@@ -8,11 +8,6 @@ import java.util.*;
 public class Scheduler implements Runnable {
 
     /**
-     * A Queue of HardwareDevices representing the floor events.
-     */
-    private final Queue<HardwareDevice> floorQueue;
-
-    /**
      * An integer representing the total number of requests.
      */
     private int numReqs;
@@ -68,7 +63,6 @@ public class Scheduler implements Runnable {
      * Initializes a Scheduler.
      */
     public Scheduler() {
-        floorQueue = new ArrayDeque<>(); // TODO: we don't need this anymore now that we have floorEventsToHandle
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
         numReqs = 10000;
@@ -249,15 +243,6 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Returns a Queue of HardwareDevices representing the floor events.
-     *
-     * @return A Queue of HardwareDevices representing the floor events.
-     */
-    public Queue<HardwareDevice> getFloorQueue() {
-        return floorQueue;
-    }
-
-    /**
      * Sorting the elevators into lists depending on their running status
      * @param elevator The elevator that is going to be sorted
      */
@@ -277,13 +262,13 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Distrubutes the floor events to the closest available elevator
+     * Distributes the floor events to the closest available elevator
      */
-    public void distributeFloorEvents(HardwareDevice floorEvent){
+    public void distributeFloorEvents(HardwareDevice floorEvent) {
         int distance = 0;
-        for (Elevator e : availableElevators){
+        for (Elevator e : availableElevators) {
             int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
-            if (elevatorDistance < distance){
+            if (elevatorDistance < distance) {
                 distance = elevatorDistance;
             }
             sendElevatorMessage(e, floorEvent);
