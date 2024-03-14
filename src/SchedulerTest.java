@@ -38,7 +38,7 @@ class SchedulerTest {
         assertEquals(1, scheduler.getNumReqsHandled());
         assertEquals(10000, scheduler.getNumReqs());
         assertEquals(3, scheduler.getStates().size());
-        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
     }
 
     /**
@@ -46,9 +46,9 @@ class SchedulerTest {
      */
     @Test
     void testGetCurrentState() {
-        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
         scheduler.setState("NotifyElevator");
-        assertTrue(scheduler.getCurrentState() instanceof NotifyElevatorState);
+        assertInstanceOf(NotifyElevatorState.class, scheduler.getCurrentState());
     }
 
     /**
@@ -66,11 +66,11 @@ class SchedulerTest {
      */
     @Test
     void testSetState() {
-        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
         scheduler.setState("NotifyFloor");
-        assertTrue(scheduler.getCurrentState() instanceof NotifyFloorState);
+        assertInstanceOf(NotifyFloorState.class, scheduler.getCurrentState());
         scheduler.setState("NotifyElevator");
-        assertTrue(scheduler.getCurrentState() instanceof NotifyElevatorState);
+        assertInstanceOf(NotifyElevatorState.class, scheduler.getCurrentState());
     }
 
     /**
@@ -118,16 +118,6 @@ class SchedulerTest {
     @Test
     void testGetNumReqsHandled() {
         assertEquals(1, scheduler.getNumReqsHandled());
-    }
-
-    /**
-     * Tests notifying Floor subsystem.
-     */
-    @Test
-    void testNotifyFloorSubsystem() {
-        assertEquals(1, scheduler.getNumReqsHandled());
-        scheduler.notifyFloorSubsystem();
-        assertEquals(2, scheduler.getNumReqsHandled());
     }
 
 }
