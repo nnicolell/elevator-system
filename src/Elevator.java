@@ -33,7 +33,12 @@ public class Elevator implements Runnable {
     /**
      * Socket on which to send and receive
      */
-    DatagramSocket receiveSocket = null;
+    private DatagramSocket receiveSocket = null;
+
+    /**
+     * Current floor that the elevator is at
+     */
+    private int currentFloor;
 
     /**
      * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
@@ -53,6 +58,7 @@ public class Elevator implements Runnable {
         setState("WaitingForElevatorRequest");
 
         numPassengers = 0;
+        currentFloor = 1;
 
         try {
             receiveSocket = new DatagramSocket(69);
@@ -224,5 +230,11 @@ public class Elevator implements Runnable {
             System.exit(1);
         }
     }
+
+    public int getCurrentFloor() {
+        return currentFloor;
+    }
+
+
 }
 
