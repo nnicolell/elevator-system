@@ -1,19 +1,11 @@
+import java.io.IOException;
+import java.net.*;
 import java.util.*;
 
 /**
  * A Scheduler to handle communication between the Elevator and Floor.
  */
 public class Scheduler implements Runnable {
-
-    /**
-     * A Queue of HardwareDevices representing the floor events.
-     */
-    private final Queue<HardwareDevice> floorQueue;
-
-    /**
-     * A HardwareDevice representing the current floor event that is being handled.
-     */
-    private HardwareDevice currentFloorEvent;
 
     /**
      * An integer representing the total number of requests.
@@ -34,21 +26,82 @@ public class Scheduler implements Runnable {
      * A HashMap of states in the Scheduler state machine.
      */
     private final HashMap<String, SchedulerState> states;
+    private DatagramPacket sendPacketElevator, receivePacketElevator;
+    private DatagramSocket sendReceiveSocket;
+
+    /**
+     * A DatagramPacket to send data to the Floor subsystem.
+     */
+    private DatagramPacket sendPacketFloor;
+
+    /**
+     * A DatagramSocket to send DatagramPackets to the Floor subsystem.
+     */
+    private DatagramSocket sendSocketFloor;
+
+    /**
+     * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
+     */
+    private DatagramSocket receiveSocketFloor;
+
+    /**
+     * A List of HardwareDevices representing the floor events to handle.
+     */
+    private List<HardwareDevice> floorEventsToHandle;
+
+    /**
+     * A List of Elevators representing the elevators that are not currently running
+     */
+    private List<Elevator> availableElevators;
+
+    /**
+     * A List of Elevators representing the elevators that are currently running
+     */
+    private List<Elevator> busyElevators;
 
     /**
      * Initializes a Scheduler.
      */
     public Scheduler() {
-        floorQueue = new ArrayDeque<>();
-        currentFloorEvent = null;
+        Elevator elevator1 = new Elevator(this,70, "Elevator1");
+        Elevator elevator2 = new Elevator(this,64, "Elevator2");
+        Elevator elevator3 = new Elevator(this,67, "Elevator3");
+
+        Thread floor = new Thread(new Floor(this),"Floor");
+        Thread elevator1Thread = new Thread(elevator1,"Elevator1");
+        Thread elevator2Thread = new Thread(elevator2,"Elevator2");
+        Thread elevator3Thread = new Thread(elevator3,"Elevator3");
+
+        floor.start();
+        elevator1Thread.start();
+        elevator2Thread.start();
+        elevator3Thread.start();
+
+        floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
         numReqs = 10000;
 
         states = new HashMap<>();
-        addState("NotifyElevator", new NotifyElevatorState());
         addState("WaitingForFloorEvent", new WaitingForFloorEventState());
+        addState("NotifyElevator", new NotifyElevatorState());
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
+
+        availableElevators = new ArrayList<>();
+        busyElevators = new ArrayList<>();
+        availableElevators.add(elevator1);
+        availableElevators.add(elevator2);
+        availableElevators.add(elevator3);
+
+        try {
+            sendSocketFloor = new DatagramSocket();
+            receiveSocketFloor = new DatagramSocket(5000);
+            //receiveSocket = new DatagramSocket(5000);
+            sendReceiveSocket = new DatagramSocket();
+        } catch (SocketException se){
+            se.printStackTrace();
+            System.exit(1);
+        }
     }
 
     /**
@@ -96,27 +149,51 @@ public class Scheduler implements Runnable {
      * @throws InterruptedException When a thread is interrupted while it is in a blocked state.
      */
     public synchronized void checkForFloorEvent() throws InterruptedException {
-        while ((floorQueue.isEmpty() || currentFloorEvent != null)
-                && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+        // construct a DatagramPacket for receiving packets up to 100 bytes long
+        byte[] floorData = new byte[100];
+        DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
+
+        // block until a DatagramPacket is received from receiveSocket
+        System.out.println("[Scheduler] Waiting for packet from floor...");
+        try {
+            receiveSocketFloor.receive(floorPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
         }
 
-        currentFloorEvent = floorQueue.poll();
-        System.out.println("[Scheduler] Received floor request: " + currentFloorEvent + ".");
-        notifyAll();
+        // process the received DatagramPacket from the Floor subsystem
+        String floorPacketString = new String(floorData, 0, floorPacket.getLength());
+        System.out.println("[Scheduler] Received packet from floor containing: " + floorPacketString);
+        HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
+
+        // add the floor event to the appropriate list of floor events to handle
+        floorEventsToHandle.add(floorEvent);
+
+        // construct acknowledgment data including the content of the received packet
+        byte[] acknowledgmentData = ("ACK " + floorPacketString).getBytes();
+
+        // create a DatagramPacket for the acknowledgment and send it
+        sendPacketFloor = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, floorPacket.getAddress(),
+                floorPacket.getPort());
+        try {
+            sendSocketFloor.send(sendPacketFloor);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("[Scheduler] Acknowledgment sent to floor!");
     }
 
     /**
      * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
-    public synchronized void notifyFloorSubsystem() {
-        System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
-        currentFloorEvent = null;
+    public synchronized void notifyFloorSubsystem(HardwareDevice floorEvent) {
+        // TODO: send a message to the Floor subsystem saying the floor event has been completed
+//        System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
+//        currentFloorEvent = null;
         numReqsHandled++;
         notifyAll();
     }
@@ -127,7 +204,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice A HardwareDevice representing the floor event.
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
-        floorQueue.add(hardwareDevice);
+        floorEventsToHandle.add(hardwareDevice);
         notifyAll();
     }
 
@@ -139,36 +216,12 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
-        while (!hardwareDevice.getArrived() && (numReqsHandled <= numReqs || currentFloorEvent == null)) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        receiveElevatorMessage();
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
-        notifyFloorSubsystem();
+        notifyFloorSubsystem(hardwareDevice);
         notifyAll();
-    }
-
-    /**
-     * Returns the currentFloorEvent to the Elevator if it is not null. If it is null, the thread should wait.
-     *
-     * @return A HardwareDevice representing the current floor event.
-     */
-    public synchronized HardwareDevice getElevatorRequest() {
-        while (currentFloorEvent == null) {
-            try {
-                wait();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        notifyAll();
-        return currentFloorEvent;
     }
 
     /**
@@ -209,21 +262,80 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Returns a Queue of HardwareDevices representing the floor events.
-     *
-     * @return A Queue of HardwareDevices representing the floor events.
+     * Sorting the elevators into lists depending on their running status
      */
-    public Queue<HardwareDevice> getFloorQueue() {
-        return floorQueue;
+    public void sortElevators(){
+        for (Elevator elevator : busyElevators){
+            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+                availableElevators.add(elevator);
+                busyElevators.remove(elevator);
+            }
+        }
     }
 
     /**
-     * Returns a HardwareDevice representing the current floor event that is being handled.
-     *
-     * @return A HardwareDevice representing the current floor event that is being handled.
+     * Returns the list of the floor events to handle
+     * @return The list of the floor events to handle
      */
-    public HardwareDevice getCurrentFloorEvent() {
-        return currentFloorEvent;
+    public List<HardwareDevice> getFloorEventsToHandle() {
+        return floorEventsToHandle;
     }
 
+    /**
+     * Distrubutes the floor events to the closest available elevator
+     */
+    public void distributeFloorEvents() {
+        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
+        int distance = 0;
+        for (Elevator e : availableElevators) {
+            int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+            if (elevatorDistance < distance) {
+                distance = elevatorDistance;
+            }
+            sendElevatorMessage(e, floorEvent);
+            break;
+        }
+    }
+
+
+    public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
+
+        byte[] data = hardwareDevice.toString().getBytes();
+        try{
+            sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),elevator.getPort());
+        } catch (UnknownHostException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        System.out.println("[Scheduler] Sending floor event to "+ elevator.getName() + " containing: " +  new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
+
+        try{
+            // Sends packet to Server
+            System.out.println(sendReceiveSocket.getPort());
+            sendReceiveSocket.send(sendPacketElevator);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    public HardwareDevice receiveElevatorMessage(){
+        byte[] data = new byte[100];
+        receivePacketElevator = new DatagramPacket(data, data.length);
+
+        try {
+            // Waits to receive a packet from the Server
+            System.out.println("[Scheduler] Waiting for floor event from Elevator...");
+            sendReceiveSocket.receive(receivePacketElevator);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        String hdString = new String(data,0,receivePacketElevator.getLength());
+        System.out.println("[Scheduler] Received floor event from Elevator containing: " + hdString);
+
+        sortElevators();
+
+        return HardwareDevice.stringToHardwareDevice(hdString);
+    }
 }

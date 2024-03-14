@@ -45,4 +45,17 @@ class HardwareDeviceTest {
                 hardwareDevice.toString());
     }
 
+    /**
+     * Tests the conversion between a string to a HardwareDevice.
+     */
+    @Test
+    void testStringToHardwareDevice() {
+        LocalTime time = LocalTime.parse("13:14:15.6");
+        HardwareDevice hardwareDevice = new HardwareDevice(time,1, FloorButton.UP, 2);
+        hardwareDevice.setArrived();
+        String hardwareDeviceString = hardwareDevice.toString();
+        assertEquals(hardwareDevice.toString(),
+                hardwareDevice.stringToHardwareDevice(hardwareDeviceString).toString());
+    }
+
 }

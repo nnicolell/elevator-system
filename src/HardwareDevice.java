@@ -1,4 +1,5 @@
 import java.time.LocalTime;
+import java.util.Arrays;
 
 /**
  * A class to represent the necessary information to pass to the Scheduler.
@@ -108,7 +109,42 @@ public class HardwareDevice {
     @Override
     public String toString() {
         return "{Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
-                + ", Car Button: " + getCarButton() + "}";
+                + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + "}";
+    }
+
+    // TODO: toByte[] method
+
+    /**
+     * Returns a HardwareDevice created from a string.
+     *
+     * @param hardwareDeviceString The string to be changed to a HardwareDevice
+     * @return A HardwareDevice created from the parameter string.
+     */
+    public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
+        String[] hardwareDeviceStringArray = new String[5];
+        int i = 0;
+        hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
+
+
+        String[] hdArray = hardwareDeviceString.split(",");
+
+        for (String s : hdArray){
+            String[] deviceArray = s.split(": ");
+            String value = deviceArray[1].trim();
+            hardwareDeviceStringArray[i] = value;
+            i++;
+        }
+
+        LocalTime t = LocalTime.parse(hardwareDeviceStringArray[0]);
+        int f = Integer.parseInt(hardwareDeviceStringArray[1]);
+        FloorButton fb = hardwareDeviceStringArray[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
+        int cb = Integer.parseInt(hardwareDeviceStringArray[3]);
+        boolean a = hardwareDeviceStringArray[4].equalsIgnoreCase("true");
+        HardwareDevice hardwareDevice = new HardwareDevice(t, f, fb,cb);
+        if (a){
+            hardwareDevice.setArrived();
+        }
+        return hardwareDevice;
     }
 
 }

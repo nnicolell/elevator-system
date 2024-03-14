@@ -35,12 +35,10 @@ class SchedulerTest {
      */
     @Test
     void testScheduler() {
-        assertTrue(scheduler.getFloorQueue().isEmpty());
-        assertNull(scheduler.getCurrentFloorEvent());
         assertEquals(1, scheduler.getNumReqsHandled());
         assertEquals(10000, scheduler.getNumReqs());
         assertEquals(3, scheduler.getStates().size());
-        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
     }
 
     /**
@@ -48,9 +46,9 @@ class SchedulerTest {
      */
     @Test
     void testGetCurrentState() {
-        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
         scheduler.setState("NotifyElevator");
-        assertTrue(scheduler.getCurrentState() instanceof NotifyElevatorState);
+        assertInstanceOf(NotifyElevatorState.class, scheduler.getCurrentState());
     }
 
     /**
@@ -68,11 +66,11 @@ class SchedulerTest {
      */
     @Test
     void testSetState() {
-        assertTrue(scheduler.getCurrentState() instanceof WaitingForFloorEventState);
+        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
         scheduler.setState("NotifyFloor");
-        assertTrue(scheduler.getCurrentState() instanceof NotifyFloorState);
+        assertInstanceOf(NotifyFloorState.class, scheduler.getCurrentState());
         scheduler.setState("NotifyElevator");
-        assertTrue(scheduler.getCurrentState() instanceof NotifyElevatorState);
+        assertInstanceOf(NotifyElevatorState.class, scheduler.getCurrentState());
     }
 
     /**
@@ -93,12 +91,8 @@ class SchedulerTest {
      */
     @Test
     void testAddFloorEvent() {
-        assertTrue(scheduler.getFloorQueue().isEmpty());
-
         hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
-
-        assertEquals(hardwareDevice, scheduler.getFloorQueue().poll());
     }
 
     /**
@@ -124,33 +118,6 @@ class SchedulerTest {
     @Test
     void testGetNumReqsHandled() {
         assertEquals(1, scheduler.getNumReqsHandled());
-    }
-
-    /**
-     * Tests getting a Queue of HardwareDevices representing the floor events.
-     */
-    @Test
-    void testGetFloorQueue() {
-        assertTrue(scheduler.getFloorQueue().isEmpty());
-    }
-
-    /**
-     * Tests getting a HardwareDevice representing the current floor event that is being handled.
-     */
-    @Test
-    void testGetCurrentFloorEvent() {
-        assertNull(scheduler.getCurrentFloorEvent());
-    }
-
-    /**
-     * Tests notifying Floor subsystem.
-     */
-    @Test
-    void testNotifyFloorSubsystem() {
-        assertEquals(1, scheduler.getNumReqsHandled());
-        scheduler.notifyFloorSubsystem();
-        assertNull(scheduler.getCurrentFloorEvent());
-        assertEquals(2, scheduler.getNumReqsHandled());
     }
 
 }
