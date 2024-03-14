@@ -30,6 +30,16 @@ public class Scheduler implements Runnable {
     private DatagramSocket sendReceiveSocket;
 
     /**
+     * A DatagramPacket to send data to the Floor subsystem.
+     */
+    private DatagramPacket sendPacketFloor;
+
+    /**
+     * A DatagramSocket to send DatagramPackets to the Floor subsystem.
+     */
+    private DatagramSocket sendSocket;
+
+    /**
      * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
      */
     private DatagramSocket receiveSocket;
@@ -54,6 +64,7 @@ public class Scheduler implements Runnable {
         setState("WaitingForFloorEvent");
 
         try {
+            sendSocket = new DatagramSocket();
             receiveSocket = new DatagramSocket(23);
             sendReceiveSocket = new DatagramSocket();
         } catch (SocketException se){
@@ -122,14 +133,26 @@ public class Scheduler implements Runnable {
 
         // process the received DatagramPacket from the Floor subsystem
         String floorPacketString = new String(floorData, 0, floorPacket.getLength());
-        System.out.println("[Scheduler] Received packet from Floor containing: " + floorPacketString);
+        System.out.println("[Scheduler] Received packet from floor containing: " + floorPacketString);
         HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
 
         // add the floor event to the appropriate list of floor events to handle
         floorEventsToHandle.add(floorEvent);
 
-        // TODO: send an acknowledgment back to the Floor subsystem
+        // construct acknowledgment data including the content of the received packet
+        byte[] acknowledgmentData = ("ACK " + floorPacketString).getBytes();
 
+        // create a DatagramPacket for the acknowledgment and send it
+        sendPacketFloor = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, floorPacket.getAddress(),
+                floorPacket.getPort());
+        try {
+            sendSocket.send(sendPacketFloor);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("[Scheduler] Acknowledgment sent to floor!");
     }
 
     /**
