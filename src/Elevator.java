@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -101,28 +102,40 @@ public class Elevator implements Runnable {
                 System.err.println(e);
                 System.exit(1);
             }
+
+            HardwareDevice hardwareDevice = new HardwareDevice(LocalTime.parse("565"), 4, FloorButton.UP, 8);
             //need to change this
-            HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
-            currentState.handleRequest(this, hardwareDevice);
-            currentState.displayState(); // doors closing
-            currentState.handleRequest(this, hardwareDevice);
-            currentState.displayState(); // moving
             try {
-                sleep(100);
+                Thread.sleep(7030); //load time including doors opening and closing
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // doors closing
+
+            currentState.handleRequest(this, hardwareDevice);
+            currentState.displayState(); // moving
+
+            moveBetweenFloors(hardwareDevice.getCarButton(), hardwareDevice.getFloorButton());
+
+            currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // reached destination
 
 
-            //do i need to add socket stuff here?
+            //do i need to add socket stuff here? no idts
             hardwareDevice.setArrived();
 
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
+
+            try {
+                Thread.sleep(7680); //load time including doors opening and closing
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors closing
             currentState.handleRequest(this, hardwareDevice);
@@ -242,6 +255,22 @@ public class Elevator implements Runnable {
 
     public int getPort() {
         return port;
+    }
+
+    private void moveBetweenFloors(int floor, FloorButton button) {
+        int delta = Math.abs(floor - currentFloor); //number of floors to move
+        for (int i = 0; i < delta; i++) {
+            try {
+                Thread.sleep(9280); //move between floors
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if (button == FloorButton.UP) {
+                currentFloor++;
+            } else {
+                currentFloor--;
+            }
+        }
     }
 
 
