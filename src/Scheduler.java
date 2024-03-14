@@ -37,12 +37,12 @@ public class Scheduler implements Runnable {
     /**
      * A DatagramSocket to send DatagramPackets to the Floor subsystem.
      */
-    private DatagramSocket sendSocket;
+    private DatagramSocket sendSocketFloor;
 
     /**
      * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
      */
-    private DatagramSocket receiveSocket;
+    private DatagramSocket receiveSocketFloor;
 
     /**
      * A List of HardwareDevices representing the floor events to handle.
@@ -64,8 +64,8 @@ public class Scheduler implements Runnable {
         setState("WaitingForFloorEvent");
 
         try {
-            sendSocket = new DatagramSocket();
-            receiveSocket = new DatagramSocket(23);
+            sendSocketFloor = new DatagramSocket();
+            receiveSocketFloor = new DatagramSocket(23);
             sendReceiveSocket = new DatagramSocket();
         } catch (SocketException se){
             se.printStackTrace();
@@ -125,7 +125,7 @@ public class Scheduler implements Runnable {
         // block until a DatagramPacket is received from receiveSocket
         System.out.println("[Scheduler] Waiting for packet from floor...");
         try {
-            receiveSocket.receive(floorPacket);
+            receiveSocketFloor.receive(floorPacket);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -146,7 +146,7 @@ public class Scheduler implements Runnable {
         sendPacketFloor = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, floorPacket.getAddress(),
                 floorPacket.getPort());
         try {
-            sendSocket.send(sendPacketFloor);
+            sendSocketFloor.send(sendPacketFloor);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
