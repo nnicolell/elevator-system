@@ -57,6 +57,7 @@ public class Elevator implements Runnable {
     @Override
     public void run() {
         while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
+            // FIXME: getElevatorRequest() is no longer a method in Scheduler
             HardwareDevice hardwareDevice = scheduler.getElevatorRequest();
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
