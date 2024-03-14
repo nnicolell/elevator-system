@@ -8,11 +8,6 @@ import java.util.*;
 public class Scheduler implements Runnable {
 
     /**
-     * A Queue of HardwareDevices representing the floor events.
-     */
-    private final Queue<HardwareDevice> floorQueue;
-
-    /**
      * An integer representing the total number of requests.
      */
     private int numReqs;
@@ -48,7 +43,6 @@ public class Scheduler implements Runnable {
      * Initializes a Scheduler.
      */
     public Scheduler() {
-        floorQueue = new ArrayDeque<>(); // TODO: we don't need this anymore now that we have floorEventsToHandle
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
         numReqs = 10000;
@@ -135,6 +129,7 @@ public class Scheduler implements Runnable {
         floorEventsToHandle.add(floorEvent);
 
         // TODO: send an acknowledgment back to the Floor subsystem
+
     }
 
     /**
@@ -209,15 +204,6 @@ public class Scheduler implements Runnable {
         while (numReqsHandled < numReqs) {
             currentState.handleRequest(this);
         }
-    }
-
-    /**
-     * Returns a Queue of HardwareDevices representing the floor events.
-     *
-     * @return A Queue of HardwareDevices representing the floor events.
-     */
-    public Queue<HardwareDevice> getFloorQueue() {
-        return floorQueue;
     }
 
 //    public void sendElevatorMessage(HardwareDevice hardwareDevice) {
