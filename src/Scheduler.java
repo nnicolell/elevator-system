@@ -47,7 +47,7 @@ public class Scheduler implements Runnable {
     /**
      * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
      */
-    private DatagramSocket receiveSocket;
+    private DatagramSocket receiveSocketFloor;
 
     /**
      * A List of HardwareDevices representing the floor events to handle.
