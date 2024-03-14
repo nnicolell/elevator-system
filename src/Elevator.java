@@ -41,13 +41,18 @@ public class Elevator implements Runnable {
     private int currentFloor;
 
     /**
+     * Port to receive on
+     */
+    private int port;
+
+    /**
      * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
-    public Elevator(Scheduler scheduler) {
+    public Elevator(Scheduler scheduler, int port) {
         this.scheduler = scheduler;
-
+        this.port = port;
         states = new HashMap<>();
         addState("WaitingForElevatorRequest", new WaitingForElevatorRequestState());
         addState("MovingBetweenFloors", new MovingBetweenFloorsState());
@@ -61,7 +66,7 @@ public class Elevator implements Runnable {
         currentFloor = 1;
 
         try {
-            receiveSocket = new DatagramSocket(69);
+            receiveSocket = new DatagramSocket(port);
         } catch (SocketException se) {
             System.err.println(se);
             System.exit(1);
@@ -233,6 +238,10 @@ public class Elevator implements Runnable {
 
     public int getCurrentFloor() {
         return currentFloor;
+    }
+
+    public int getPort() {
+        return port;
     }
 
 
