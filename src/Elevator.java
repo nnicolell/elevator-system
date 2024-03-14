@@ -45,15 +45,17 @@ public class Elevator implements Runnable {
      * Port to receive on
      */
     private int port;
+    private String name;
 
     /**
      * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
-    public Elevator(Scheduler scheduler, int port) {
+    public Elevator(Scheduler scheduler, int port, String name) {
         this.scheduler = scheduler;
         this.port = port;
+        this.name = name;
         states = new HashMap<>();
         addState("WaitingForElevatorRequest", new WaitingForElevatorRequestState());
         addState("MovingBetweenFloors", new MovingBetweenFloorsState());
@@ -103,7 +105,9 @@ public class Elevator implements Runnable {
                 System.exit(1);
             }
 
-            HardwareDevice hardwareDevice = new HardwareDevice(LocalTime.parse("565"), 4, FloorButton.UP, 8);
+            System.out.println(Arrays.toString(receivePacket.getData()));
+            HardwareDevice hardwareDevice = HardwareDevice.stringToHardwareDevice(new String(receivePacket.getData(),0,receivePacket.getLength()));
+            //HardwareDevice hardwareDevice = new HardwareDevice(LocalTime.parse("565"), 4, FloorButton.UP, 8);
             //need to change this
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
@@ -217,6 +221,7 @@ public class Elevator implements Runnable {
     }
 
     public void sendPacket(byte[] dataSend, int receivePort) {
+        System.out.println(receivePort);
         //create packet to send
         DatagramPacket sendPacket = null;
         try {
@@ -261,7 +266,7 @@ public class Elevator implements Runnable {
         int delta = Math.abs(floor - currentFloor); //number of floors to move
         for (int i = 0; i < delta; i++) {
             try {
-                Thread.sleep(9280); //move between floors
+                Thread.sleep(1000); //move between floors
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -270,7 +275,12 @@ public class Elevator implements Runnable {
             } else {
                 currentFloor--;
             }
+            System.out.println(getName() + " Currently at floor " + currentFloor);
         }
+    }
+
+    public String getName(){
+        return name;
     }
 
 
