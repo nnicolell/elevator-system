@@ -10,7 +10,7 @@ public class Scheduler implements Runnable {
     /**
      * A Queue of HardwareDevices representing the floor events.
      */
-    private final Queue<HardwareDevice> floorQueue;
+    //private final Queue<HardwareDevice> floorQueue;
 
     /**
      * An integer representing the total number of requests.
@@ -58,7 +58,7 @@ public class Scheduler implements Runnable {
      * Initializes a Scheduler.
      */
     public Scheduler() {
-        floorQueue = new ArrayDeque<>(); // TODO: we don't need this anymore now that we have floorEventsToHandle
+        //floorQueue = new ArrayDeque<>(); // TODO: we don't need this anymore now that we have floorEventsToHandle
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
         numReqs = 10000;
@@ -73,7 +73,7 @@ public class Scheduler implements Runnable {
         busyElevators = new ArrayList<>();
 
         try {
-            receiveSocket = new DatagramSocket(23);
+            receiveSocket = new DatagramSocket(5000);
             sendReceiveSocket = new DatagramSocket();
         } catch (SocketException se){
             se.printStackTrace();
@@ -180,6 +180,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
+        receiveElevatorMessage();
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
@@ -229,9 +230,9 @@ public class Scheduler implements Runnable {
      *
      * @return A Queue of HardwareDevices representing the floor events.
      */
-    public Queue<HardwareDevice> getFloorQueue() {
-        return floorQueue;
-    }
+//    public Queue<HardwareDevice> getFloorQueue() {
+//        return floorQueue;
+//    }
 
     /**
      * Sorting the elevators into lists depending on their running status
@@ -253,9 +254,10 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Distrubutes the floor events to the closest available elevator
+     * Distributes the floor events to the closest available elevator
      */
-    public void distributeFloorEvents(HardwareDevice floorEvent){
+    public void distributeFloorEvents(){
+        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
         int distance = 0;
         for (Elevator e : availableElevators){
             int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
@@ -276,11 +278,8 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("SCHEDULER: SENDING FLOOR EVENT TO ELEVATOR");
-        System.out.println("----------------------------------------------------");
-        System.out.println("FLOOR REQUEST:");
-        System.out.println("Byte: " + Arrays.toString(data));
-        System.out.println("String: " + new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
+        System.out.println("[Scheduler] Sending floor event to elevator...");
+        System.out.println("FLOOR EVENT: " + new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
         try{
             // Sends packet to Server
             sendReceiveSocket.send(sendPacketElevator);
@@ -296,18 +295,16 @@ public class Scheduler implements Runnable {
 
         try {
             // Waits to receive a packet from the Server
-            System.out.println("SCHEDULER: WAITING FOR FLOOR EVENT FROM ELEVATOR");
-            System.out.println("----------------------------------------------------");
+            System.out.println("[Scheduler] Waiting for floor event from elevator...");
             sendReceiveSocket.receive(receivePacketElevator);
         } catch (IOException e){
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("SCHEDULER: FLOOR EVENT RECEIVED FROM ELEVATOR");
-        System.out.println("PACKET:");
-        System.out.println("Byte: " + Arrays.toString(data));
+
         String hdString = new String(data,0,receivePacketElevator.getLength());
-        System.out.println("String: " + hdString + "\n");
+        System.out.println("[Scheduler] Floor event received from elevator...");
+        System.out.println("FlOOR EVENT: " + hdString);
 
         return HardwareDevice.stringToHardwareDevice(hdString);
     }
