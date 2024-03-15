@@ -190,10 +190,14 @@ public class Scheduler implements Runnable {
      * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
-    public synchronized void notifyFloorSubsystem(HardwareDevice floorEvent) {
+    public synchronized void notifyFloorSubsystem() {
         // TODO: send a message to the Floor subsystem saying the floor event has been completed
 //        System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
 //        currentFloorEvent = null;
+        HardwareDevice floorEvent = receiveElevatorMessage();
+
+        // TODO: send to floorEvent
+
         numReqsHandled++;
         notifyAll();
     }
@@ -219,7 +223,7 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
-        notifyFloorSubsystem(hardwareDevice);
+        notifyFloorSubsystem();
         notifyAll();
     }
 
@@ -317,7 +321,7 @@ public class Scheduler implements Runnable {
         }
     }
 
-    public HardwareDevice receiveElevatorMessage(){
+    public HardwareDevice receiveElevatorMessage() {
         byte[] data = new byte[100];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
