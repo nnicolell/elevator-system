@@ -7,6 +7,7 @@ class NotifyElevatorState implements SchedulerState {
     @Override
     public void handleRequest(Scheduler scheduler) {
         scheduler.distributeFloorEvents();
+        scheduler.receiveElevatorMessage();
         scheduler.setState("WaitingForFloorEvent");
     }
 

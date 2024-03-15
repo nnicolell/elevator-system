@@ -146,7 +146,7 @@ public class Elevator implements Runnable {
             currentState.displayState(); // notify
 
             //send packet back
-            sendPacket("hardwareDevice".getBytes(), receivePacket.getPort());
+            sendPacket(hardwareDevice.toString().getBytes(), receivePacket.getPort());
 
             scheduler.checkElevatorStatus(hardwareDevice);
 
