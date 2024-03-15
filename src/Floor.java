@@ -11,8 +11,8 @@ import static java.lang.Thread.sleep;
  * A Floor to represent the floors the elevator car stops at.
  */
 public class Floor implements Runnable {
-    DatagramPacket sendPacket, receivePacket;
-    DatagramSocket sendReceiveSocket;
+    private DatagramPacket sendPacket, receivePacket;
+    private DatagramSocket sendReceiveSocket;
 
     /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
@@ -86,8 +86,6 @@ public class Floor implements Runnable {
         // prints that the Floor received the packet from scheduler
         System.out.println("Floor: Receives Packet Containing: \n" + Arrays.toString(temp));
 
-        // close socket
-        sendReceiveSocket.close();
     }
 
     /**
@@ -110,8 +108,10 @@ public class Floor implements Runnable {
                 System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
                 prepareSendPacket(createHardwareDevice(info));
                 sendAndReceive();
-                scheduler.addFloorEvent(createHardwareDevice(info));
+                //scheduler.addFloorEvent(createHardwareDevice(info));
             }
+            // close socket
+            sendReceiveSocket.close();
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
         }

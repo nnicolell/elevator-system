@@ -216,7 +216,6 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
-        receiveElevatorMessage();
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
@@ -311,7 +310,6 @@ public class Scheduler implements Runnable {
 
         try{
             // Sends packet to Server
-            System.out.println(sendReceiveSocket.getPort());
             sendReceiveSocket.send(sendPacketElevator);
         } catch (IOException e){
             e.printStackTrace();
