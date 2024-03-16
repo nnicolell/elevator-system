@@ -227,7 +227,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
-        System.out.println("[Scheduler] Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
+        System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
         notifyFloorSubsystem(hardwareDevice);
@@ -342,6 +342,21 @@ public class Scheduler implements Runnable {
         }
         String hdString = new String(data,0,receivePacketElevator.getLength());
         System.out.println("[Scheduler] Received floor event from Elevator containing: " + hdString);
+
+        // construct acknowledgment data including the content of the received packet
+        byte[] acknowledgmentData = ("ACK " + hdString).getBytes();
+
+        // create a DatagramPacket for the acknowledgment and send it
+        sendPacketElevator = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, receivePacketElevator.getAddress(),
+                receivePacketElevator.getPort());
+        try {
+            sendReceiveSocket.send(sendPacketElevator);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("[Scheduler] Acknowledgment sent to Elevator!");
 
         sortElevators();
 
