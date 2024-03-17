@@ -274,7 +274,7 @@ public class Scheduler implements Runnable {
     /**
      * Sorting the elevators into lists depending on their running status
      */
-    public void sortElevators(){
+    public void sortElevators() {
         for (Elevator elevator : busyElevators){
             if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
                 availableElevators.add(elevator);
@@ -307,7 +307,28 @@ public class Scheduler implements Runnable {
         }
     }
 
+    /**
+     * Adds an elevator to the busy elevators list
+     * @param elevator Elevator to get added to the busyElevators list
+     */
+    public void addBusyElevator(Elevator elevator) {
+        busyElevators.add(elevator);
+    }
 
+    /**
+     * Returns a list of busy elevators
+     * @return The list of busy elevators
+     */
+    public List<Elevator> getBusyElevator() {
+        return busyElevators;
+    }
+
+
+    /**
+     * Sends a Floor Event to the Elevator
+     * @param elevator Elevator that the floor event is going to be sent to
+     * @param hardwareDevice Floor Event that is being sent
+     */
     public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
 
         byte[] data = hardwareDevice.toString().getBytes();
@@ -326,9 +347,13 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
+        addBusyElevator(elevator);
     }
 
-    public HardwareDevice receiveElevatorMessage() {
+    /**
+     * Receives a message from an Elevator and sends an acknowledgement to the Elevator
+     */
+    public void receiveElevatorMessage() {
         byte[] data = new byte[100];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
@@ -359,7 +384,5 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler] Acknowledgment sent to Elevator!");
 
         sortElevators();
-
-        return HardwareDevice.stringToHardwareDevice(hdString);
     }
 }
