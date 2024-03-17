@@ -86,9 +86,11 @@ public class Scheduler implements Runnable {
      * Initializes a Scheduler.
      */
     public Scheduler(ArrayList<Integer> portNumbers) {
+        // start the Floor thread
         Thread floor = new Thread(new Floor(this),"Floor");
         floor.start();
 
+        // start the Elevator threads
         int numElevators = portNumbers.size();
         availableElevators = new ArrayList<>();
         busyElevators = new ArrayList<>();
@@ -101,19 +103,6 @@ public class Scheduler implements Runnable {
             elevatorThreads.add(elevatorThread);
             elevatorThread.start();
         }
-
-//        Elevator elevator1 = new Elevator(this, 70, "Elevator1");
-//        Elevator elevator2 = new Elevator(this, 64, "Elevator2");
-//        Elevator elevator3 = new Elevator(this, 67, "Elevator3");
-
-//        Thread elevator1Thread = new Thread(elevator1, "Elevator1");
-//        Thread elevator2Thread = new Thread(elevator2, "Elevator2");
-//        Thread elevator3Thread = new Thread(elevator3, "Elevator3");
-
-//        floor.start();
-//        elevator1Thread.start();
-//        elevator2Thread.start();
-//        elevator3Thread.start();
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
