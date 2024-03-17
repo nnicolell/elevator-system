@@ -354,7 +354,23 @@ public class Scheduler implements Runnable {
      * Receives a message from an Elevator and sends an acknowledgement to the Elevator
      */
     public void receiveElevatorMessage() {
+        //receive ack from elevator
         byte[] data = new byte[100];
+        receivePacketElevator = new DatagramPacket(data, data.length);
+
+        try {
+            // Waits to receive a packet from the Server
+            System.out.println("[Scheduler] Waiting for acknowledgment from Elevator...");
+            sendReceiveSocket.receive(receivePacketElevator);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        String hdString = new String(data,0,receivePacketElevator.getLength());
+        System.out.println("[Scheduler] Received acknowledgment from Elevator: " + hdString);
+
+        //receive floor event from elevator
+        data = new byte[100];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
         try {
@@ -365,8 +381,8 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        String hdString = new String(data,0,receivePacketElevator.getLength());
-        System.out.println("[Scheduler] Received floor event from Elevator containing: " + hdString);
+        hdString = new String(data,0,receivePacketElevator.getLength());
+        System.out.println("[Scheduler] Received floor event from Elevator containing: \n" + hdString);
 
         // construct acknowledgment data including the content of the received packet
         byte[] acknowledgmentData = ("ACK " + hdString).getBytes();

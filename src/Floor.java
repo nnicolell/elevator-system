@@ -84,7 +84,7 @@ public class Floor implements Runnable {
             temp[j] = receiveData[j];
         }
         // prints that the Floor received the packet from scheduler
-        System.out.println("Floor: Receives Packet Containing: \n" + Arrays.toString(temp));
+        System.out.println("[Floor] Receives Packet Containing: \n" + new String(temp));
 
     }
 

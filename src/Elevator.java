@@ -1,10 +1,7 @@
 import java.io.IOException;
 import java.net.*;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
-
-import static java.lang.Thread.sleep;
 
 /**
  * An Elevator to represent the elevator car moving up or down floors.
@@ -45,6 +42,10 @@ public class Elevator implements Runnable {
      * Port to receive on
      */
     private int port;
+
+    /**
+     * Name of the Elevator
+     */
     private String name;
 
     /**
@@ -98,16 +99,25 @@ public class Elevator implements Runnable {
             byte[] data = new byte[100];
             DatagramPacket receivePacket = new DatagramPacket(data, data.length);
             try {
-                System.out.println("Waiting...");
+                System.out.println(name + " waiting...");
                 receiveSocket.receive(receivePacket);
             } catch (IOException e) {
                 System.err.println(e);
                 System.exit(1);
             }
 
-            System.out.println(Arrays.toString(receivePacket.getData()));
+            System.out.println("[Elevator] Received " + new String(receivePacket.getData(), 0, receivePacket.getLength()) + " from Scheduler.");
             HardwareDevice hardwareDevice = HardwareDevice.stringToHardwareDevice(new String(receivePacket.getData(),0,receivePacket.getLength()));
-            //HardwareDevice hardwareDevice = new HardwareDevice(LocalTime.parse("565"), 4, FloorButton.UP, 8);
+
+            //send ack to scheduler
+            sendPacket(("ACK " + hardwareDevice).getBytes(), receivePacket.getPort());
+
+            if (currentFloor != hardwareDevice.getFloor()) {
+                String printString = String.format("[Elevator] %s currently moving to floor %d.", this.name, hardwareDevice.getFloor());
+                System.out.println(printString);
+                FloorButton move = (currentFloor < hardwareDevice.getFloor()) ? FloorButton.UP : FloorButton.DOWN;
+                moveBetweenFloors(hardwareDevice.getFloor(), move);
+            }
             //need to change this
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // doors opening
@@ -127,8 +137,6 @@ public class Elevator implements Runnable {
             currentState.handleRequest(this, hardwareDevice);
             currentState.displayState(); // reached destination
 
-
-            //do i need to add socket stuff here? no idts
             hardwareDevice.setArrived();
 
             currentState.handleRequest(this, hardwareDevice);
@@ -147,6 +155,18 @@ public class Elevator implements Runnable {
 
             //send packet back
             sendPacket(hardwareDevice.toString().getBytes(), receivePacket.getPort());
+
+            //receive ack
+//            data = new byte[100];
+//            receivePacket = new DatagramPacket(data, data.length);
+//            try {
+//                receiveSocket.receive(receivePacket);
+//            } catch (IOException e) {
+//                System.err.println(e);
+//                System.exit(1);
+//            }
+
+            System.out.println("qjgwejfhwrukuhyer ****** + Received ack from Scheduler " + new String(receivePacket.getData(),0, receivePacket.getLength()));
 
             scheduler.checkElevatorStatus(hardwareDevice);
 
@@ -231,11 +251,8 @@ public class Elevator implements Runnable {
             System.exit(1);
         }
 
-        System.out.println("Server sending to Host:");
-        System.out.println(new String(sendPacket.getData(),0, sendPacket.getLength()));
-        byte[] receivePacketShortened = new byte[sendPacket.getLength()];
-        System.arraycopy(sendPacket.getData(), 0, receivePacketShortened, 0, sendPacket.getLength());
-        System.out.println(Arrays.toString(receivePacketShortened));
+//        System.out.println("Elevator sending to Scheduler:");
+//        System.out.println(new String(sendPacket.getData(),0, sendPacket.getLength()));
 
         DatagramSocket sendSocket = null;
         try {
@@ -266,7 +283,8 @@ public class Elevator implements Runnable {
         int delta = Math.abs(floor - currentFloor); //number of floors to move
         for (int i = 0; i < delta; i++) {
             try {
-                Thread.sleep(1000); //move between floors
+//                Thread.sleep(9280); //move between floors
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
