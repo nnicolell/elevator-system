@@ -70,11 +70,12 @@ JDK version 21.0.1 was used to develop the code.
 ### Responsibilities
 | Person                   |                                      Responsibilities                                       |         
 | ------------------------ |:-------------------------------------------------------------------------------------------:|
-| Alexander Hum            |            FLOOR, README.md                                                                 |
-| Emily Tang               |      SCHEDULER, README.md                                                                   | 
-| Nicole Lim               |      SCHEDULER, README.md                                                                   |
-| Nivetha Sivasaravanan    |            ELEVATOR, README.md                                                              |
-| Rimsha Atif              |             FLOOR, README.md                                                                |
+| Alexander Hum            |            FLOOR,UML Class Diagram, README.md                                                    |
+| Emily Tang               |      SCHEDULER, SchedulerTest README.me                                                          | 
+| Nicole Lim               |      SCHEDULER, SchedulerTest, README.md                                                         |
+| Nivetha Sivasaravanan    |            ELEVATOR, ElevatorTest, README.md     
+|
+| Rimsha Atif              |             FLOOR, ElevatorTest, Sequence, README.md                                             |
 
 
 
