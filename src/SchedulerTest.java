@@ -131,7 +131,7 @@ class SchedulerTest {
         scheduler.addBusyElevator(elevator);
         List<Elevator> busy = new ArrayList<>();
         busy.add(elevator);
-        assertEquals(busy, scheduler.getBusyElevator());
+        assertEquals(busy, scheduler.getBusyElevators());
     }
 
 
