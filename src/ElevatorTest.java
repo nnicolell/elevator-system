@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,28 +20,17 @@ public class ElevatorTest {
     private int port = 100;
     private final Random random = new Random();
 
-    //STILL NEEDS FIXING
-//    @BeforeEach
-//    void setup() {
-//        scheduler = new Scheduler();
-//        do {
-//            port = generateRandomPort(50, 65535);
-//        } while (!isPortAvailable(port));
-//        System.out.println("PORT : " + port);
-//        elevator = new Elevator(scheduler, port, "Test Elevator");
-//    }
-//
-//    private boolean isPortAvailable(int port) {
-//        try (ServerSocket ignored = new ServerSocket(port)) {
-//            return true;
-//        } catch (IOException ignored) {
-//            return false;
-//        }
-//    }
-//
-//    private int generateRandomPort(int min, int max) {
-//        return new Random().nextInt(max - min + 1) + min;
-//    }
+    @BeforeEach
+    void setup() {
+        ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
+        int x = generateRandomInt();
+        elevatorPortNumbers.add(x);
+        scheduler = new Scheduler(elevatorPortNumbers);
+    }
+
+    private int generateRandomInt() {
+        return random.nextInt(9999 - 1) + 1;
+    }
 
 
     /**
