@@ -75,7 +75,7 @@ JDK version 21.0.1 was used to develop the code.
 | Nicole Lim               |      SCHEDULER, SchedulerTest, README.md                                                         |
 | Nivetha Sivasaravanan    |            ELEVATOR, ElevatorTest, README.md     
 |
-| Rimsha Atif              |             FLOOR, ElevatorTest, Sequence, README.md                                             |
+| Rimsha Atif              |             FLOOR, ElevatorTest,UML Sequence Diagram, README.md                                  |
 
 
 
