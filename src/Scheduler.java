@@ -96,7 +96,6 @@ public class Scheduler implements Runnable {
         try {
             sendSocketFloor = new DatagramSocket();
             receiveSocketFloor = new DatagramSocket(5000);
-            //receiveSocket = new DatagramSocket(5000);
             sendReceiveSocket = new DatagramSocket();
         } catch (SocketException se){
             se.printStackTrace();
@@ -190,16 +189,24 @@ public class Scheduler implements Runnable {
      * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
-    public synchronized void notifyFloorSubsystem() {
-        // TODO: send a message to the Floor subsystem saying the floor event has been completed
-//        System.out.println("[Scheduler] Floor Request: " + currentFloorEvent + " has been completed.");
-//        currentFloorEvent = null;
-        HardwareDevice floorEvent = receiveElevatorMessage();
+    public synchronized void notifyFloorSubsystem(HardwareDevice hardwareDevice) {
+        // construct message to Floor subsystem including the content of hardwareDevice
+        String message = "[Scheduler] Floor event completed: " + hardwareDevice.toString();
+        byte[] messageBytes = message.getBytes();
 
-        // TODO: send to floorEvent
+        // create a DatagramPacket for the message and send it
+        // TODO: how do i get the port number for the Floor subsystem???
+        // sendPacketFloor = new DatagramPacket(messageBytes, messageBytes.length, hehe, haha);
+        try {
+            sendSocketFloor.send(sendPacketFloor);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
+        System.out.println("[Scheduler] Message sent to floor containing: " + message);
         numReqsHandled++;
-        notifyAll();
+        notifyAll(); // TODO: do we still need this???
     }
 
     /**
@@ -223,7 +230,7 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler]" + " Elevator has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("NotifyFloor");
         currentState.handleRequest(this);
-        notifyFloorSubsystem();
+        notifyFloorSubsystem(hardwareDevice);
         notifyAll();
     }
 
@@ -335,6 +342,21 @@ public class Scheduler implements Runnable {
         }
         String hdString = new String(data,0,receivePacketElevator.getLength());
         System.out.println("[Scheduler] Received floor event from Elevator containing: " + hdString);
+
+        // construct acknowledgment data including the content of the received packet
+        byte[] acknowledgmentData = ("ACK " + hdString).getBytes();
+
+        // create a DatagramPacket for the acknowledgment and send it
+        sendPacketElevator = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, receivePacketElevator.getAddress(),
+                receivePacketElevator.getPort());
+        try {
+            sendReceiveSocket.send(sendPacketElevator);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("[Scheduler] Acknowledgment sent to Elevator!");
 
         sortElevators();
 
