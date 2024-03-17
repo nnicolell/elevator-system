@@ -19,7 +19,6 @@ public class ElevatorTest {
     private int port = 100;
     private final Random random = new Random();
 
-
     //STILL NEEDS FIXING
 //    @BeforeEach
 //    void setup() {

@@ -78,22 +78,42 @@ public class Scheduler implements Runnable {
     private int floorPortNumber = 0;
 
     /**
+     * A List of Threads representing the threads for the elevators.
+     */
+    private List<Thread> elevatorThreads;
+
+    /**
      * Initializes a Scheduler.
      */
-    public Scheduler() {
-        Elevator elevator1 = new Elevator(this,70, "Elevator1");
-        Elevator elevator2 = new Elevator(this,64, "Elevator2");
-        Elevator elevator3 = new Elevator(this,67, "Elevator3");
-
+    public Scheduler(ArrayList<Integer> portNumbers) {
         Thread floor = new Thread(new Floor(this),"Floor");
-        Thread elevator1Thread = new Thread(elevator1,"Elevator1");
-        Thread elevator2Thread = new Thread(elevator2,"Elevator2");
-        Thread elevator3Thread = new Thread(elevator3,"Elevator3");
-
         floor.start();
-        elevator1Thread.start();
-        elevator2Thread.start();
-        elevator3Thread.start();
+
+        int numElevators = portNumbers.size();
+        availableElevators = new ArrayList<>();
+        busyElevators = new ArrayList<>();
+        elevatorThreads = new ArrayList<>();
+        for (int i = 0; i < numElevators; i++) {
+            String elevatorName = "Elevator" + (i + 1);
+            Elevator elevator = new Elevator(this, portNumbers.get(i), elevatorName);
+            Thread elevatorThread = new Thread(elevator, elevatorName);
+            availableElevators.add(elevator);
+            elevatorThreads.add(elevatorThread);
+            elevatorThread.start();
+        }
+
+//        Elevator elevator1 = new Elevator(this, 70, "Elevator1");
+//        Elevator elevator2 = new Elevator(this, 64, "Elevator2");
+//        Elevator elevator3 = new Elevator(this, 67, "Elevator3");
+
+//        Thread elevator1Thread = new Thread(elevator1, "Elevator1");
+//        Thread elevator2Thread = new Thread(elevator2, "Elevator2");
+//        Thread elevator3Thread = new Thread(elevator3, "Elevator3");
+
+//        floor.start();
+//        elevator1Thread.start();
+//        elevator2Thread.start();
+//        elevator3Thread.start();
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
@@ -104,12 +124,6 @@ public class Scheduler implements Runnable {
         addState("NotifyElevator", new NotifyElevatorState());
         addState("NotifyFloor", new NotifyFloorState());
         setState("WaitingForFloorEvent");
-
-        availableElevators = new ArrayList<>();
-        busyElevators = new ArrayList<>();
-        availableElevators.add(elevator1);
-        availableElevators.add(elevator2);
-        availableElevators.add(elevator3);
 
         try {
             sendSocketFloor = new DatagramSocket();
