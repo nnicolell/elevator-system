@@ -1,5 +1,7 @@
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -155,6 +157,10 @@ public class Elevator implements Runnable {
 
             //send packet back
             sendPacket(hardwareDevice.toString().getBytes(), receivePacket.getPort());
+            currentState.handleRequest(this, hardwareDevice);
+
+            scheduler.checkElevatorStatus(hardwareDevice);
+
 
             //receive ack
 //            data = new byte[100];
@@ -165,13 +171,11 @@ public class Elevator implements Runnable {
 //                System.err.println(e);
 //                System.exit(1);
 //            }
+            System.out.println("[Elevator] Received ack from Scheduler.");
 
-            System.out.println("qjgwejfhwrukuhyer ****** + Received ack from Scheduler " + new String(receivePacket.getData(),0, receivePacket.getLength()));
 
-            scheduler.checkElevatorStatus(hardwareDevice);
-
-            currentState.handleRequest(this, hardwareDevice);
         }
+
     }
 
     /**
@@ -292,6 +296,13 @@ public class Elevator implements Runnable {
                 currentFloor++;
             } else {
                 currentFloor--;
+            }
+            ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
+            for (int j = 0; j < floorEvent.size(); j++) {
+                if (floorEvent.get(i).getFloor() == currentFloor) {
+                    scheduler.removeFloorEvent(floorEvent.get(i));
+                    System.out.println("picked up floor event " + floorEvent.get(i));
+                }
             }
             System.out.println(getName() + " Currently at floor " + currentFloor);
         }

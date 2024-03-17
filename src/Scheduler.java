@@ -47,7 +47,7 @@ public class Scheduler implements Runnable {
     /**
      * A List of HardwareDevices representing the floor events to handle.
      */
-    private List<HardwareDevice> floorEventsToHandle;
+    private ArrayList<HardwareDevice> floorEventsToHandle;
 
     /**
      * A List of Elevators representing the elevators that are not currently running
@@ -76,6 +76,8 @@ public class Scheduler implements Runnable {
         elevator1Thread.start();
         elevator2Thread.start();
         elevator3Thread.start();
+
+
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
@@ -220,6 +222,16 @@ public class Scheduler implements Runnable {
     }
 
     /**
+     * Remove the specified floor event into the floor queue.
+     *
+     * @param hardwareDevice A HardwareDevice representing the floor event.
+     */
+    public synchronized void removeFloorEvent(HardwareDevice hardwareDevice) {
+        floorEventsToHandle.remove(hardwareDevice);
+        notifyAll();
+    }
+
+    /**
      * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator is still
      * running and the number of requests handled is lower than the number of requests or the currentFloorEvent is null,
      * the thread should wait. Once the elevator has arrived, the floor subsystem should be notified.
@@ -275,10 +287,18 @@ public class Scheduler implements Runnable {
      * Sorting the elevators into lists depending on their running status
      */
     public void sortElevators() {
-        for (Elevator elevator : busyElevators){
-            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+//        for (Elevator elevator : busyElevators){
+//            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+//                availableElevators.add(elevator);
+//                busyElevators.remove(elevator);
+//            }
+//        }
+        Iterator<Elevator> iterator = busyElevators.iterator();
+        while (iterator.hasNext()) {
+            Elevator elevator = iterator.next();
+            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState) {
                 availableElevators.add(elevator);
-                busyElevators.remove(elevator);
+                iterator.remove(); // Use Iterator's remove method
             }
         }
     }
@@ -287,7 +307,7 @@ public class Scheduler implements Runnable {
      * Returns the list of the floor events to handle
      * @return The list of the floor events to handle
      */
-    public List<HardwareDevice> getFloorEventsToHandle() {
+    public ArrayList<HardwareDevice> getFloorEventsToHandle() {
         return floorEventsToHandle;
     }
 
@@ -295,9 +315,19 @@ public class Scheduler implements Runnable {
      * Distrubutes the floor events to the closest available elevator
      */
     public void distributeFloorEvents() {
-        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
         int distance = 0;
-        for (Elevator e : availableElevators) {
+        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
+//        for (Elevator e : availableElevators) {
+//            int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+//            if (elevatorDistance < distance) {
+//                distance = elevatorDistance;
+//            }
+//            sendElevatorMessage(e, floorEvent);
+//            break;
+//        }
+        Iterator<Elevator> iterator = availableElevators.iterator();
+        while (iterator.hasNext()) {
+            Elevator e = iterator.next();
             int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
             if (elevatorDistance < distance) {
                 distance = elevatorDistance;
@@ -338,7 +368,7 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("[Scheduler] Sending floor event to "+ elevator.getName() + " containing: " +  new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
+        System.out.println("[Scheduler] Sending floor event to "+ elevator.getName() + " containing: " +  new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()));
 
         try{
             // Sends packet to Server

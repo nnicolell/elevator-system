@@ -142,7 +142,7 @@ class SchedulerTest {
     void testGetFloorEventsToHandle() {
         hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
-        List<HardwareDevice> floorEvents = new ArrayList<>();
+        ArrayList<HardwareDevice> floorEvents = new ArrayList<>();
         floorEvents.add(hardwareDevice);
         assertEquals(floorEvents, scheduler.getFloorEventsToHandle());
     }
