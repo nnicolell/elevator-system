@@ -68,6 +68,16 @@ public class Scheduler implements Runnable {
     private List<Elevator> busyElevators;
 
     /**
+     * An InetAddress representing the address to communicate with the floor subsystem.
+     */
+    private InetAddress floorAddress = null;
+
+    /**
+     * An integer representing the port number to communicate with the floor subsystem.
+     */
+    private int floorPortNumber = 0;
+
+    /**
      * Initializes a Scheduler.
      */
     public Scheduler() {
@@ -84,8 +94,6 @@ public class Scheduler implements Runnable {
         elevator1Thread.start();
         elevator2Thread.start();
         elevator3Thread.start();
-
-
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
@@ -182,9 +190,15 @@ public class Scheduler implements Runnable {
         // construct acknowledgment data including the content of the received packet
         byte[] acknowledgmentData = ("ACK " + floorPacketString).getBytes();
 
+        // get the address and the port number to communicate with floor when the floor event is done executing later
+        InetAddress floorPacketAddress = floorPacket.getAddress();
+        int floorPacketPort = floorPacket.getPort();
+        floorPortNumber = floorPacketPort;
+        floorAddress = floorPacketAddress;
+
         // create a DatagramPacket for the acknowledgment and send it
-        sendPacketFloor = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, floorPacket.getAddress(),
-                floorPacket.getPort());
+        sendPacketFloor = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, floorPacketAddress,
+                floorPacketPort);
         try {
             sendSocketFloor.send(sendPacketFloor);
         } catch (IOException e) {
@@ -200,23 +214,23 @@ public class Scheduler implements Runnable {
      * The number of requests handled will be incremented and the current floor event is cleared.
      */
     public synchronized void notifyFloorSubsystem(HardwareDevice hardwareDevice) {
-        // construct message to Floor subsystem including the content of hardwareDevice
-        String message = "[Scheduler] Floor event completed: " + hardwareDevice.toString();
-        byte[] messageBytes = message.getBytes();
+        if (floorAddress != null && floorPortNumber != 0) { // this must be initialized before you use this method
+            // construct message to Floor subsystem including the content of hardwareDevice
+            String message = "[Scheduler] Floor event completed: " + hardwareDevice.toString();
+            byte[] messageBytes = message.getBytes();
 
-        // create a DatagramPacket for the message and send it
-        // TODO: how do i get the port number for the Floor subsystem???
-        // sendPacketFloor = new DatagramPacket(messageBytes, messageBytes.length, hehe, haha);
-        try {
-            sendSocketFloor.send(sendPacketFloor);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+            // create a DatagramPacket for the message and send it
+            sendPacketFloor = new DatagramPacket(messageBytes, messageBytes.length, floorAddress, floorPortNumber);
+            try {
+                sendSocketFloor.send(sendPacketFloor);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+
+            System.out.println("[Scheduler] Message sent to floor containing: " + message);
+            numReqsHandled++;
         }
-
-        System.out.println("[Scheduler] Message sent to floor containing: " + message);
-        numReqsHandled++;
-        notifyAll(); // TODO: do we still need this???
     }
 
     /**
