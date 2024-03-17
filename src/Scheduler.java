@@ -26,7 +26,15 @@ public class Scheduler implements Runnable {
      * A HashMap of states in the Scheduler state machine.
      */
     private final HashMap<String, SchedulerState> states;
+
+    /**
+     * DatagramPackets to send and receive data to the Elevator subsystem
+     */
     private DatagramPacket sendPacketElevator, receivePacketElevator;
+
+    /**
+     * A DatagramSocket to send and receive DatagramPackets from the Elevator subsystem.
+     */
     private DatagramSocket sendReceiveSocket;
 
     /**
@@ -47,7 +55,7 @@ public class Scheduler implements Runnable {
     /**
      * A List of HardwareDevices representing the floor events to handle.
      */
-    private List<HardwareDevice> floorEventsToHandle;
+    private ArrayList<HardwareDevice> floorEventsToHandle;
 
     /**
      * A List of Elevators representing the elevators that are not currently running
@@ -76,6 +84,8 @@ public class Scheduler implements Runnable {
         elevator1Thread.start();
         elevator2Thread.start();
         elevator3Thread.start();
+
+
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
@@ -220,6 +230,16 @@ public class Scheduler implements Runnable {
     }
 
     /**
+     * Remove the specified floor event into the floor queue.
+     *
+     * @param hardwareDevice A HardwareDevice representing the floor event.
+     */
+    public synchronized void removeFloorEvent(HardwareDevice hardwareDevice) {
+        floorEventsToHandle.remove(hardwareDevice);
+        notifyAll();
+    }
+
+    /**
      * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator is still
      * running and the number of requests handled is lower than the number of requests or the currentFloorEvent is null,
      * the thread should wait. Once the elevator has arrived, the floor subsystem should be notified.
@@ -274,11 +294,19 @@ public class Scheduler implements Runnable {
     /**
      * Sorting the elevators into lists depending on their running status
      */
-    public void sortElevators(){
-        for (Elevator elevator : busyElevators){
-            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+    public void sortElevators() {
+//        for (Elevator elevator : busyElevators){
+//            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState){
+//                availableElevators.add(elevator);
+//                busyElevators.remove(elevator);
+//            }
+//        }
+        Iterator<Elevator> iterator = busyElevators.iterator();
+        while (iterator.hasNext()) {
+            Elevator elevator = iterator.next();
+            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState) {
                 availableElevators.add(elevator);
-                busyElevators.remove(elevator);
+                iterator.remove(); // Use Iterator's remove method
             }
         }
     }
@@ -287,17 +315,27 @@ public class Scheduler implements Runnable {
      * Returns the list of the floor events to handle
      * @return The list of the floor events to handle
      */
-    public List<HardwareDevice> getFloorEventsToHandle() {
+    public ArrayList<HardwareDevice> getFloorEventsToHandle() {
         return floorEventsToHandle;
     }
 
     /**
-     * Distrubutes the floor events to the closest available elevator
+     * Distributes the floor events to the closest available elevator
      */
     public void distributeFloorEvents() {
-        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
         int distance = 0;
-        for (Elevator e : availableElevators) {
+        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
+//        for (Elevator e : availableElevators) {
+//            int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+//            if (elevatorDistance < distance) {
+//                distance = elevatorDistance;
+//            }
+//            sendElevatorMessage(e, floorEvent);
+//            break;
+//        }
+        Iterator<Elevator> iterator = availableElevators.iterator();
+        while (iterator.hasNext()) {
+            Elevator e = iterator.next();
             int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
             if (elevatorDistance < distance) {
                 distance = elevatorDistance;
@@ -307,7 +345,28 @@ public class Scheduler implements Runnable {
         }
     }
 
+    /**
+     * Adds an elevator to the busy elevators list
+     * @param elevator Elevator to get added to the busyElevators list
+     */
+    public void addBusyElevator(Elevator elevator) {
+        busyElevators.add(elevator);
+    }
 
+    /**
+     * Returns a list of busy elevators
+     * @return The list of busy elevators
+     */
+    public List<Elevator> getBusyElevators() {
+        return busyElevators;
+    }
+
+
+    /**
+     * Sends a Floor Event to the Elevator
+     * @param elevator Elevator that the floor event is going to be sent to
+     * @param hardwareDevice Floor Event that is being sent
+     */
     public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
 
         byte[] data = hardwareDevice.toString().getBytes();
@@ -317,7 +376,7 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("[Scheduler] Sending floor event to "+ elevator.getName() + " containing: " +  new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()) + "\n");
+        System.out.println("[Scheduler] Sending floor event to "+ elevator.getName() + " containing: " +  new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()));
 
         try{
             // Sends packet to Server
@@ -326,10 +385,30 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
+        addBusyElevator(elevator);
     }
 
-    public HardwareDevice receiveElevatorMessage() {
+    /**
+     * Receives a message from an Elevator and sends an acknowledgement to the Elevator
+     */
+    public void receiveElevatorMessage() {
+        //receive ack from elevator
         byte[] data = new byte[100];
+        receivePacketElevator = new DatagramPacket(data, data.length);
+
+        try {
+            // Waits to receive a packet from the Server
+            System.out.println("[Scheduler] Waiting for acknowledgment from Elevator...");
+            sendReceiveSocket.receive(receivePacketElevator);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+        String hdString = new String(data,0,receivePacketElevator.getLength());
+        System.out.println("[Scheduler] Received acknowledgment from Elevator: " + hdString);
+
+        //receive floor event from elevator
+        data = new byte[100];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
         try {
@@ -340,8 +419,8 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        String hdString = new String(data,0,receivePacketElevator.getLength());
-        System.out.println("[Scheduler] Received floor event from Elevator containing: " + hdString);
+        hdString = new String(data,0,receivePacketElevator.getLength());
+        System.out.println("[Scheduler] Received floor event from Elevator containing: \n" + hdString);
 
         // construct acknowledgment data including the content of the received packet
         byte[] acknowledgmentData = ("ACK " + hdString).getBytes();
@@ -359,7 +438,5 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler] Acknowledgment sent to Elevator!");
 
         sortElevators();
-
-        return HardwareDevice.stringToHardwareDevice(hdString);
     }
 }

@@ -1,5 +1,7 @@
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Queue;
 
 import org.junit.jupiter.api.*;
@@ -118,6 +120,31 @@ class SchedulerTest {
     @Test
     void testGetNumReqsHandled() {
         assertEquals(1, scheduler.getNumReqsHandled());
+    }
+
+    /**
+     * Tests adding an elevator to the busy elevators and getting the list of elevators
+     */
+    @Test
+    void testAddingAndGettingBusyElevator() {
+        Elevator elevator = new Elevator(scheduler, 66, "Elevator");
+        scheduler.addBusyElevator(elevator);
+        List<Elevator> busy = new ArrayList<>();
+        busy.add(elevator);
+        assertEquals(busy, scheduler.getBusyElevators());
+    }
+
+
+    /**
+     * Tests getting the list of floor events to handle
+     */
+    @Test
+    void testGetFloorEventsToHandle() {
+        hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
+        scheduler.addFloorEvent(hardwareDevice);
+        ArrayList<HardwareDevice> floorEvents = new ArrayList<>();
+        floorEvents.add(hardwareDevice);
+        assertEquals(floorEvents, scheduler.getFloorEventsToHandle());
     }
 
 }

@@ -17,7 +17,7 @@ public class Floor implements Runnable {
     /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
      */
-    private static Scheduler scheduler;
+    private final Scheduler scheduler;
 
     /**
      * Initializes a new Floor with a Scheduler representing the elevator scheduler to receive and send events to.
@@ -78,8 +78,13 @@ public class Floor implements Runnable {
             System.exit(1);
         }
 
+        // creates a new byte array and copy's the bytes into the new array giving the new array that specific size
+        byte temp[] = new byte[receivePacket.getLength()];
+        for (int j = 0; j < receivePacket.getLength(); j++) {
+            temp[j] = receiveData[j];
+        }
         // prints that the Floor received the packet from scheduler
-        System.out.println("Floor: Receives Packet Containing: \n" + Arrays.toString(receiveData));
+        System.out.println("[Floor] Receives Packet Containing: \n" + new String(temp));
 
     }
 
@@ -127,13 +132,4 @@ public class Floor implements Runnable {
         return new HardwareDevice(l, floorFrom, button, floorTo);
     }
 
-    private static Scheduler getScheduler() {
-        return scheduler;
-    }
-
-    public static void main(String args[])
-    {
-        Floor f = new Floor(getScheduler());
-        f.sendAndReceive();
-    }
 }
