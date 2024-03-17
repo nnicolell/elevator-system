@@ -262,7 +262,7 @@ public class Elevator implements Runnable {
         return port;
     }
 
-    private void moveBetweenFloors(int floor, FloorButton button) {
+    public void moveBetweenFloors(int floor, FloorButton button) {
         int delta = Math.abs(floor - currentFloor); //number of floors to move
         for (int i = 0; i < delta; i++) {
             try {
