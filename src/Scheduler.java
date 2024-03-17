@@ -26,7 +26,15 @@ public class Scheduler implements Runnable {
      * A HashMap of states in the Scheduler state machine.
      */
     private final HashMap<String, SchedulerState> states;
+
+    /**
+     * DatagramPackets to send and receive data to the Elevator subsystem
+     */
     private DatagramPacket sendPacketElevator, receivePacketElevator;
+
+    /**
+     * A DatagramSocket to send and receive DatagramPackets from the Elevator subsystem.
+     */
     private DatagramSocket sendReceiveSocket;
 
     /**
@@ -312,7 +320,7 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Distrubutes the floor events to the closest available elevator
+     * Distributes the floor events to the closest available elevator
      */
     public void distributeFloorEvents() {
         int distance = 0;
@@ -349,7 +357,7 @@ public class Scheduler implements Runnable {
      * Returns a list of busy elevators
      * @return The list of busy elevators
      */
-    public List<Elevator> getBusyElevator() {
+    public List<Elevator> getBusyElevators() {
         return busyElevators;
     }
 
