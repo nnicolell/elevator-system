@@ -35,7 +35,7 @@ public class Scheduler implements Runnable {
     /**
      * A DatagramSocket to send and receive DatagramPackets from the Elevator subsystem.
      */
-    private DatagramSocket sendReceiveSocket;
+    private static DatagramSocket sendReceiveSocket;
 
     /**
      * A DatagramPacket to send data to the Floor subsystem.
@@ -45,12 +45,12 @@ public class Scheduler implements Runnable {
     /**
      * A DatagramSocket to send DatagramPackets to the Floor subsystem.
      */
-    private DatagramSocket sendSocketFloor;
+    private static DatagramSocket sendSocketFloor;
 
     /**
      * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
      */
-    private DatagramSocket receiveSocketFloor;
+    private static DatagramSocket receiveSocketFloor;
 
     /**
      * A List of HardwareDevices representing the floor events to handle.
@@ -60,7 +60,7 @@ public class Scheduler implements Runnable {
     /**
      * A List of Elevators representing the elevators that are not currently running
      */
-    private List<Elevator> availableElevators;
+    private static List<Elevator> availableElevators;
 
     /**
      * A List of Elevators representing the elevators that are currently running
@@ -455,5 +455,15 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler] Acknowledgment sent to Elevator!");
 
         sortElevators();
+    }
+
+    public static Elevator getElevator() {
+        return availableElevators.get(0);
+    }
+
+    public static void cleanUp() {
+        sendReceiveSocket.close();
+        sendSocketFloor.close();
+        receiveSocketFloor.close();
     }
 }

@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,6 @@ public class ElevatorTest {
     private Scheduler scheduler;
     private Elevator elevator;
 
-    private int port = 100;
     private final Random random = new Random();
 
     @BeforeEach
@@ -26,6 +26,12 @@ public class ElevatorTest {
         int x = generateRandomInt();
         elevatorPortNumbers.add(x);
         scheduler = new Scheduler(elevatorPortNumbers);
+        elevator = Scheduler.getElevator();
+    }
+
+    @AfterEach
+    void cleanup() {
+        Scheduler.cleanUp();
     }
 
     private int generateRandomInt() {
@@ -38,15 +44,15 @@ public class ElevatorTest {
      */
     @Test
     void testElevator() {
-        assertEquals(scheduler, elevator.getScheduler());
-        assertEquals(6, elevator.getStates().size());
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
+        assertEquals(scheduler, Scheduler.getElevator().getScheduler());
+        assertEquals(6, Scheduler.getElevator().getStates().size());
+        assertTrue(Scheduler.getElevator().getCurrentState() instanceof WaitingForElevatorRequestState);
     }
 
 
     @Test
     void testGetScheduler() {
-        assertEquals(scheduler, elevator.getScheduler());
+        assertEquals(scheduler, Scheduler.getElevator().getScheduler());
     }
     /**
      * Tests the Elevator state machine.
