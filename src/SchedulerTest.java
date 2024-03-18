@@ -1,8 +1,5 @@
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 import org.junit.jupiter.api.*;
 
@@ -22,6 +19,10 @@ class SchedulerTest {
      * A HardwareDevice to test with.
      */
     private HardwareDevice hardwareDevice;
+    /**
+     * A Elevator to test with.
+     */
+    private Elevator elevator;
 
     /**
      * Instantiates Scheduler and HardwareDevice.
@@ -29,11 +30,28 @@ class SchedulerTest {
     @BeforeEach
     void setUp() {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
-        elevatorPortNumbers.add(70);
-        elevatorPortNumbers.add(64);
-        elevatorPortNumbers.add(67);
+        int x = generateRandomInt();
+        elevatorPortNumbers.add(x);
         scheduler = new Scheduler(elevatorPortNumbers);
+        elevator = scheduler.getElevator();
         hardwareDevice = new HardwareDevice(LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
+    }
+
+    /**
+     * Generates a random integer
+     * @return Integer
+     */
+    private int generateRandomInt() {
+        Random random = new Random();
+        return random.nextInt(9999 - 1) + 1;
+    }
+
+    /**
+     * Closes the sockets after each test
+     */
+    @AfterEach
+    void cleanup() {
+        scheduler.cleanUp();
     }
 
     /**
@@ -42,7 +60,7 @@ class SchedulerTest {
     @Test
     void testScheduler() {
         assertEquals(1, scheduler.getNumReqsHandled());
-        assertEquals(10000, scheduler.getNumReqs());
+        assertEquals(4, scheduler.getNumReqs());
         assertEquals(3, scheduler.getStates().size());
         assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
     }
@@ -106,7 +124,7 @@ class SchedulerTest {
      */
     @Test
     void testSetAndGetNumReqs() {
-        assertEquals(10000, scheduler.getNumReqs());
+        assertEquals(4, scheduler.getNumReqs());
 
         scheduler.setNumReqs(2);
         assertEquals(2, scheduler.getNumReqs());
@@ -131,7 +149,6 @@ class SchedulerTest {
      */
     @Test
     void testAddingAndGettingBusyElevator() {
-        Elevator elevator = new Elevator(scheduler, 66, "Elevator");
         scheduler.addBusyElevator(elevator);
         List<Elevator> busy = new ArrayList<>();
         busy.add(elevator);

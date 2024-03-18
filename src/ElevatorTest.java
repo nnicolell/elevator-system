@@ -15,11 +15,23 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ElevatorTest {
 
+    /**
+     * A Scheduler to test with.
+     */
     private Scheduler scheduler;
+    /**
+     * A Elevator to test with.
+     */
     private Elevator elevator;
 
+    /**
+     * A random to test with.
+     */
     private final Random random = new Random();
 
+    /**
+     * Instantiates Scheduler and HardwareDevice.
+     */
     @BeforeEach
     void setup() {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
@@ -28,12 +40,18 @@ public class ElevatorTest {
         scheduler = new Scheduler(elevatorPortNumbers);
         elevator = Scheduler.getElevator();
     }
-
+    /**
+     * Closes the sockets after each test
+     */
     @AfterEach
     void cleanup() {
         Scheduler.cleanUp();
     }
 
+    /**
+     * Generates a random integer
+     * @return Integer
+     */
     private int generateRandomInt() {
         return random.nextInt(9999 - 1) + 1;
     }

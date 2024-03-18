@@ -457,10 +457,17 @@ public class Scheduler implements Runnable {
         sortElevators();
     }
 
+    /**
+     * Gets the first elevator available.
+     * @return Elevator
+     */
     public static Elevator getElevator() {
         return availableElevators.get(0);
     }
 
+    /**
+     * Closes the sockets.
+     */
     public static void cleanUp() {
         sendReceiveSocket.close();
         sendSocketFloor.close();
