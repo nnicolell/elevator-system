@@ -51,7 +51,7 @@ class SchedulerTest {
      */
     @AfterEach
     void cleanup() {
-        scheduler.cleanUp();
+        scheduler.closeSockets();
     }
 
     /**

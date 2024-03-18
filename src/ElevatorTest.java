@@ -45,7 +45,7 @@ public class ElevatorTest {
      */
     @AfterEach
     void cleanup() {
-        Scheduler.cleanUp();
+        scheduler.closeSockets();
     }
 
     /**

@@ -468,7 +468,7 @@ public class Scheduler implements Runnable {
     /**
      * Closes the sockets.
      */
-    public static void cleanUp() {
+    public static void closeSockets() {
         sendReceiveSocket.close();
         sendSocketFloor.close();
         receiveSocketFloor.close();
