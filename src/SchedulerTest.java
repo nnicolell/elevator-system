@@ -28,8 +28,12 @@ class SchedulerTest {
      */
     @BeforeEach
     void setUp() {
-        scheduler = new Scheduler();
-        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
+        ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
+        elevatorPortNumbers.add(70);
+        elevatorPortNumbers.add(64);
+        elevatorPortNumbers.add(67);
+        scheduler = new Scheduler(elevatorPortNumbers);
+        hardwareDevice = new HardwareDevice(LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
     }
 
     /**

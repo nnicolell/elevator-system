@@ -68,6 +68,16 @@ public class Scheduler implements Runnable {
     private List<Elevator> busyElevators;
 
     /**
+     * An InetAddress representing the address to communicate with the floor subsystem.
+     */
+    private InetAddress floorAddress = null;
+
+    /**
+     * An integer representing the port number to communicate with the floor subsystem.
+     */
+    private int floorPortNumber = 0;
+
+    /**
      * Floor listner
      */
     private FloorListener floorListener;
@@ -80,7 +90,7 @@ public class Scheduler implements Runnable {
     /**
      * Initializes a Scheduler.
      */
-    public Scheduler() {
+    public Scheduler(ArrayList<Integer> portNumbers) {
         elevator1 = new Elevator(this,70, "Elevator1");
         elevator2 = new Elevator(this,64, "Elevator2");
         elevator3 = new Elevator(this,67, "Elevator3");

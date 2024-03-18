@@ -32,7 +32,11 @@ public class FloorTest {
      */
     @Test
     void testCreateHardwareDevice() {
-        Scheduler scheduler = new Scheduler();
+        ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
+        elevatorPortNumbers.add(70);
+        elevatorPortNumbers.add(64);
+        elevatorPortNumbers.add(67);
+        Scheduler scheduler = new Scheduler(elevatorPortNumbers);
         Floor floor = new Floor(scheduler);
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.getFirst().split(" "));
         LocalTime localTime = LocalTime.parse("13:02:56.0");
