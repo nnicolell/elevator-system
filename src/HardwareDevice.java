@@ -5,6 +5,10 @@ import java.util.Arrays;
  * A class to represent the necessary information to pass to the Scheduler.
  */
 public class HardwareDevice {
+    /**
+     * Elevator running the event
+     */
+    private String elevator;
 
     /**
      * A LocalTime representing when a passenger requests an elevator.
@@ -37,12 +41,14 @@ public class HardwareDevice {
      * passenger would like to move up or down, and an integer representing the floor number a passenger would like to
      * move to.
      *
+     * @param elevator Elevator representing the elevator running the request.
      * @param time A LocalTime representing when a passenger requests an elevator.
      * @param floor An integer representing the floor number a passenger requested an elevator at.
      * @param floorButton A FloorButton representing whether the passenger would like to move up or down.
      * @param carButton An integer representing the floor number a passenger would like to move to.
      */
-    public HardwareDevice (LocalTime time, int floor, FloorButton floorButton, int carButton) {
+    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton) {
+        this.elevator = elevator;
         this.time = time;
         this.floor = floor;
         this.floorButton = floorButton;
@@ -56,6 +62,15 @@ public class HardwareDevice {
      */
     public LocalTime getTime() {
         return time;
+    }
+
+    /**
+     * Returns an Elevator representing the elevator running the request.
+     *
+     * @return An Elevator representing the elevator running the request.
+     */
+    public String getElevator() {
+        return elevator;
     }
 
     /**
@@ -102,13 +117,20 @@ public class HardwareDevice {
     }
 
     /**
+     * Sets the Elevator
+     */
+    public void setElevator(String name) {
+        this.elevator = name;
+    }
+
+    /**
      * Returns a string representing the HardwareDevice.
      *
      * @return A String representing the HardwareDevice.
      */
     @Override
     public String toString() {
-        return "{Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
+        return "{Elevator: " + elevator + ", Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
                 + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + "}";
     }
 
@@ -121,26 +143,26 @@ public class HardwareDevice {
      * @return A HardwareDevice created from the parameter string.
      */
     public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
-        String[] hardwareDeviceStringArray = new String[5];
+        String[] hardwareDeviceStringArray = new String[6];
         int i = 0;
         hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
-
-
         String[] hdArray = hardwareDeviceString.split(",");
 
         for (String s : hdArray){
             String[] deviceArray = s.split(": ");
+
             String value = deviceArray[1].trim();
             hardwareDeviceStringArray[i] = value;
             i++;
         }
 
-        LocalTime t = LocalTime.parse(hardwareDeviceStringArray[0]);
-        int f = Integer.parseInt(hardwareDeviceStringArray[1]);
-        FloorButton fb = hardwareDeviceStringArray[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
-        int cb = Integer.parseInt(hardwareDeviceStringArray[3]);
-        boolean a = hardwareDeviceStringArray[4].equalsIgnoreCase("true");
-        HardwareDevice hardwareDevice = new HardwareDevice(t, f, fb,cb);
+        String e = hardwareDeviceStringArray[0];
+        LocalTime t = LocalTime.parse(hardwareDeviceStringArray[1]);
+        int f = Integer.parseInt(hardwareDeviceStringArray[2]);
+        FloorButton fb = hardwareDeviceStringArray[3].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
+        int cb = Integer.parseInt(hardwareDeviceStringArray[4]);
+        boolean a = hardwareDeviceStringArray[5].equalsIgnoreCase("true");
+        HardwareDevice hardwareDevice = new HardwareDevice(e, t, f, fb, cb);
         if (a){
             hardwareDevice.setArrived();
         }

@@ -65,8 +65,8 @@ public class Floor implements Runnable {
 
 
         ////////////RECEIVING FROM SCHEDULER///////////////////////
-        // creates a byte array given a capacity of bytes as 100
-        byte receiveData[] = new byte[100];
+        // creates a byte array given a capacity of bytes as 150
+        byte receiveData[] = new byte[150];
         // creates new receive datagram packet
         receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
@@ -129,7 +129,7 @@ public class Floor implements Runnable {
         int floorFrom = Integer.parseInt(info[1]);
         FloorButton button = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int floorTo = Integer.parseInt(info[3]);
-        return new HardwareDevice(l, floorFrom, button, floorTo);
+        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo);
     }
 
 }

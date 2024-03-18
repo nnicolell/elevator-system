@@ -36,7 +36,7 @@ public class FloorTest {
         Floor floor = new Floor(scheduler);
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.getFirst().split(" "));
         LocalTime localTime = LocalTime.parse("13:02:56.0");
-        HardwareDevice expectedHardwareDevice = new HardwareDevice(localTime, 4, FloorButton.UP, 6);
+        HardwareDevice expectedHardwareDevice = new HardwareDevice("Elevator1", localTime, 4, FloorButton.UP, 6);
 
         assertEquals(hardwareDevice.getTime(), expectedHardwareDevice.getTime());
         assertEquals(hardwareDevice.getFloor(), expectedHardwareDevice.getFloor());

@@ -4,6 +4,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * An Elevator to represent the elevator car moving up or down floors.
@@ -51,12 +52,19 @@ public class Elevator implements Runnable {
     private String name;
 
     /**
+     * List of events to do
+     */
+    private ArrayList<HardwareDevice> listEvents;
+
+
+    /**
      * Initializes an Elevator with a Scheduler representing the elevator scheduler to receive and send events to.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
     public Elevator(Scheduler scheduler, int port, String name) {
         this.scheduler = scheduler;
+        this.listEvents = new ArrayList<>();
         this.port = port;
         this.name = name;
         states = new HashMap<>();
@@ -98,7 +106,7 @@ public class Elevator implements Runnable {
     public void run() {
         while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
             //receive the first elevator request
-            byte[] data = new byte[100];
+            byte[] data = new byte[150];
             DatagramPacket receivePacket = new DatagramPacket(data, data.length);
             try {
                 System.out.println(name + " waiting...");
@@ -108,9 +116,9 @@ public class Elevator implements Runnable {
                 System.exit(1);
             }
 
-            System.out.println("[Elevator] Received " + new String(receivePacket.getData(), 0, receivePacket.getLength()) + " from Scheduler.");
+            System.out.println("[Elevator] " + name + " received " + new String(receivePacket.getData(), 0, receivePacket.getLength()) + " from Scheduler.");
             HardwareDevice hardwareDevice = HardwareDevice.stringToHardwareDevice(new String(receivePacket.getData(),0,receivePacket.getLength()));
-
+            listEvents.add(hardwareDevice);
             //send ack to scheduler
             sendPacket(("ACK " + hardwareDevice).getBytes(), receivePacket.getPort());
 
@@ -161,16 +169,6 @@ public class Elevator implements Runnable {
 
             scheduler.checkElevatorStatus(hardwareDevice);
 
-
-            //receive ack
-//            data = new byte[100];
-//            receivePacket = new DatagramPacket(data, data.length);
-//            try {
-//                receiveSocket.receive(receivePacket);
-//            } catch (IOException e) {
-//                System.err.println(e);
-//                System.exit(1);
-//            }
             System.out.println("[Elevator] Received ack from Scheduler.");
 
 
@@ -245,7 +243,6 @@ public class Elevator implements Runnable {
     }
 
     public void sendPacket(byte[] dataSend, int receivePort) {
-        System.out.println(receivePort);
         //create packet to send
         DatagramPacket sendPacket = null;
         try {
@@ -254,9 +251,6 @@ public class Elevator implements Runnable {
             System.err.println(e);
             System.exit(1);
         }
-
-//        System.out.println("Elevator sending to Scheduler:");
-//        System.out.println(new String(sendPacket.getData(),0, sendPacket.getLength()));
 
         DatagramSocket sendSocket = null;
         try {
@@ -297,11 +291,18 @@ public class Elevator implements Runnable {
             } else {
                 currentFloor--;
             }
+
+            HardwareDevice hardwareDeviceToDelete = null;
             ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
-            for (int j = 0; j < floorEvent.size(); j++) {
-                if (floorEvent.get(i).getFloor() == currentFloor) {
-                    scheduler.removeFloorEvent(floorEvent.get(i));
-                    System.out.println("picked up floor event " + floorEvent.get(i));
+            synchronized (floorEvent) {
+                Iterator<HardwareDevice> iterator = floorEvent.iterator();
+                while (iterator.hasNext()) {
+                    HardwareDevice hardwareDevice = iterator.next();
+                    if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
+                        listEvents.add(hardwareDevice);
+//                        hardwareDeviceToDelete = hardwareDevice;
+                        System.out.println("[Elevator] Picked up floor event " + hardwareDevice);
+                    }
                 }
             }
             System.out.println(getName() + " Currently at floor " + currentFloor);

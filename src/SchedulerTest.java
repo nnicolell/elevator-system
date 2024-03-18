@@ -29,7 +29,7 @@ class SchedulerTest {
     @BeforeEach
     void setUp() {
         scheduler = new Scheduler();
-        hardwareDevice = new HardwareDevice(LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
+        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
     }
 
     /**
@@ -93,7 +93,7 @@ class SchedulerTest {
      */
     @Test
     void testAddFloorEvent() {
-        hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
+        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
     }
 
@@ -140,7 +140,7 @@ class SchedulerTest {
      */
     @Test
     void testGetFloorEventsToHandle() {
-        hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
+        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
         ArrayList<HardwareDevice> floorEvents = new ArrayList<>();
         floorEvents.add(hardwareDevice);
