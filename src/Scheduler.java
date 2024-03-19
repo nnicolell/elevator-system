@@ -35,7 +35,7 @@ public class Scheduler implements Runnable {
     /**
      * A DatagramSocket to send and receive DatagramPackets from the Elevator subsystem.
      */
-    private static DatagramSocket sendReceiveSocket;
+    private DatagramSocket sendReceiveSocket;
 
     /**
      * A DatagramPacket to send data to the Floor subsystem.
@@ -45,12 +45,12 @@ public class Scheduler implements Runnable {
     /**
      * A DatagramSocket to send DatagramPackets to the Floor subsystem.
      */
-    private static DatagramSocket sendSocketFloor;
+    private DatagramSocket sendSocketFloor;
 
     /**
      * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
      */
-    private static DatagramSocket receiveSocketFloor;
+    private DatagramSocket receiveSocketFloor;
 
     /**
      * A List of HardwareDevices representing the floor events to handle.
@@ -60,7 +60,7 @@ public class Scheduler implements Runnable {
     /**
      * A List of Elevators representing the elevators that are not currently running
      */
-    private static List<Elevator> availableElevators;
+    private List<Elevator> availableElevators;
 
     /**
      * A List of Elevators representing the elevators that are currently running
@@ -68,6 +68,10 @@ public class Scheduler implements Runnable {
     private List<Elevator> busyElevators;
 
     private FloorListener floorListener;
+    /**
+     * A List of Threads representing the threads for the elevators.
+     */
+    private List<Thread> elevatorThreads;
     private Elevator elevator1, elevator2, elevator3;
 
     /**
@@ -104,7 +108,6 @@ public class Scheduler implements Runnable {
 
         try {
             sendSocketFloor = new DatagramSocket();
-            receiveSocketFloor = new DatagramSocket(5000);
             sendReceiveSocket = new DatagramSocket();
         } catch (SocketException se){
             se.printStackTrace();
@@ -303,7 +306,7 @@ public class Scheduler implements Runnable {
             }
 
         }
-        HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
+        HardwareDevice floorEvent = floorEventsToHandle.remove(0);
         Iterator<Elevator> iterator = availableElevators.iterator();
         while (iterator.hasNext()) {
             Elevator e = iterator.next();
@@ -441,16 +444,19 @@ public class Scheduler implements Runnable {
      * Gets the first elevator available.
      * @return Elevator
      */
-    public static Elevator getElevator() {
+    public Elevator getElevatorTest() {
         return availableElevators.get(0);
     }
 
     /**
      * Closes the sockets.
      */
-    public static void closeSockets() {
+    public void closeSockets() {
         sendReceiveSocket.close();
         sendSocketFloor.close();
-        receiveSocketFloor.close();
+    }
+
+    public FloorListener getFloorListener() {
+        return floorListener;
     }
 }

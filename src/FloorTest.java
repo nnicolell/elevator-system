@@ -36,9 +36,9 @@ public class FloorTest {
         elevatorPortNumbers.add(70);
         elevatorPortNumbers.add(64);
         elevatorPortNumbers.add(67);
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = new Scheduler(elevatorPortNumbers);
         Floor floor = new Floor(scheduler);
-        HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.getFirst().split(" "));
+        HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.get(0).split(" "));
         LocalTime localTime = LocalTime.parse("13:02:56.0");
         HardwareDevice expectedHardwareDevice = new HardwareDevice("Elevator1", localTime, 4, FloorButton.UP, 6);
 

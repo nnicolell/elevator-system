@@ -23,6 +23,7 @@ public class ElevatorTest {
      * A Elevator to test with.
      */
     private Elevator elevator;
+    private FloorListener floorListener;
 
     /**
      * A random to test with.
@@ -38,7 +39,8 @@ public class ElevatorTest {
         int x = generateRandomInt();
         elevatorPortNumbers.add(x);
         scheduler = new Scheduler(elevatorPortNumbers);
-        elevator = Scheduler.getElevator();
+        elevator = scheduler.getElevatorTest();
+        floorListener = scheduler.getFloorListener();
     }
     /**
      * Closes the sockets after each test
@@ -62,15 +64,15 @@ public class ElevatorTest {
      */
     @Test
     void testElevator() {
-        assertEquals(scheduler, Scheduler.getElevator().getScheduler());
-        assertEquals(6, Scheduler.getElevator().getStates().size());
-        assertTrue(Scheduler.getElevator().getCurrentState() instanceof WaitingForElevatorRequestState);
+        assertEquals(scheduler, elevator.getScheduler());
+        assertEquals(6, elevator.getStates().size());
+        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
     }
 
 
     @Test
     void testGetScheduler() {
-        assertEquals(scheduler, Scheduler.getElevator().getScheduler());
+        assertEquals(scheduler, elevator.getScheduler());
     }
     /**
      * Tests the Elevator state machine.
@@ -171,7 +173,6 @@ public class ElevatorTest {
         elevator.addPassenger();
         elevator.addPassenger();
         assertEquals(2, elevator.getNumPassengers());
-
     }
 
     /**

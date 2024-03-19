@@ -33,8 +33,8 @@ class SchedulerTest {
         int x = generateRandomInt();
         elevatorPortNumbers.add(x);
         scheduler = new Scheduler(elevatorPortNumbers);
-        elevator = scheduler.getElevator();
-        hardwareDevice = new HardwareDevice(LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
+        elevator = scheduler.getElevatorTest();
+        hardwareDevice = new HardwareDevice("E1",LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6);
     }
 
     /**
@@ -52,6 +52,7 @@ class SchedulerTest {
     @AfterEach
     void cleanup() {
         scheduler.closeSockets();
+
     }
 
     /**
@@ -161,7 +162,7 @@ class SchedulerTest {
      */
     @Test
     void testGetFloorEventsToHandle() {
-        hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
+        hardwareDevice = new HardwareDevice("E1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
         ArrayList<HardwareDevice> floorEvents = new ArrayList<>();
         floorEvents.add(hardwareDevice);

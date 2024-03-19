@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.Random;
 
 public class FloorListener implements Runnable {
     private Scheduler scheduler;
@@ -9,13 +10,19 @@ public class FloorListener implements Runnable {
     private int port;
     private DatagramPacket sendPacketFloor;
     public FloorListener(Scheduler scheduler) {
+        this.port = port;
         this.scheduler = scheduler;
         try {
             sendSocketFloor = new DatagramSocket();
-            receiveSocketFloor = new DatagramSocket(5000);
+            receiveSocketFloor = new DatagramSocket(generateRandomInt());
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private int generateRandomInt() {
+        Random random = new Random();
+        return random.nextInt(9999 - 1) + 1;
     }
 
     @Override
@@ -76,5 +83,6 @@ public class FloorListener implements Runnable {
         return sendPacketFloor;
     }
 
-
+    public void closeSockets() {
+    }
 }
