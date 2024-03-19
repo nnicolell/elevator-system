@@ -65,8 +65,8 @@ public class Floor implements Runnable {
 
 
         ////////////RECEIVING FROM SCHEDULER///////////////////////
-        // creates a byte array given a capacity of bytes as 100
-        byte receiveData[] = new byte[100];
+        // creates a byte array given a capacity of bytes as 150
+        byte receiveData[] = new byte[150];
         // creates new receive datagram packet
         receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
@@ -104,7 +104,7 @@ public class Floor implements Runnable {
 
             for (String s : lines) {
                 String[] info = s.split(" ");
-                sleep(100);
+                sleep(1000);
                 System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
                 prepareSendPacket(createHardwareDevice(info));
                 sendAndReceive();
@@ -129,7 +129,7 @@ public class Floor implements Runnable {
         int floorFrom = Integer.parseInt(info[1]);
         FloorButton button = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int floorTo = Integer.parseInt(info[3]);
-        return new HardwareDevice(l, floorFrom, button, floorTo);
+        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo);
     }
 
 }

@@ -77,7 +77,7 @@ public class ElevatorTest {
      */
     @Test
     void testElevatorStateMachine() {
-        HardwareDevice hardwareDevice = new HardwareDevice(LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 4);
+        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 4);
         assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
         elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
         assertTrue(elevator.getCurrentState() instanceof DoorOpeningState);
@@ -180,7 +180,7 @@ public class ElevatorTest {
     @Test
     void testMoveBetweenFloors() {
         LocalTime l = LocalTime.parse("13:02:56.0");
-        HardwareDevice hd = new HardwareDevice(l, 3, FloorButton.UP, 5);
+        HardwareDevice hd = new HardwareDevice(elevator.getName(), l, 3, FloorButton.UP, 5);
 
         assertEquals(1, elevator.getCurrentFloor());
         elevator.moveBetweenFloors(5, FloorButton.UP);

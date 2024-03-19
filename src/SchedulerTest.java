@@ -115,7 +115,7 @@ class SchedulerTest {
      */
     @Test
     void testAddFloorEvent() {
-        hardwareDevice = new HardwareDevice(LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
+        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4);
         scheduler.addFloorEvent(hardwareDevice);
     }
 

@@ -14,7 +14,8 @@ class HardwareDeviceTest {
     @Test
     void testHardwareDevice() {
         LocalTime time = LocalTime.parse("14:05:15.0");
-        HardwareDevice hardwareDevice = new HardwareDevice(time,2, FloorButton.UP, 4);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,2, FloorButton.UP, 4);
+        assertEquals("Elevator1", hardwareDevice.getElevator());
         assertEquals(time, hardwareDevice.getTime());
         assertEquals(2, hardwareDevice.getFloor());
         assertEquals(FloorButton.UP, hardwareDevice.getFloorButton());
@@ -28,7 +29,7 @@ class HardwareDeviceTest {
     @Test
     void testSetArrived() {
         LocalTime time = LocalTime.parse("22:48:59.2");
-        HardwareDevice hardwareDevice = new HardwareDevice(time,6, FloorButton.DOWN, 1);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,6, FloorButton.DOWN, 1);
         assertFalse(hardwareDevice.getArrived());
         hardwareDevice.setArrived();
         assertTrue(hardwareDevice.getArrived());
@@ -40,7 +41,7 @@ class HardwareDeviceTest {
     @Test
     void testToString() {
         LocalTime time = LocalTime.parse("13:14:15.6");
-        HardwareDevice hardwareDevice = new HardwareDevice(time,1, FloorButton.UP, 2);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2);
         assertEquals("{ Time: 13:14:15.600, Requested Floor: 1, Direction: UP, Car Button: 2 }",
                 hardwareDevice.toString());
     }
@@ -51,7 +52,7 @@ class HardwareDeviceTest {
     @Test
     void testStringToHardwareDevice() {
         LocalTime time = LocalTime.parse("13:14:15.6");
-        HardwareDevice hardwareDevice = new HardwareDevice(time,1, FloorButton.UP, 2);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2);
         hardwareDevice.setArrived();
         String hardwareDeviceString = hardwareDevice.toString();
         assertEquals(hardwareDevice.toString(),
