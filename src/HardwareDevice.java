@@ -1,5 +1,4 @@
 import java.time.LocalTime;
-import java.util.Arrays;
 
 /**
  * A class to represent the necessary information to pass to the Scheduler.

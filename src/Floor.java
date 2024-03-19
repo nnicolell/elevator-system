@@ -104,7 +104,7 @@ public class Floor implements Runnable {
 
             for (String s : lines) {
                 String[] info = s.split(" ");
-                sleep(100);
+                sleep(1000);
                 System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
                 prepareSendPacket(createHardwareDevice(info));
                 sendAndReceive();

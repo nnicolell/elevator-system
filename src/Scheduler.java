@@ -67,30 +67,13 @@ public class Scheduler implements Runnable {
      */
     private List<Elevator> busyElevators;
 
-    /**
-     * An InetAddress representing the address to communicate with the floor subsystem.
-     */
-    private InetAddress floorAddress = null;
-
-    /**
-     * An integer representing the port number to communicate with the floor subsystem.
-     */
-    private int floorPortNumber = 0;
-
-    /**
-     * Floor listner
-     */
     private FloorListener floorListener;
-
-    /**
-     * Elevator cars
-     */
     private Elevator elevator1, elevator2, elevator3;
 
     /**
      * Initializes a Scheduler.
      */
-    public Scheduler(ArrayList<Integer> portNumbers) {
+    public Scheduler() {
         elevator1 = new Elevator(this,70, "Elevator1");
         elevator2 = new Elevator(this,64, "Elevator2");
         elevator3 = new Elevator(this,67, "Elevator3");
@@ -172,6 +155,7 @@ public class Scheduler implements Runnable {
     public void addState(String name, SchedulerState schedulerState) {
         states.put(name, schedulerState);
     }
+
 
     /**
      * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
@@ -319,6 +303,7 @@ public class Scheduler implements Runnable {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
         }
         HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
         Iterator<Elevator> iterator = availableElevators.iterator();
@@ -360,7 +345,6 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice Floor Event that is being sent
      */
     public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
-
         byte[] data = hardwareDevice.toString().getBytes();
         try{
             sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),elevator.getPort());
@@ -378,6 +362,7 @@ public class Scheduler implements Runnable {
             System.exit(1);
         }
         addBusyElevator(elevator);
+        distributeFloorEvents();
     }
 
     /**
@@ -432,9 +417,6 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler] Acknowledgment sent to Elevator!");
 
         availableElevators.add(getElevator(hardwareDevice.getElevator()));
-        for (Elevator item : availableElevators) {
-            System.out.println("available " + item.getName());
-        }
         busyElevators.remove(getElevator(hardwareDevice.getElevator()));
         distributeFloorEvents();
 

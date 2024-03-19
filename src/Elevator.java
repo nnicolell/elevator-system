@@ -282,7 +282,7 @@ public class Elevator implements Runnable {
         for (int i = 0; i < delta; i++) {
             try {
 //                Thread.sleep(9280); //move between floors
-                Thread.sleep(1000);
+                Thread.sleep(9280);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
