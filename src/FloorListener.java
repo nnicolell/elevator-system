@@ -2,38 +2,45 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Random;
 
 public class FloorListener implements Runnable {
     private Scheduler scheduler;
     private DatagramSocket sendSocketFloor, receiveSocketFloor;
-    private int port;
+    private static int port;
     private DatagramPacket sendPacketFloor;
-    public FloorListener(Scheduler scheduler) {
+    private boolean running=true;
+    public FloorListener(Scheduler scheduler, int port) {
         this.port = port;
         this.scheduler = scheduler;
         try {
             sendSocketFloor = new DatagramSocket();
-            receiveSocketFloor = new DatagramSocket(generateRandomInt());
+            receiveSocketFloor = new DatagramSocket(port);
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private int generateRandomInt() {
-        Random random = new Random();
-        return random.nextInt(9999 - 1) + 1;
+    public void setRunningToFalse() {
+        running = false;
+    }
+    public void setRunningToTrue() {
+        running = true;
+    }
+
+    public void closeFloorSocket() {
+        receiveSocketFloor.close();
     }
 
     @Override
     public void run() {
-        while(true) {
+        while(running) {
             try {
                 checkForFloorEvent();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+        closeFloorSocket();
     }
     /**
      * Receives the next floor event to be processed. Runs as long as there are more requests pending, it will wait
@@ -81,8 +88,5 @@ public class FloorListener implements Runnable {
 
     public DatagramPacket getSendPacketFloor() {
         return sendPacketFloor;
-    }
-
-    public void closeSockets() {
     }
 }

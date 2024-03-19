@@ -73,11 +73,12 @@ public class Scheduler implements Runnable {
      */
     private List<Thread> elevatorThreads;
     private Elevator elevator1, elevator2, elevator3;
+    private Thread floorListenerThread;
 
     /**
      * Initializes a Scheduler.
      */
-    public Scheduler(ArrayList<Integer> portNumbers) {
+    public Scheduler(ArrayList<Integer> portNumbers, int portFloor) {
         // start the Floor thread
         Thread floor = new Thread(new Floor(this),"Floor");
         floor.start();
@@ -114,9 +115,12 @@ public class Scheduler implements Runnable {
             System.exit(1);
         }
 
-        floorListener = new FloorListener(this);
+        floorListener = new FloorListener(this, portFloor);
         Thread floorListenerThread = new Thread(floorListener);
         floorListenerThread.start();
+    }
+    public void killFloorThread() {
+        floorListenerThread.interrupt();
     }
 
     /**

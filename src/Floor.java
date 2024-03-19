@@ -50,7 +50,6 @@ public class Floor implements Runnable {
         }
     }
 
-
     /**
      * Send and Receive DatagramPacket to and from the Scheduler.
      */

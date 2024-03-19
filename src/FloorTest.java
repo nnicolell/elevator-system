@@ -3,6 +3,7 @@ import java.nio.file.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,6 +29,15 @@ public class FloorTest {
     }
 
     /**
+     * Generates a random integer
+     * @return Integer
+     */
+    private int generateRandomInt() {
+        Random random = new Random();
+        return random.nextInt(9999 - 1) + 1;
+    }
+
+    /**
      * Tests the creation of HardwareDevice from a given string
      */
     @Test
@@ -36,7 +46,8 @@ public class FloorTest {
         elevatorPortNumbers.add(70);
         elevatorPortNumbers.add(64);
         elevatorPortNumbers.add(67);
-        Scheduler scheduler = new Scheduler(elevatorPortNumbers);
+        int x = generateRandomInt();
+        Scheduler scheduler = new Scheduler(elevatorPortNumbers, x);
         Floor floor = new Floor(scheduler);
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.get(0).split(" "));
         LocalTime localTime = LocalTime.parse("13:02:56.0");

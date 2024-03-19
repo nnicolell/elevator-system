@@ -18,7 +18,7 @@ public class ElevatorTest {
     /**
      * A Scheduler to test with.
      */
-    private Scheduler scheduler;
+     private Scheduler scheduler;
     /**
      * A Elevator to test with.
      */
@@ -27,9 +27,8 @@ public class ElevatorTest {
 
     /**
      * A random to test with.
-     */
+     */;
     private final Random random = new Random();
-
     /**
      * Instantiates Scheduler and HardwareDevice.
      */
@@ -38,7 +37,8 @@ public class ElevatorTest {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
         int x = generateRandomInt();
         elevatorPortNumbers.add(x);
-        scheduler = new Scheduler(elevatorPortNumbers);
+        int y = generateRandomInt();
+        scheduler = new Scheduler(elevatorPortNumbers, y);
         elevator = scheduler.getElevatorTest();
         floorListener = scheduler.getFloorListener();
     }
@@ -47,6 +47,7 @@ public class ElevatorTest {
      */
     @AfterEach
     void cleanup() {
+        floorListener.setRunningToFalse();
         scheduler.closeSockets();
     }
 
