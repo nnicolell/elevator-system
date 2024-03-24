@@ -12,12 +12,8 @@ public class ElevatorSystem {
         elevatorPortNumbers.add(67);
         Scheduler scheduler = new Scheduler(elevatorPortNumbers, 5000);
         Thread schedulerThread = new Thread(scheduler, "Scheduler");
-//        Thread floor = new Thread(new Floor(scheduler),"Floor");
-//        Thread elevator = new Thread(new Elevator(scheduler, 69),"Elevator");
 
         schedulerThread.start();
-//        floor.start();
-//        elevator.start();
     }
 }
 
