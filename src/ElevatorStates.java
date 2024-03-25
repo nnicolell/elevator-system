@@ -1,7 +1,7 @@
 /**
  * This class represents a state in the Elevator state machine where the elevator doors are closing.
  */
-class DoorClosingState implements ElevatorState {
+class DoorsClosing implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
@@ -14,7 +14,7 @@ class DoorClosingState implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.println("[ElevatorState] Doors Closing");
+        System.out.println("DoorsClosing");
     }
 
 }
@@ -22,16 +22,21 @@ class DoorClosingState implements ElevatorState {
 /**
  * This class represents a state in the Elevator state machine where the elevator doors are opening.
  */
-class DoorOpeningState implements ElevatorState {
+class DoorsOpening implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        context.setState("DoorClosing");
+        try {
+            Thread.sleep(7680); // load time including doors opening and closing
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        context.setState("DoorsClosing");
     }
 
     @Override
     public void displayState() {
-        System.out.println("[ElevatorState] Doors Opening");
+        System.out.println("DoorsOpening");
     }
 
 }
@@ -39,16 +44,17 @@ class DoorOpeningState implements ElevatorState {
 /**
  * This class represents a state in the Elevator state machine where the elevator has reached the desired floor.
  */
-class ReachedDestinationState implements ElevatorState {
+class ReachedDestination implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        context.setState("DoorOpening");
+        request.setArrived();
+        context.setState("DoorsOpening");
     }
 
     @Override
     public void displayState() {
-        System.out.println("[ElevatorState] Reached Destination");
+        System.out.println("ReachedDestination");
     }
 
 }
@@ -57,16 +63,17 @@ class ReachedDestinationState implements ElevatorState {
  * This class represents a state in the Elevator state machine where the elevator has notified the scheduler that it has
  * reached the desired floor.
  */
-class NotifySchedulerState implements ElevatorState {
+class NotifyScheduler implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
+        context.getScheduler().checkElevatorStatus(request);
         context.setState("WaitingForElevatorRequest");
     }
 
     @Override
     public void displayState() {
-        System.out.println("[ElevatorState] Notifying Scheduler");
+        System.out.println("NotifyingScheduler");
     }
 
 }
@@ -75,16 +82,16 @@ class NotifySchedulerState implements ElevatorState {
  * This class represents a state in the Elevator state machine where the elevator is waiting for a floor request from
  * the scheduler.
  */
-class WaitingForElevatorRequestState implements ElevatorState {
+class WaitingForElevatorRequest implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        context.setState("DoorOpening");
+        context.setState("DoorsOpening");
     }
 
     @Override
     public void displayState() {
-        System.out.println("[ElevatorState] Waiting For Elevator Request");
+        System.out.println("WaitingForElevatorRequest");
     }
 
 }
@@ -92,16 +99,17 @@ class WaitingForElevatorRequestState implements ElevatorState {
 /**
  * This class represents a state in the Elevator state machine where the elevator is moving from one floor to another.
  */
-class MovingBetweenFloorsState implements ElevatorState {
+class MovingBetweenFloors implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
+        context.moveBetweenFloors(request.getCarButton(), request.getFloorButton());
         context.setState("ReachedDestination");
     }
 
     @Override
     public void displayState() {
-        System.out.println("[ElevatorState] Elevator is Moving Between Floors");
+        System.out.println("MovingBetweenFloors");
     }
 
 }

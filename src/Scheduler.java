@@ -282,7 +282,7 @@ public class Scheduler implements Runnable {
         Iterator<Elevator> iterator = busyElevators.iterator();
         while (iterator.hasNext()) {
             Elevator elevator = iterator.next();
-            if (elevator.getCurrentState() instanceof WaitingForElevatorRequestState) {
+            if (elevator.getCurrentState() instanceof WaitingForElevatorRequest) {
                 availableElevators.add(elevator);
                 iterator.remove(); // Use Iterator's remove method
             }
