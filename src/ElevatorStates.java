@@ -49,6 +49,11 @@ class ReachedDestination implements ElevatorState {
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         request.setArrived();
+        // TODO: must update mainFloorEvent and floorEvents
+        // mainFloorEvent = null;
+        // remove mainFloorEvent from floorEvents
+        // if floorEvents is not empty, set a floor event to be the mainFloorEvent and continue running
+        // if floorEvents is empty, doors will open and the scheduler will be notified
         context.setState("DoorsOpening");
     }
 

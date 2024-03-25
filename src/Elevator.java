@@ -30,7 +30,7 @@ public class Elevator implements Runnable {
     /**
      * An ArrayList of HardwareDevices representing a list of floor events to complete.
      */
-    private final ArrayList<HardwareDevice> floorEvents;
+    private ArrayList<HardwareDevice> floorEvents;
 
     /**
      * A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
@@ -296,5 +296,32 @@ public class Elevator implements Runnable {
      * @return A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
      */
     public HardwareDevice getMainFloorEvent() { return mainFloorEvent; }
+
+    /**
+     * Sets the main floor event to be the specified HardwareDevice.
+     *
+     * @param mainFloorEvent A HardwareDevice representing the main floor event.
+     */
+    public void setMainFloorEvent(HardwareDevice mainFloorEvent) {
+        this.mainFloorEvent = mainFloorEvent;
+    }
+
+    /**
+     * Returns an ArrayList of HardwareDevices representing a list of floor events to complete.
+     *
+     * @return An ArrayList of HardwareDevices representing a list of floor events to complete.
+     */
+    public ArrayList<HardwareDevice> getFloorEvents() {
+        return floorEvents;
+    }
+
+    /**
+     * Sets the floor events to be the specified ArrayList of HardwareDevices.
+     *
+     * @param floorEvents An ArrayList of HardwareDevices representing the floor events.
+     */
+    public void setFloorEvents(ArrayList<HardwareDevice> floorEvents) {
+        this.floorEvents = floorEvents;
+    }
 
 }
