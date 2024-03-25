@@ -225,6 +225,7 @@ public class Elevator implements Runnable {
         // TODO: this is redundant, find a way to have scheduler call checkElevatorStatus on itself
         scheduler.checkElevatorStatus(mainFloorEvent);
         sendPacketToScheduler(mainFloorEvent.toString().getBytes());
+        // TODO: must receive an acknowledgment from Scheduler
 
         // mainFloorEvent has been fulfilled
         floorEvents.remove(mainFloorEvent);
