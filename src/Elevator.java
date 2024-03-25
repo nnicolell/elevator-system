@@ -187,7 +187,7 @@ public class Elevator implements Runnable {
      */
     public void moveBetweenFloors(int floor, FloorButton button) {
         int delta = Math.abs(floor - currentFloor); // number of floors to move
-        System.out.println("[" + name + "] Moving to floor " + floor + "...");
+        System.out.println("[" + name + "] Currently at floor " + currentFloor + ", moving to floor " + floor + "...");
         for (int i = 0; i < delta; i++) {
             try {
                 Thread.sleep(9280); // time it takes to move between a floor
@@ -213,6 +213,54 @@ public class Elevator implements Runnable {
             }
             System.out.println("[" + name + "] Currently at floor " + currentFloor);
         }
+    }
+
+    /**
+     * Notifies the Scheduler that the mainFloorEvent has been fulfilled. Determines if there are more floorEvents to be
+     * fulfilled in the current run.
+     *
+     * @return True, if there are more floor events to be fulfilled in the current run. False, if not.
+     */
+    public boolean moreFloorEventsToFulfill() {
+        // TODO: this is redundant, find a way to have scheduler call checkElevatorStatus on itself
+        scheduler.checkElevatorStatus(mainFloorEvent);
+        sendPacketToScheduler(mainFloorEvent.toString().getBytes());
+
+        // mainFloorEvent has been fulfilled
+        floorEvents.remove(mainFloorEvent);
+        mainFloorEvent = null;
+
+        // the Elevator has picked up passengers on its way to its main destination, must continue executing the rest of
+        // the floor events
+        if (floorEvents.size() > 0) {
+            mainFloorEvent = floorEvents.get(0);
+            return true; // the Elevator has more floor events to execute
+        }
+
+        return false; // the Elevator currently has no more floor events to execute
+    }
+
+    /**
+     * Increment the number of passengers in the Elevator car by 1.
+     */
+    public void addPassenger() {
+        numPassengers++;
+    }
+
+    /**
+     * Decrement the number of passengers in the Elevator car by 1.
+     */
+    public void removePassenger() {
+        numPassengers--;
+    }
+
+    /**
+     * Returns an integer representing the number of floor events the Elevator has to fulfill.
+     *
+     * @return An integer representing the number of floor events the Elevator has to fulfill.
+     */
+    public int getFloorEventsSize() {
+        return floorEvents.size();
     }
 
     /**
@@ -250,20 +298,6 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Increment the number of passengers in the Elevator car by 1.
-     */
-    public void addPassenger() {
-        numPassengers++;
-    }
-
-    /**
-     * Decrement the number of passengers in the Elevator car by 1.
-     */
-    public void removePassenger() {
-        numPassengers--;
-    }
-
-    /**
      * Returns an integer representing the floor number the Elevator is currently on.
      *
      * @return An integer representing the floor number the Elevator is currently on.
@@ -296,32 +330,5 @@ public class Elevator implements Runnable {
      * @return A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
      */
     public HardwareDevice getMainFloorEvent() { return mainFloorEvent; }
-
-    /**
-     * Sets the main floor event to be the specified HardwareDevice.
-     *
-     * @param mainFloorEvent A HardwareDevice representing the main floor event.
-     */
-    public void setMainFloorEvent(HardwareDevice mainFloorEvent) {
-        this.mainFloorEvent = mainFloorEvent;
-    }
-
-    /**
-     * Returns an ArrayList of HardwareDevices representing a list of floor events to complete.
-     *
-     * @return An ArrayList of HardwareDevices representing a list of floor events to complete.
-     */
-    public ArrayList<HardwareDevice> getFloorEvents() {
-        return floorEvents;
-    }
-
-    /**
-     * Sets the floor events to be the specified ArrayList of HardwareDevices.
-     *
-     * @param floorEvents An ArrayList of HardwareDevices representing the floor events.
-     */
-    public void setFloorEvents(ArrayList<HardwareDevice> floorEvents) {
-        this.floorEvents = floorEvents;
-    }
 
 }

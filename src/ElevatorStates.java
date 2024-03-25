@@ -1,20 +1,29 @@
 /**
- * This class represents a state in the Elevator state machine where the elevator doors are closing.
+ * This class represents a state in the Elevator state machine where the elevator is waiting for a floor request from
+ * the scheduler.
  */
-class DoorsClosing implements ElevatorState {
+class WaitingForElevatorRequest implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        if (!request.getArrived()) {
-            context.setState("MovingBetweenFloors");
-        } else {
-            context.setState("NotifyScheduler");
+        Scheduler scheduler = context.getScheduler();
+        if (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
+            context.getFloorEvent(); // get a floor event from the Scheduler
+
+            // determine if the Elevator car is currently at the floor it was requested on or not
+            if (context.getCurrentFloor() == context.getMainFloorEvent().getFloor()) {
+                // Elevator car is currently on the floor it was requested on, open the doors
+                context.setState("DoorsOpening");
+            } else {
+                // Elevator car is not currently on the floor it was requested on, move to the floor it was requested on
+                context.setState("MovingBetweenFloors");
+            }
         }
     }
 
     @Override
     public void displayState() {
-        System.out.println("DoorsClosing");
+        System.out.println("WaitingForElevatorRequest");
     }
 
 }
@@ -42,6 +51,27 @@ class DoorsOpening implements ElevatorState {
 }
 
 /**
+ * This class represents a state in the Elevator state machine where the elevator doors are closing.
+ */
+class DoorsClosing implements ElevatorState {
+
+    @Override
+    public void handleRequest(Elevator context, HardwareDevice request) {
+        if (!request.getArrived()) {
+            context.setState("MovingBetweenFloors");
+        } else {
+            context.setState("NotifyScheduler");
+        }
+    }
+
+    @Override
+    public void displayState() {
+        System.out.println("DoorsClosing");
+    }
+
+}
+
+/**
  * This class represents a state in the Elevator state machine where the elevator has reached the desired floor.
  */
 class ReachedDestination implements ElevatorState {
@@ -49,12 +79,13 @@ class ReachedDestination implements ElevatorState {
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
         request.setArrived();
-        // TODO: must update mainFloorEvent and floorEvents
-        // mainFloorEvent = null;
-        // remove mainFloorEvent from floorEvents
-        // if floorEvents is not empty, set a floor event to be the mainFloorEvent and continue running
-        // if floorEvents is empty, doors will open and the scheduler will be notified
-        context.setState("DoorsOpening");
+        if (context.getFloorEventsSize() > 1) {
+            // the Elevator has picked up passengers on its way to its initial destination, must notify the Scheduler
+            // that we have dropped the initial passenger off before executing the other floor events
+            context.setState("NotifyScheduler");
+        } else {
+            context.setState("DoorsOpening");
+        }
     }
 
     @Override
@@ -72,45 +103,18 @@ class NotifyScheduler implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        // TODO: this is redundant, find a way to have scheduler call checkElevatorStatus on itself
-        context.getScheduler().checkElevatorStatus(request);
-        context.sendPacketToScheduler(request.toString().getBytes());
-        context.setState("WaitingForElevatorRequest");
-    }
-
-    @Override
-    public void displayState() {
-        System.out.println("NotifyingScheduler");
-    }
-
-}
-
-/**
- * This class represents a state in the Elevator state machine where the elevator is waiting for a floor request from
- * the scheduler.
- */
-class WaitingForElevatorRequest implements ElevatorState {
-
-    @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
-        Scheduler scheduler = context.getScheduler();
-        if (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
-            context.getFloorEvent(); // get a floor event from the Scheduler
-
-            // determine if the Elevator car is currently at the floor it was requested on or not
-            if (context.getCurrentFloor() == context.getMainFloorEvent().getFloor()) {
-                // Elevator car is currently on the floor it was requested on, open the doors
-                context.setState("DoorsOpening");
-            } else {
-                // Elevator car is not currently on the floor it was requested on, move to the floor it was requested on
-                context.setState("MovingBetweenFloors");
-            }
+        // notify the Scheduler that the request has been completed and check if the Elevator has picked up passengers
+        // on its way to its initial destination
+        if (context.moreFloorEventsToFulfill()) {
+            context.setState("MovingBetweenFloors"); // continue executing the rest of the floor events
+        } else {
+            context.setState("WaitingForElevatorRequest"); // wait for a new floor event from Scheduler
         }
     }
 
     @Override
     public void displayState() {
-        System.out.println("WaitingForElevatorRequest");
+        System.out.println("NotifyingScheduler");
     }
 
 }
