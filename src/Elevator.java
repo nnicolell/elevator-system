@@ -38,7 +38,7 @@ public class Elevator implements Runnable {
      * It does not represent the floor events that were picked up while executing the floor event the Scheduler assigned
      * to the Elevator.
      */
-    private HardwareDevice mainFloorEvent;
+    private HardwareDevice mainFloorEvent = null;
 
     /**
      * The current state of the Elevator state machine.
@@ -103,6 +103,28 @@ public class Elevator implements Runnable {
     }
 
     /**
+     * Sets and displays the current state of the Elevator state machine. Executes the actions of the current state.
+     *
+     * @param stateName A string representing the name of the state to set.
+     */
+    public void setState(String stateName) {
+        currentState = states.get(stateName);
+        System.out.print("[" + name + "] State: ");
+        currentState.displayState();
+        currentState.handleRequest(this, mainFloorEvent);
+    }
+
+    /**
+     * Adds the given state to the Elevator state machine.
+     *
+     * @param name A String representing the name of the state.
+     * @param elevatorState An ElevatorState to be added to the Elevator state machine.
+     */
+    public void addState(String name, ElevatorState elevatorState) {
+        states.put(name, elevatorState);
+    }
+
+    /**
      * Sets the state of the Elevator state machine to WaitingForElevatorRequest.
      */
     @Override
@@ -140,25 +162,57 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Sets and displays the current state of the Elevator state machine. Executes the actions of the current state.
+     * Sends a DatagramPacket to the Scheduler containing the specified array of bytes.
      *
-     * @param stateName A string representing the name of the state to set.
+     * @param data An array of bytes representing the data to send.
      */
-    public void setState(String stateName) {
-        currentState = states.get(stateName);
-        System.out.print("[" + name + "] State: ");
-        currentState.displayState();
-        currentState.handleRequest(this, mainFloorEvent);
+    public void sendPacketToScheduler(byte[] data) {
+        try {
+            System.out.println("[" + name + "] Sending " + new String(data, 0, data.length) + " to Scheduler.");
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
+            DatagramSocket sendSocket = new DatagramSocket();
+            sendSocket.send(sendPacket);
+            sendSocket.close();
+        } catch (IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
     }
 
     /**
-     * Adds the given state to the Elevator state machine.
+     * Moves the Elevator between floors.
      *
-     * @param name A String representing the name of the state.
-     * @param elevatorState An ElevatorState to be added to the Elevator state machine.
+     * @param floor An integer representing the floor the Elevator needs to move to.
+     * @param button A FloorButton representing the direction the Elevator needs to move.
      */
-    public void addState(String name, ElevatorState elevatorState) {
-        states.put(name, elevatorState);
+    public void moveBetweenFloors(int floor, FloorButton button) {
+        int delta = Math.abs(floor - currentFloor); // number of floors to move
+        System.out.println("[" + name + "] Moving to floor " + floor + "...");
+        for (int i = 0; i < delta; i++) {
+            try {
+                Thread.sleep(9280); // time it takes to move between a floor
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (button == FloorButton.UP) {
+                currentFloor++;
+            } else {
+                currentFloor--;
+            }
+
+            // TODO: need to notify the Scheduler subsystem of what hardwareDevice is being picked up...?
+//            HardwareDevice hardwareDeviceToDelete = null;
+            ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
+            for (HardwareDevice hardwareDevice : floorEvent) {
+                if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
+                    floorEvents.add(hardwareDevice);
+//                        hardwareDeviceToDelete = hardwareDevice;
+                    System.out.println("[" + name + "] Picked up floor event " + hardwareDevice);
+                }
+            }
+            System.out.println("[" + name + "] Currently at floor " + currentFloor);
+        }
     }
 
     /**
@@ -210,24 +264,6 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Sends a DatagramPacket to the Scheduler containing the specified array of bytes.
-     *
-     * @param data An array of bytes representing the data to send.
-     */
-    public void sendPacketToScheduler(byte[] data) {
-        try {
-            System.out.println("[" + name + "] Sending " + new String(data, 0, data.length) + " to Scheduler.");
-            DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
-            DatagramSocket sendSocket = new DatagramSocket();
-            sendSocket.send(sendPacket);
-            sendSocket.close();
-        } catch (IOException e) {
-            System.err.println(e);
-            System.exit(1);
-        }
-    }
-
-    /**
      * Returns an integer representing the floor number the Elevator is currently on.
      *
      * @return An integer representing the floor number the Elevator is currently on.
@@ -243,42 +279,6 @@ public class Elevator implements Runnable {
      */
     public int getPort() {
         return port;
-    }
-
-    /**
-     * Moves the Elevator between floors.
-     *
-     * @param floor An integer representing the floor the Elevator needs to move to.
-     * @param button A FloorButton representing the direction the Elevator needs to move.
-     */
-    public void moveBetweenFloors(int floor, FloorButton button) {
-        int delta = Math.abs(floor - currentFloor); // number of floors to move
-        System.out.println("[" + name + "] Moving to floor " + floor + "...");
-        for (int i = 0; i < delta; i++) {
-            try {
-                Thread.sleep(9280); // time it takes to move between a floor
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            if (button == FloorButton.UP) {
-                currentFloor++;
-            } else {
-                currentFloor--;
-            }
-
-            // TODO: need to notify the Scheduler subsystem of what hardwareDevice is being picked up...?
-//            HardwareDevice hardwareDeviceToDelete = null;
-            ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
-            for (HardwareDevice hardwareDevice : floorEvent) {
-                if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
-                    floorEvents.add(hardwareDevice);
-//                        hardwareDeviceToDelete = hardwareDevice;
-                    System.out.println("[" + name + "] Picked up floor event " + hardwareDevice);
-                }
-            }
-            System.out.println("[" + name + "] Currently at floor " + currentFloor);
-        }
     }
 
     /**
