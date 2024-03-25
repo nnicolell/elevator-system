@@ -1,10 +1,9 @@
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
 /**
- * An Elevator to represent the elevator car moving up or down floors.
+ * An Elevator to represent an elevator car moving up or down floors.
  */
 public class Elevator implements Runnable {
 
@@ -33,6 +32,12 @@ public class Elevator implements Runnable {
      */
     private final ArrayList<HardwareDevice> floorEvents;
 
+    /**
+     * A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
+     *
+     * It does not represent the floor events that were picked up while executing the floor event the Scheduler assigned
+     * to the Elevator.
+     */
     private HardwareDevice mainFloorEvent;
 
     /**
@@ -45,8 +50,16 @@ public class Elevator implements Runnable {
      */
     private DatagramSocket receiveSocket;
 
+    /**
+     * An InetAddress representing the address to send DatagramPackets to the Scheduler.
+     */
     private InetAddress schedulerAddress;
 
+    /**
+     * An integer representing the port number to send DatagramPackets to the Scheduler.
+     *
+     * If 0, the Elevator has not received a DatagramPacket from the Scheduler yet.
+     */
     private int schedulerPort = 0;
 
     /**
@@ -73,6 +86,13 @@ public class Elevator implements Runnable {
 
         floorEvents = new ArrayList<>(); // initialize the ArrayList of floor events
 
+        try {
+            receiveSocket = new DatagramSocket(port);
+        } catch (SocketException se) {
+            System.err.println(se);
+            System.exit(1);
+        }
+
         states = new HashMap<>(); // initialize the Elevator state machine
         addState("WaitingForElevatorRequest", new WaitingForElevatorRequest());
         addState("MovingBetweenFloors", new MovingBetweenFloors());
@@ -80,14 +100,14 @@ public class Elevator implements Runnable {
         addState("DoorsClosing", new DoorsClosing());
         addState("DoorsOpening", new DoorsOpening());
         addState("NotifyScheduler", new NotifyScheduler());
-        setState("WaitingForElevatorRequest");
+    }
 
-        try {
-            receiveSocket = new DatagramSocket(port);
-        } catch (SocketException se) {
-            System.err.println(se);
-            System.exit(1);
-        }
+    /**
+     * Sets the state of the Elevator state machine to WaitingForElevatorRequest.
+     */
+    @Override
+    public void run() {
+        setState("WaitingForElevatorRequest");
     }
 
     /**
@@ -120,71 +140,15 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Receives an Elevator event from the Scheduler and executes it. Sends a message back to the Scheduler once it is
-     * done executing the event.
-     */
-    @Override
-    public void run() {
-        // run the Elevator thread while it still has requests to handle
-        while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
-            handleRequest(mainFloorEvent); // in WaitingForElevatorRequest, gets a floor event from the Scheduler
-
-            // move the elevator car to the floor the request was made on
-            if (currentFloor != mainFloorEvent.getFloor()) {
-                // TODO: need to display states when moving between floors here
-                System.out.println("[" + name + "] Currently moving to floor " + mainFloorEvent.getFloor() + ".");
-                FloorButton move = (currentFloor < mainFloorEvent.getFloor()) ? FloorButton.UP : FloorButton.DOWN;
-                moveBetweenFloors(mainFloorEvent.getFloor(), move);
-            }
-
-            handleRequest(mainFloorEvent); // transitions to DoorOpening
-            handleRequest(mainFloorEvent); // transitions to DoorClosing
-            handleRequest(mainFloorEvent); // transitions to MovingBetweenFloors
-            handleRequest(mainFloorEvent); // transitions to ReachedDestination
-            handleRequest(mainFloorEvent); // transitions to DoorOpening
-            handleRequest(mainFloorEvent); // transitions to DoorClosing
-            handleRequest(mainFloorEvent); // transitions to NotifyScheduler
-
-            // TODO: find some way to add this into the NotifyScheduler handleRequest method
-            // originally it was scheduler.checkElevatorStatus(hardwareDevice) then sendPacketToScheduler()
-            // but this is redundant and scheduler should call checkElevatorStatus on itself
-            sendPacketToScheduler(mainFloorEvent.toString().getBytes());
-
-            handleRequest(mainFloorEvent); // transitions to WaitingForElevatorRequest
-
-            // TODO: print out what is received from the scheduler
-            System.out.println("[" + name + "] Received ACK from Scheduler.");
-        }
-        receiveSocket.close();
-    }
-
-    /**
-     * Handles an event in the Elevator state machine with the specified HardwareDevice. Prints the current state.
-     *
-     * @param hardwareDevice A HardwareDevice representing the floor event the Elevator is executing.
-     */
-    private void handleRequest(HardwareDevice hardwareDevice) {
-        currentState.handleRequest(this, hardwareDevice);
-        System.out.print("[" + name + "] State: ");
-        currentState.displayState();
-    }
-
-    /**
-     * Returns a Scheduler representing the elevator scheduler to receive and send events to.
-     *
-     * @return A Scheduler representing the elevator scheduler to receive and send events to.
-     */
-    public Scheduler getScheduler() {
-        return scheduler;
-    }
-
-    /**
-     * Sets the current state of the Elevator state machine.
+     * Sets and displays the current state of the Elevator state machine. Executes the actions of the current state.
      *
      * @param stateName A string representing the name of the state to set.
      */
     public void setState(String stateName) {
         currentState = states.get(stateName);
+        System.out.print("[" + name + "] State: ");
+        currentState.displayState();
+        currentState.handleRequest(this, mainFloorEvent);
     }
 
     /**
@@ -214,23 +178,32 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Returns the current number of passengers in the Elevator.
+     * Returns a Scheduler representing the Scheduler to receive and send events to.
      *
-     * @return An integer representing the current number of passengers in the Elevator.
+     * @return A Scheduler representing the Scheduler to receive and send events to.
+     */
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    /**
+     * Returns the current number of passengers in the Elevator car.
+     *
+     * @return An integer representing the current number of passengers in the Elevator car.
      */
     public int getNumPassengers() {
         return numPassengers;
     }
 
     /**
-     * Increment the number of passengers by 1.
+     * Increment the number of passengers in the Elevator car by 1.
      */
     public void addPassenger() {
         numPassengers++;
     }
 
     /**
-     * Decrement the number of passengers by 1.
+     * Decrement the number of passengers in the Elevator car by 1.
      */
     public void removePassenger() {
         numPassengers--;
@@ -280,9 +253,10 @@ public class Elevator implements Runnable {
      */
     public void moveBetweenFloors(int floor, FloorButton button) {
         int delta = Math.abs(floor - currentFloor); // number of floors to move
+        System.out.println("[" + name + "] Moving to floor " + floor + "...");
         for (int i = 0; i < delta; i++) {
             try {
-                Thread.sleep(9280);
+                Thread.sleep(9280); // time it takes to move between a floor
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -316,5 +290,11 @@ public class Elevator implements Runnable {
         return name;
     }
 
-}
+    /**
+     * Returns a HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
+     *
+     * @return A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
+     */
+    public HardwareDevice getMainFloorEvent() { return mainFloorEvent; }
 
+}

@@ -67,7 +67,9 @@ class NotifyScheduler implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
+        // TODO: this is redundant, find a way to have scheduler call checkElevatorStatus on itself
         context.getScheduler().checkElevatorStatus(request);
+        context.sendPacketToScheduler(request.toString().getBytes());
         context.setState("WaitingForElevatorRequest");
     }
 
@@ -86,7 +88,19 @@ class WaitingForElevatorRequest implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        context.setState("DoorsOpening");
+        Scheduler scheduler = context.getScheduler();
+        if (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
+            context.getFloorEvent(); // get a floor event from the Scheduler
+
+            // determine if the Elevator car is currently at the floor it was requested on or not
+            if (context.getCurrentFloor() == context.getMainFloorEvent().getFloor()) {
+                // Elevator car is currently on the floor it was requested on, open the doors
+                context.setState("DoorsOpening");
+            } else {
+                // Elevator car is not currently on the floor it was requested on, move to the floor it was requested on
+                context.setState("MovingBetweenFloors");
+            }
+        }
     }
 
     @Override
@@ -103,8 +117,18 @@ class MovingBetweenFloors implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice request) {
-        context.moveBetweenFloors(request.getCarButton(), request.getFloorButton());
-        context.setState("ReachedDestination");
+        // determine if the Elevator car is currently at the floor it was requested on or not
+        int currentFloor = context.getCurrentFloor();
+        if (currentFloor == request.getFloor()) {
+            // Elevator car is currently on the floor it was requested on
+            context.moveBetweenFloors(request.getCarButton(), request.getFloorButton());
+            context.setState("ReachedDestination");
+        } else {
+            // Elevator car is not currently on the floor it was requested on
+            FloorButton directionToMove = (currentFloor < request.getFloor()) ? FloorButton.UP : FloorButton.DOWN;
+            context.moveBetweenFloors(request.getFloor(), directionToMove);
+            context.setState("DoorsOpening");
+        }
     }
 
     @Override
