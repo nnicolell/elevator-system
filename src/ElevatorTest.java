@@ -1,11 +1,7 @@
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -17,16 +13,19 @@ public class ElevatorTest {
      * A Scheduler to test with.
      */
      private Scheduler scheduler;
+
     /**
      * A Elevator to test with.
      */
     private Elevator elevator;
+
     private FloorListener floorListener;
 
     /**
      * A random to test with.
-     */;
+     */
     private final Random random = new Random();
+
     /**
      * Instantiates Scheduler and HardwareDevice.
      */
@@ -40,6 +39,7 @@ public class ElevatorTest {
         elevator = scheduler.getElevatorTest();
         floorListener = scheduler.getFloorListener();
     }
+
     /**
      * Closes the sockets after each test
      */
@@ -57,7 +57,6 @@ public class ElevatorTest {
         return random.nextInt(9999 - 1) + 1;
     }
 
-
     /**
      * Tests the initialization of Elevator.
      */
@@ -68,11 +67,11 @@ public class ElevatorTest {
         assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
     }
 
-
     @Test
     void testGetScheduler() {
         assertEquals(scheduler, elevator.getScheduler());
     }
+
     /**
      * Tests the Elevator state machine.
      */
@@ -197,6 +196,5 @@ public class ElevatorTest {
         elevator.moveBetweenFloors(3, FloorButton.UP);
         assertEquals(3, elevator.getCurrentFloor());
     }
-
 
 }
