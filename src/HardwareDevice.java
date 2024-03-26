@@ -35,6 +35,16 @@ public class HardwareDevice {
     private boolean arrived = false;
 
     /**
+     * Fault related to the floor event
+     * 0 = no fault
+     * 1 = elevator stuck between floors
+     * 2 = arrival sensor failed
+     * 3 = door not closing
+     * 4 = door not opening
+     */
+    private final Fault fault;
+
+    /**
      * Initializes a HardwareDevice with a LocalTime representing when a passenger requests an elevator, an integer
      * representing the floor number a passenger requested an elevator at, a FloorButton representing whether the
      * passenger would like to move up or down, and an integer representing the floor number a passenger would like to
@@ -46,12 +56,13 @@ public class HardwareDevice {
      * @param floorButton A FloorButton representing whether the passenger would like to move up or down.
      * @param carButton An integer representing the floor number a passenger would like to move to.
      */
-    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton) {
+    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton, Fault fault) {
         this.elevator = elevator;
         this.time = time;
         this.floor = floor;
         this.floorButton = floorButton;
         this.carButton = carButton;
+        this.fault = fault;
     }
 
     /**
@@ -109,6 +120,12 @@ public class HardwareDevice {
     }
 
     /**
+     * Return the type of fault for the floor event
+     * @return the type of fault for the floor event
+     */
+    public Fault getFault() {return this.fault;}
+
+    /**
      * Sets the Elevator to have arrived at the floor number a passenger would like to move to.
      */
     public void setArrived() {
@@ -130,7 +147,7 @@ public class HardwareDevice {
     @Override
     public String toString() {
         return "{Elevator: " + elevator + ", Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
-                + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + "}";
+                + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + ", Fault: " + getFault().toString() + "}";
     }
 
     // TODO: toByte[] method
@@ -142,7 +159,7 @@ public class HardwareDevice {
      * @return A HardwareDevice created from the parameter string.
      */
     public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
-        String[] hardwareDeviceStringArray = new String[6];
+        String[] hardwareDeviceStringArray = new String[7];
         int i = 0;
         hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
         String[] hdArray = hardwareDeviceString.split(",");
@@ -161,7 +178,8 @@ public class HardwareDevice {
         FloorButton fb = hardwareDeviceStringArray[3].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int cb = Integer.parseInt(hardwareDeviceStringArray[4]);
         boolean a = hardwareDeviceStringArray[5].equalsIgnoreCase("true");
-        HardwareDevice hardwareDevice = new HardwareDevice(e, t, f, fb, cb);
+        Fault ft = Fault.whichFault(hardwareDeviceStringArray[6]);
+        HardwareDevice hardwareDevice = new HardwareDevice(e, t, f, fb, cb, ft);
         if (a){
             hardwareDevice.setArrived();
         }

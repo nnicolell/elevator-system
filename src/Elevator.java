@@ -106,7 +106,7 @@ public class Elevator implements Runnable {
     public void run() {
         while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
             //receive the first elevator request
-            byte[] data = new byte[150];
+            byte[] data = new byte[200];
             DatagramPacket receivePacket = new DatagramPacket(data, data.length);
             try {
                 System.out.println(name + " waiting...");

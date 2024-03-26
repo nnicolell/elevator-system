@@ -376,7 +376,7 @@ public class Scheduler implements Runnable {
     public void receiveElevatorMessage() {
         distributeFloorEvents();
         //receive ack from elevator
-        byte[] data = new byte[150];
+        byte[] data = new byte[200];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
         try {
@@ -391,7 +391,7 @@ public class Scheduler implements Runnable {
         System.out.println("[Scheduler] Received acknowledgment from Elevator: " + hdString);
 
         //receive floor event from elevator
-        data = new byte[150];
+        data = new byte[200];
         receivePacketElevator = new DatagramPacket(data, data.length);
 
         try {
