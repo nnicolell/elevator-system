@@ -30,7 +30,7 @@ public class Elevator implements Runnable {
     /**
      * An ArrayList of HardwareDevices representing a list of floor events to complete.
      */
-    private ArrayList<HardwareDevice> floorEvents;
+    private final ArrayList<HardwareDevice> floorEvents;
 
     /**
      * A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
@@ -70,7 +70,7 @@ public class Elevator implements Runnable {
     /**
      * An integer representing the number of passengers currently in the Elevator car.
      */
-    private int numPassengers = 0;
+    private int numPassengers = 0; // TODO: implement numPassengers
 
     /**
      * Initializes an Elevator.
@@ -133,6 +133,24 @@ public class Elevator implements Runnable {
     }
 
     /**
+     * Sends a DatagramPacket to the Scheduler containing the specified array of bytes.
+     *
+     * @param data An array of bytes representing the data to send.
+     */
+    public void sendPacketToScheduler(byte[] data) {
+        try {
+            System.out.println("[" + name + "] Sending " + new String(data, 0, data.length) + " to Scheduler.");
+            DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
+            DatagramSocket sendSocket = new DatagramSocket();
+            sendSocket.send(sendPacket);
+            sendSocket.close();
+        } catch (IOException e) {
+            System.err.println(e);
+            System.exit(1);
+        }
+    }
+
+    /**
      * Receives a floor event from the Scheduler and processes it. Sends an acknowledgment message back to the
      * Scheduler.
      */
@@ -159,24 +177,6 @@ public class Elevator implements Runnable {
         schedulerPort = receivePacket.getPort();
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
-    }
-
-    /**
-     * Sends a DatagramPacket to the Scheduler containing the specified array of bytes.
-     *
-     * @param data An array of bytes representing the data to send.
-     */
-    public void sendPacketToScheduler(byte[] data) {
-        try {
-            System.out.println("[" + name + "] Sending " + new String(data, 0, data.length) + " to Scheduler.");
-            DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
-            DatagramSocket sendSocket = new DatagramSocket();
-            sendSocket.send(sendPacket);
-            sendSocket.close();
-        } catch (IOException e) {
-            System.err.println(e);
-            System.exit(1);
-        }
     }
 
     /**

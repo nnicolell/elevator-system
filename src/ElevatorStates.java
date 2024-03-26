@@ -5,7 +5,7 @@
 class WaitingForElevatorRequest implements ElevatorState {
 
     @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         Scheduler scheduler = context.getScheduler();
         if (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
             context.getFloorEvent(); // get a floor event from the Scheduler
@@ -34,7 +34,7 @@ class WaitingForElevatorRequest implements ElevatorState {
 class DoorsOpening implements ElevatorState {
 
     @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         try {
             Thread.sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
@@ -56,8 +56,8 @@ class DoorsOpening implements ElevatorState {
 class DoorsClosing implements ElevatorState {
 
     @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
-        if (!request.getArrived()) {
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
+        if (!mainFloorEvent.getArrived()) {
             context.setState("MovingBetweenFloors");
         } else {
             context.setState("NotifyScheduler");
@@ -77,8 +77,8 @@ class DoorsClosing implements ElevatorState {
 class ReachedDestination implements ElevatorState {
 
     @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
-        request.setArrived();
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
+        mainFloorEvent.setArrived();
         if (context.getFloorEventsSize() > 1) {
             // the Elevator has picked up passengers on its way to its initial destination, must notify the Scheduler
             // that we have dropped the initial passenger off before executing the other floor events
@@ -102,7 +102,7 @@ class ReachedDestination implements ElevatorState {
 class NotifyScheduler implements ElevatorState {
 
     @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         // notify the Scheduler that the request has been completed and check if the Elevator has picked up passengers
         // on its way to its initial destination
         if (context.moreFloorEventsToFulfill()) {
@@ -125,17 +125,18 @@ class NotifyScheduler implements ElevatorState {
 class MovingBetweenFloors implements ElevatorState {
 
     @Override
-    public void handleRequest(Elevator context, HardwareDevice request) {
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         // determine if the Elevator car is currently at the floor it was requested on or not
         int currentFloor = context.getCurrentFloor();
-        if (currentFloor == request.getFloor()) {
+        if (currentFloor == mainFloorEvent.getFloor()) {
             // Elevator car is currently on the floor it was requested on
-            context.moveBetweenFloors(request.getCarButton(), request.getFloorButton());
+            context.moveBetweenFloors(mainFloorEvent.getCarButton(), mainFloorEvent.getFloorButton());
             context.setState("ReachedDestination");
         } else {
             // Elevator car is not currently on the floor it was requested on
-            FloorButton directionToMove = (currentFloor < request.getFloor()) ? FloorButton.UP : FloorButton.DOWN;
-            context.moveBetweenFloors(request.getFloor(), directionToMove);
+            FloorButton directionToMove = (currentFloor < mainFloorEvent.getFloor())
+                    ? FloorButton.UP : FloorButton.DOWN;
+            context.moveBetweenFloors(mainFloorEvent.getFloor(), directionToMove);
             context.setState("DoorsOpening");
         }
     }
