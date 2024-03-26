@@ -14,22 +14,22 @@ The system will consist of an elevator controller, a simulator for the elevator 
 
 ## Table of Contents
 
-1. [Iteration 4](#Iteration-4)
-   * [Responsibilities](#Responsibilities)
-   * [Files](#Files)
-   * [Setup and Usage](#Setup-and-Usage)
-2. [Iteration 3](#Iteration-3)
-   * [Responsibilities](#Responsibilities)
-   * [Files](#Files)
-   * [Setup and Usage](#Setup-and-Usage)
-3. [Iteration 2](#Iteration-2)
-   * [Responsibilities](#Responsibilities)
-   * [Files](#Files)
-   * [Setup and Usage](#Setup-and-Usage)
-4. [Iteration 1](#Iteration-1)
-   * [Responsibilities](#Responsibilities)
-   * [Files](#Files)
-   * [Setup and Usage](#Setup-and-Usage)
+* [Iteration 4](#Iteration-4)
+  * [Responsibilities](#Responsibilities)
+  * [Files](#Files)
+  * [Setup and Usage](#Setup-and-Usage)
+* [Iteration 3](#Iteration-3)
+  * [Responsibilities](#Responsibilities)
+  * [Files](#Files)
+  * [Setup and Usage](#Setup-and-Usage)
+* [Iteration 2](#Iteration-2)
+  * [Responsibilities](#Responsibilities)
+  * [Files](#Files)
+  * [Setup and Usage](#Setup-and-Usage)
+* [Iteration 1](#Iteration-1)
+  * [Responsibilities](#Responsibilities)
+  * [Files](#Files)
+  * [Setup and Usage](#Setup-and-Usage)
 
 <!-- Iteration 4 -->
 ## Iteration 4
