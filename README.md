@@ -14,11 +14,11 @@ The system will consist of an elevator controller, a simulator for the elevator 
 
 ## Table of Contents
 
-1.  [Iteration 4](#Iteration-4)
+1. [Iteration 4](#Iteration-4)
    * [Responsibilities](#Responsibilities)
    * [Files](#Files)
    * [Setup and Usage](#Setup-and-Usage)
-2.  [Iteration 3](#Iteration-3)
+2. [Iteration 3](#Iteration-3)
    * [Responsibilities](#Responsibilities)
    * [Files](#Files)
    * [Setup and Usage](#Setup-and-Usage)
@@ -64,7 +64,6 @@ JDK version 21.0.1 was used to develop the code.
 * [FloorListener.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorListener.java)
   * The FloorListener class contains methods to constantly be listening to the Floor for any new events.
 
-
 #### Test Files
 * [ElevatorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorTest.java)
 * [FloorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorTest.java)
@@ -75,11 +74,11 @@ JDK version 21.0.1 was used to develop the code.
 ### Responsibilities
 | Person                   |                                      Responsibilities                                       |         
 | ------------------------ |:-------------------------------------------------------------------------------------------:|
-| Alexander Hum            |            Floor.java,UML Class Diagram, README.md                                          |
-| Emily Tang               |      Elevator.java, SchedulerTest README.me                                                 | 
+| Alexander Hum            |            Floor.java, UML Class Diagram, README.md                                         |
+| Emily Tang               |      Elevator.java, ElevatorStates.java, ElevatorTest.java, README.md                       | 
 | Nicole Lim               |      Scheulder.java, SchedulerTest, README.md                                               |
 | Nivetha Sivasaravanan    |            Floor.java, HardwareDevice.java, ElevatorTest, README.md                         |
-| Rimsha Atif              |             Elevator.java, ElevatorTest,UML Sequence Diagram, README.md                     |
+| Rimsha Atif              |             Elevator.java, ElevatorTest, UML Sequence Diagram, README.md                    |
 
 
 <!-- Iteration 3 -->
