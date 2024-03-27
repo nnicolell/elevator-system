@@ -1,3 +1,7 @@
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * This class represents a state in the Elevator state machine where the elevator is waiting for a floor request from
  * the scheduler.
@@ -35,7 +39,62 @@ class DoorsOpening implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
+        Timer faultTimer = new Timer();
+        Timer timer = new Timer();
+        AtomicInteger finished = new AtomicInteger(0);
+
+        int sleepValue;
+        if (mainFloorEvent.getFault().toString().equals("Door not closing")) {
+            sleepValue = 8000;
+            faultTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    context.setState("DoorsNotClosing"); // Assume a fault if doors don't close within 7.8 seconds
+                    finished.set(1);
+                    timer.cancel();
+                }
+            }, 7800);
+        } else {
+            sleepValue = 7680;
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    context.setState("DoorsClosing");
+                    finished.set(2);
+                    faultTimer.cancel();
+                }
+            }, sleepValue);
+        }
+
+        // Check which timer finished first and cancel the other timer
+        Timer finishTimer = new Timer();
+        finishTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (finished.get() == 0) {
+                    // Neither timer finished, do nothing
+                } else if (finished.get() == 1) {
+                    // faultTimer finished first, cancel timer
+                    timer.cancel();
+                } else if (finished.get() == 2) {
+                    // timer finished first, cancel faultTimer
+                    faultTimer.cancel();
+                }
+            }
+        }, 7800);
+    }
+        public void displayState() {
+        System.out.println("DoorsOpening");
+    }
+
+}
+
+class DoorsNotClosing implements ElevatorState {
+
+    @Override
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         try {
+            System.out.println("Forcing doors close....");
             Thread.sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -45,9 +104,8 @@ class DoorsOpening implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.println("DoorsOpening");
+        System.out.println("DoorsNotClosing");
     }
-
 }
 
 /**
@@ -68,6 +126,7 @@ class DoorsClosing implements ElevatorState {
     public void displayState() {
         System.out.println("DoorsClosing");
     }
+
 
 }
 
