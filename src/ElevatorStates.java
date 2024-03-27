@@ -1,5 +1,4 @@
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -93,12 +92,7 @@ class DoorsNotClosing implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
-        try {
-            System.out.println("Forcing doors close....");
-            Thread.sleep(7680); // load time including doors opening and closing
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        context.forceCloseDoors();
         context.setState("DoorsClosing");
     }
 

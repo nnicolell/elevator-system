@@ -98,6 +98,7 @@ public class Elevator implements Runnable {
         addState("MovingBetweenFloors", new MovingBetweenFloors());
         addState("ReachedDestination", new ReachedDestination());
         addState("DoorsClosing", new DoorsClosing());
+        addState("DoorsNotClosing", new DoorsNotClosing());
         addState("DoorsOpening", new DoorsOpening());
         addState("NotifyScheduler", new NotifyScheduler());
     }
@@ -239,6 +240,18 @@ public class Elevator implements Runnable {
         }
 
         return false; // the Elevator currently has no more floor events to execute
+    }
+
+    /**
+     * Forces the Elevator car doors to close.
+     */
+    public void forceCloseDoors() {
+        try {
+            System.out.println("[" + name + "] Forcing doors closed...");
+            Thread.sleep(7680); // load time including doors opening and closing
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
