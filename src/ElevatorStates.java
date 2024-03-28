@@ -166,18 +166,21 @@ class MovingBetweenFloors implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
+        // determine if a fault should occur or not
+        boolean fault = mainFloorEvent.getFault().toString().equals("Elevator stuck between floors");
+
         // determine if the Elevator car is currently at the floor it was requested on or not
         int currentFloor = context.getCurrentFloor();
         if (currentFloor == mainFloorEvent.getFloor()) {
             // Elevator car is currently on the floor it was requested on
-            context.moveBetweenFloors(mainFloorEvent.getCarButton(), mainFloorEvent.getFloorButton());
-            context.setState("ReachedDestination");
+            context.moveBetweenFloors(fault, "ReachedDestination", mainFloorEvent.getCarButton(), mainFloorEvent.getFloorButton());
+//            context.setState("ReachedDestination");
         } else {
             // Elevator car is not currently on the floor it was requested on
             FloorButton directionToMove = (currentFloor < mainFloorEvent.getFloor())
                     ? FloorButton.UP : FloorButton.DOWN;
-            context.moveBetweenFloors(mainFloorEvent.getFloor(), directionToMove);
-            context.setState("DoorsOpening");
+            context.moveBetweenFloors(fault, "DoorsOpening", mainFloorEvent.getFloor(), directionToMove);
+//            context.setState("DoorsOpening");
         }
     }
 

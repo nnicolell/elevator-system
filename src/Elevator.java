@@ -185,18 +185,50 @@ public class Elevator implements Runnable {
     /**
      * Moves the Elevator between floors.
      *
+     * @param fault True, if a fault should occur. False, if not.
      * @param floor An integer representing the floor the Elevator needs to move to.
      * @param button A FloorButton representing the direction the Elevator needs to move.
      */
-    public void moveBetweenFloors(int floor, FloorButton button) {
+    public void moveBetweenFloors(boolean fault, String state, int floor, FloorButton button) {
         int delta = Math.abs(floor - currentFloor); // number of floors to move
         System.out.println("[" + name + "] Currently at floor " + currentFloor + ", moving to floor " + floor + "...");
         for (int i = 0; i < delta; i++) {
-            try {
-                Thread.sleep(9280); // time it takes to move between a floor
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            // handles the case where an ELEVATOR_STUCK fault occurs
+            Timer faultTimer = new Timer();
+            Timer timer = new Timer();
+            AtomicInteger finished = new AtomicInteger(0);
+
+            if (fault) {
+                faultTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        finished.set(1);
+                        timer.cancel();
+                        System.out.println("[" + name + "] Stuck between floors. Shutting down...");
+                        // TODO: Scheduler needs to kill the Elevator thread
+                        currentState = null; // shut down the elevator
+                    }
+                }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
+            } else {
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        finished.set(2);
+                        faultTimer.cancel();
+                    }
+                }, 9280); // time it takes to move from one floor to the next
             }
+
+            // check if timer has finished and cancel the faultTimer
+            Timer finishTimer = new Timer();
+            finishTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (finished.get() == 2) {
+                        faultTimer.cancel();
+                    }
+                }
+            }, 9280);
 
             if (button == FloorButton.UP) {
                 currentFloor++;
@@ -215,6 +247,10 @@ public class Elevator implements Runnable {
                 }
             }
             System.out.println("[" + name + "] Currently at floor " + currentFloor);
+        }
+
+        if (!fault) { // transition to the next state if a fault does not occur
+            setState(state);
         }
     }
 
