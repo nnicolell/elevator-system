@@ -1,6 +1,3 @@
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
 /**
  * This class represents a state in the Elevator state machine where the elevator is waiting for a floor request from
  * the scheduler.
@@ -40,7 +37,7 @@ class DoorsOpening implements ElevatorState {
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         boolean fault = mainFloorEvent.getFault().toString().equals("Doors not opening");
         // if there's a fault transition to DoorsNotOpening, if not transition to DoorsClosing
-        context.handleDoorFault(fault, "DoorsNotOpening", "DoorsClosing");
+        context.openOrCloseDoors(fault, "DoorsNotOpening", "DoorsClosing");
     }
 
     @Override
@@ -77,7 +74,7 @@ class DoorsClosing implements ElevatorState {
         boolean fault = mainFloorEvent.getFault().toString().equals("Doors not closing");
         // if there's a fault transition to DoorsNotClosing, if not transition to MovingBetweenFloors or NotifyScheduler
         // depending on if the elevator has arrived at mainFloorEvent.carButton floor
-        context.handleDoorFault(fault, "DoorsNotClosing",
+        context.openOrCloseDoors(fault, "DoorsNotClosing",
                 !mainFloorEvent.getArrived() ? "MovingBetweenFloors" : "NotifyScheduler");
     }
 
@@ -174,13 +171,11 @@ class MovingBetweenFloors implements ElevatorState {
         if (currentFloor == mainFloorEvent.getFloor()) {
             // Elevator car is currently on the floor it was requested on
             context.moveBetweenFloors(fault, "ReachedDestination", mainFloorEvent.getCarButton(), mainFloorEvent.getFloorButton());
-//            context.setState("ReachedDestination");
         } else {
             // Elevator car is not currently on the floor it was requested on
             FloorButton directionToMove = (currentFloor < mainFloorEvent.getFloor())
                     ? FloorButton.UP : FloorButton.DOWN;
             context.moveBetweenFloors(fault, "DoorsOpening", mainFloorEvent.getFloor(), directionToMove);
-//            context.setState("DoorsOpening");
         }
     }
 

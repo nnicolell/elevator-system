@@ -249,7 +249,7 @@ public class Elevator implements Runnable {
             System.out.println("[" + name + "] Currently at floor " + currentFloor);
         }
 
-        if (!fault) { // transition to the next state if a fault does not occur
+        if (!fault) { // transition to the next state if a fault does not occur,f
             setState(state);
         }
     }
@@ -289,7 +289,7 @@ public class Elevator implements Runnable {
      * @param normalState A String representing the state the Elevator state machine should transition to if a fault
      *                    does not occur.
      */
-    public void handleDoorFault(boolean fault, String faultState, String normalState) {
+    public void openOrCloseDoors(boolean fault, String faultState, String normalState) {
         Timer faultTimer = new Timer();
         Timer timer = new Timer();
         AtomicInteger finished = new AtomicInteger(0);
