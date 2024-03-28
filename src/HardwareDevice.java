@@ -4,6 +4,7 @@ import java.time.LocalTime;
  * A class to represent the necessary information to pass to the Scheduler.
  */
 public class HardwareDevice {
+
     /**
      * Elevator running the event
      */
@@ -35,12 +36,7 @@ public class HardwareDevice {
     private boolean arrived = false;
 
     /**
-     * Fault related to the floor event
-     * 0 = no fault
-     * 1 = elevator stuck between floors
-     * 2 = arrival sensor failed
-     * 3 = door not closing
-     * 4 = door not opening
+     * A Fault related to the floor event.
      */
     private final Fault fault;
 
@@ -50,11 +46,12 @@ public class HardwareDevice {
      * passenger would like to move up or down, and an integer representing the floor number a passenger would like to
      * move to.
      *
-     * @param elevator Elevator representing the elevator running the request.
+     * @param elevator A String representing the elevator running the request.
      * @param time A LocalTime representing when a passenger requests an elevator.
      * @param floor An integer representing the floor number a passenger requested an elevator at.
      * @param floorButton A FloorButton representing whether the passenger would like to move up or down.
      * @param carButton An integer representing the floor number a passenger would like to move to.
+     * @param fault A Fault related to the floor event.
      */
     public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton, Fault fault) {
         this.elevator = elevator;
@@ -120,10 +117,11 @@ public class HardwareDevice {
     }
 
     /**
-     * Return the type of fault for the floor event
-     * @return the type of fault for the floor event
+     * Returns the fault related to the floor event.
+     *
+     * @return A fault related to the floor event.
      */
-    public Fault getFault() {return this.fault;}
+    public Fault getFault() { return fault; }
 
     /**
      * Sets the Elevator to have arrived at the floor number a passenger would like to move to.
@@ -133,10 +131,12 @@ public class HardwareDevice {
     }
 
     /**
-     * Sets the Elevator
+     * Sets the Elevator to the specified elevator.
+     *
+     * @param name A String representing the name of the elevator.
      */
     public void setElevator(String name) {
-        this.elevator = name;
+        elevator = name;
     }
 
     /**
@@ -146,11 +146,10 @@ public class HardwareDevice {
      */
     @Override
     public String toString() {
-        return "{Elevator: " + elevator + ", Time: " + getTime() + ", Requested Floor: " + getFloor() + ", Direction: " + getFloorButton()
-                + ", Car Button: " + getCarButton() +", Arrived: " + getArrived() + ", Fault: " + getFault().toString() + "}";
+        return "{Elevator: " + elevator + ", Time: " + getTime() + ", Requested Floor: " + getFloor()
+                + ", Direction: " + getFloorButton() + ", Car Button: " + getCarButton() +", Arrived: " + getArrived()
+                + ", Fault: " + getFault().toString() + "}";
     }
-
-    // TODO: toByte[] method
 
     /**
      * Returns a HardwareDevice created from a string.
@@ -158,15 +157,14 @@ public class HardwareDevice {
      * @param hardwareDeviceString The string to be changed to a HardwareDevice
      * @return A HardwareDevice created from the parameter string.
      */
-    public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString){
+    public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString) {
         String[] hardwareDeviceStringArray = new String[7];
         int i = 0;
         hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
         String[] hdArray = hardwareDeviceString.split(",");
 
-        for (String s : hdArray){
+        for (String s : hdArray) {
             String[] deviceArray = s.split(": ");
-
             String value = deviceArray[1].trim();
             hardwareDeviceStringArray[i] = value;
             i++;
@@ -180,7 +178,7 @@ public class HardwareDevice {
         boolean a = hardwareDeviceStringArray[5].equalsIgnoreCase("true");
         Fault ft = Fault.stringToFault(hardwareDeviceStringArray[6]);
         HardwareDevice hardwareDevice = new HardwareDevice(e, t, f, fb, cb, ft);
-        if (a){
+        if (a) {
             hardwareDevice.setArrived();
         }
         return hardwareDevice;
