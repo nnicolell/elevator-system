@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * An Elevator to represent an elevator car moving up or down floors.
@@ -241,6 +242,54 @@ public class Elevator implements Runnable {
         }
 
         return false; // the Elevator currently has no more floor events to execute
+    }
+
+    /**
+     * Sets a timer to handle a fault in the case where a door does not open or close.
+     *
+     * @param fault True, if a fault should occur. False, if not.
+     * @param faultState A String representing the state the Elevator state machine should transition to if a fault
+     *                   occurs.
+     * @param normalState A String representing the state the Elevator state machine should transition to if a fault
+     *                    does not occur.
+     */
+    public void handleDoorFault(boolean fault, String faultState, String normalState) {
+        Timer faultTimer = new Timer();
+        Timer timer = new Timer();
+        AtomicInteger finished = new AtomicInteger(0);
+
+        if (fault) {
+            faultTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    setState(faultState); // assume a fault if doors don't open/close within 7.8 seconds
+                    finished.set(1);
+                    timer.cancel();
+                }
+            }, 7800);
+        } else {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    setState(normalState);
+                    finished.set(2);
+                    faultTimer.cancel();
+                }
+            }, 7680);
+        }
+
+        // check which timer finished first and cancel the other timer
+        Timer finishTimer = new Timer();
+        finishTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (finished.get() == 1) { // faultTimer finished first, cancel timer
+                    timer.cancel();
+                } else if (finished.get() == 2) { // timer finished first, cancel faultTimer
+                    faultTimer.cancel();
+                }
+            }
+        }, 7800);
     }
 
     /**
