@@ -1,4 +1,5 @@
-13:02:56.0 4 Up 6 No Fault
-14:05:15.0 2 Up 4 Arrival sensor failed
-16:06:35.0 5 Down 4 Door not closing
-19:08:23.0 2 Down 1 No Fault
+13:02:56.0 4 Up 6 No fault
+14:05:15.0 2 Up 4 Doors not closing
+16:06:35.0 5 Down 4 Doors not opening
+19:08:23.0 2 Down 1 No fault
+19:10:23.0 1 Up 5 Doors not closing

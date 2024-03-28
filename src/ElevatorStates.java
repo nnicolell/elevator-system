@@ -42,11 +42,11 @@ class DoorsOpening implements ElevatorState {
         Timer timer = new Timer();
         AtomicInteger finished = new AtomicInteger(0);
 
-        if (mainFloorEvent.getFault().toString().equals("Doors not closing")) {
+        if (mainFloorEvent.getFault().toString().equals("Doors not opening")) {
             faultTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    context.setState("DoorsNotClosing"); // assume a fault if doors don't close within 7.8 seconds
+                    context.setState("DoorsNotOpening"); // assume a fault if doors don't open within 7.8 seconds
                     finished.set(1);
                     timer.cancel();
                 }
@@ -86,17 +86,17 @@ class DoorsOpening implements ElevatorState {
 /**
  * This class represents a state in the Elevator state machine where the elevator doors are not closing properly.
  */
-class DoorsNotClosing implements ElevatorState {
+class DoorsNotOpening implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
-        context.forceCloseDoors();
+        context.forceOpenOrCloseDoors(true);
         context.setState("DoorsClosing");
     }
 
     @Override
     public void displayState() {
-        System.out.println("DoorsNotClosing");
+        System.out.println("DoorsNotOpening");
     }
 }
 
@@ -109,6 +109,66 @@ class DoorsClosing implements ElevatorState {
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
         // TODO: implement the transient fault where the doors don't close
 
+        Timer faultTimer = new Timer();
+        Timer timer = new Timer();
+        AtomicInteger finished = new AtomicInteger(0);
+
+        if (mainFloorEvent.getFault().toString().equals("Doors not closing")) {
+            faultTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    context.setState("DoorsNotClosing"); // assume a fault if doors don't close within 7.8 seconds
+                    finished.set(1);
+                    timer.cancel();
+                }
+            }, 7800);
+        } else {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (!mainFloorEvent.getArrived()) {
+                        context.setState("MovingBetweenFloors");
+                    } else {
+                        context.setState("NotifyScheduler");
+                    }
+                    finished.set(2);
+                    faultTimer.cancel();
+                }
+            }, 7680);
+        }
+
+        // check which timer finished first and cancel the other timer
+        Timer finishTimer = new Timer();
+        finishTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (finished.get() == 1) { // faultTimer finished first, cancel timer
+                    timer.cancel();
+                } else if (finished.get() == 2) { // timer finished first, cancel faultTimer
+                    faultTimer.cancel();
+                }
+            }
+        }, 7800);
+
+//        if (!mainFloorEvent.getArrived()) {
+//            context.setState("MovingBetweenFloors");
+//        } else {
+//            context.setState("NotifyScheduler");
+//        }
+    }
+
+    @Override
+    public void displayState() {
+        System.out.println("DoorsClosing");
+    }
+
+}
+
+class DoorsNotClosing implements ElevatorState {
+
+    @Override
+    public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
+        context.forceOpenOrCloseDoors(false);
         if (!mainFloorEvent.getArrived()) {
             context.setState("MovingBetweenFloors");
         } else {
@@ -118,9 +178,8 @@ class DoorsClosing implements ElevatorState {
 
     @Override
     public void displayState() {
-        System.out.println("DoorsClosing");
+        System.out.println("DoorsNotClosing");
     }
-
 }
 
 /**

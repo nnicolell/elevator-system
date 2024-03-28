@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.sql.PreparedStatement;
 import java.util.*;
 
 /**
@@ -314,15 +315,17 @@ public class Scheduler implements Runnable {
         Iterator<Elevator> iterator = availableElevators.iterator();
         while (iterator.hasNext()) {
             Elevator e = iterator.next();
-            int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
-            if (elevatorDistance < distance) {
-                distance = elevatorDistance;
+            if (e != null) {
+                int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+                if (elevatorDistance < distance) {
+                    distance = elevatorDistance;
+                }
+                addBusyElevator(e);
+                iterator.remove();
+                floorEvent.setElevator(e.getName());
+                sendElevatorMessage(e, floorEvent);
+                break;
             }
-            addBusyElevator(e);
-            iterator.remove();
-            floorEvent.setElevator(e.getName());
-            sendElevatorMessage(e, floorEvent);
-            break;
         }
         notifyAll();
     }
