@@ -42,19 +42,16 @@ class DoorsOpening implements ElevatorState {
         Timer timer = new Timer();
         AtomicInteger finished = new AtomicInteger(0);
 
-        int sleepValue;
-        if (mainFloorEvent.getFault().toString().equals("Door not closing")) {
-            sleepValue = 8000;
+        if (mainFloorEvent.getFault().toString().equals("Doors not closing")) {
             faultTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    context.setState("DoorsNotClosing"); // Assume a fault if doors don't close within 7.8 seconds
+                    context.setState("DoorsNotClosing"); // assume a fault if doors don't close within 7.8 seconds
                     finished.set(1);
                     timer.cancel();
                 }
             }, 7800);
         } else {
-            sleepValue = 7680;
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -62,32 +59,33 @@ class DoorsOpening implements ElevatorState {
                     finished.set(2);
                     faultTimer.cancel();
                 }
-            }, sleepValue);
+            }, 7680);
         }
 
-        // Check which timer finished first and cancel the other timer
+        // check which timer finished first and cancel the other timer
         Timer finishTimer = new Timer();
         finishTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (finished.get() == 0) {
-                    // Neither timer finished, do nothing
-                } else if (finished.get() == 1) {
-                    // faultTimer finished first, cancel timer
+                if (finished.get() == 1) { // faultTimer finished first, cancel timer
                     timer.cancel();
-                } else if (finished.get() == 2) {
-                    // timer finished first, cancel faultTimer
+                } else if (finished.get() == 2) { // timer finished first, cancel faultTimer
                     faultTimer.cancel();
                 }
             }
         }, 7800);
     }
-        public void displayState() {
+
+    @Override
+    public void displayState() {
         System.out.println("DoorsOpening");
     }
 
 }
 
+/**
+ * This class represents a state in the Elevator state machine where the elevator doors are not closing properly.
+ */
 class DoorsNotClosing implements ElevatorState {
 
     @Override
@@ -109,6 +107,8 @@ class DoorsClosing implements ElevatorState {
 
     @Override
     public void handleRequest(Elevator context, HardwareDevice mainFloorEvent) {
+        // TODO: implement the transient fault where the doors don't close
+
         if (!mainFloorEvent.getArrived()) {
             context.setState("MovingBetweenFloors");
         } else {
@@ -120,7 +120,6 @@ class DoorsClosing implements ElevatorState {
     public void displayState() {
         System.out.println("DoorsClosing");
     }
-
 
 }
 

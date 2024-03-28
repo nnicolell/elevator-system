@@ -2,7 +2,6 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -133,7 +132,7 @@ public class Floor implements Runnable {
             resultBuilder.append(info[i]).append(" ");
         }
         String fault = resultBuilder.toString().trim();
-        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo, Fault.whichFault(fault));
+        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo, Fault.stringToFault(fault));
     }
 
 }

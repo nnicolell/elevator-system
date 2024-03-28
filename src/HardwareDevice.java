@@ -178,7 +178,7 @@ public class HardwareDevice {
         FloorButton fb = hardwareDeviceStringArray[3].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int cb = Integer.parseInt(hardwareDeviceStringArray[4]);
         boolean a = hardwareDeviceStringArray[5].equalsIgnoreCase("true");
-        Fault ft = Fault.whichFault(hardwareDeviceStringArray[6]);
+        Fault ft = Fault.stringToFault(hardwareDeviceStringArray[6]);
         HardwareDevice hardwareDevice = new HardwareDevice(e, t, f, fb, cb, ft);
         if (a){
             hardwareDevice.setArrived();
