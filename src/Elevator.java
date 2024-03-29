@@ -72,6 +72,7 @@ public class Elevator implements Runnable {
      * An integer representing the number of passengers currently in the Elevator car.
      */
     private int numPassengers = 0; // TODO: implement numPassengers
+    private boolean handleRequestInState = true;
 
     /**
      * Initializes an Elevator.
@@ -114,7 +115,12 @@ public class Elevator implements Runnable {
         currentState = states.get(stateName);
         System.out.print("[" + name + "] State: ");
         currentState.displayState();
-        currentState.handleRequest(this, mainFloorEvent);
+        if (handleRequestInState) {
+            currentState.handleRequest(this, mainFloorEvent);
+        }
+    }
+    public void setHandleRequestInState(boolean handle) {
+        this.handleRequestInState = handle;
     }
 
     /**
@@ -431,4 +437,7 @@ public class Elevator implements Runnable {
      */
     public HardwareDevice getMainFloorEvent() { return mainFloorEvent; }
 
+    public void setMainFloorEvent(HardwareDevice hardwareDevice) {
+        mainFloorEvent = hardwareDevice;
+    }
 }
