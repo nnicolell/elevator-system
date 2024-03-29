@@ -73,7 +73,7 @@ public class ElevatorTest {
         assertEquals(scheduler, elevator.getScheduler());
         assertEquals(elevatorPortNum, elevator.getPort());
         assertEquals(0, elevator.getFloorEventsSize());
-        assertEquals(6, elevator.getStates().size());
+        assertEquals(8, elevator.getStates().size());
     }
 
     /**
@@ -82,35 +82,6 @@ public class ElevatorTest {
     @Test
     void testGetScheduler() {
         assertEquals(scheduler, elevator.getScheduler());
-    }
-
-     //TODO: instead of this, we should test the transition to each state
-     //for example, test WaitingForElevatorRequest to MovingBetweenFloors and Waiting to DoorsOpening
-    /**
-     * Tests the Elevator state machine.
-     */
-    @Test
-    void testElevatorStateMachine() {
-        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"), 3, FloorButton.UP, 4, Fault.NO_FAULT);
-        //elevator.setMainFloorEvent(hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof DoorsOpening);
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof DoorsClosing);
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof MovingBetweenFloors);
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof ReachedDestination);
-//        hardwareDevice.setArrived();
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof DoorsOpening);
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof DoorsClosing);
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof NotifyScheduler);
-//        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-//        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
     }
 
     /**
@@ -138,11 +109,11 @@ public class ElevatorTest {
      */
     @Test
     void testAddState() {
-        assertEquals(6, elevator.getStates().size());
+        assertEquals(8, elevator.getStates().size());
         String testStateName = "TestState";
         elevator.addState(testStateName, new WaitingForElevatorRequest());
         HashMap<String, ElevatorState> states = elevator.getStates();
-        assertEquals(7, states.size());
+        assertEquals(9, states.size());
         assertTrue(states.containsKey(testStateName));
     }
 
@@ -153,7 +124,7 @@ public class ElevatorTest {
     void testGetStates() {
         HashMap<String, ElevatorState> states = elevator.getStates();
         assertNotNull(states);
-        assertEquals(6, states.size());
+        assertEquals(8, states.size());
     }
 
     /**
@@ -202,7 +173,6 @@ public class ElevatorTest {
         assertEquals(3, elevator.getCurrentFloor());
     }
 
-    // TODO: doesn't work anymore since moveBetweenFloors() requires 3 parameters
     /**
      * Tests getting the current floor.
      */
@@ -212,5 +182,24 @@ public class ElevatorTest {
         assertEquals(1, elevator.getCurrentFloor());
         elevator.moveBetweenFloors(false,"MovingBetweenFloors",3, FloorButton.UP);
         assertEquals(3, elevator.getCurrentFloor());
+    }
+
+    /**
+     * Tests setting the HandleRequestInState.
+     */
+    @Test
+    void testSetAndGetHandleRequestInState() {
+        assertEquals(true, elevator.getHandleRequestInState());
+        elevator.setHandleRequestInState(false);
+        assertEquals(false, elevator.getHandleRequestInState());
+    }
+    /**
+     * Tests getting the number of passengers
+     */
+    @Test
+    void testSetAndGetMainFloorEvent() {
+        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"), 3, FloorButton.UP, 4, Fault.NO_FAULT);
+        elevator.setMainFloorEvent(hardwareDevice);
+        assertEquals(hardwareDevice, elevator.getMainFloorEvent());
     }
 }
