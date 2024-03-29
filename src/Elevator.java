@@ -72,6 +72,9 @@ public class Elevator implements Runnable {
      * An integer representing the number of passengers currently in the Elevator car.
      */
     private int numPassengers = 0; // TODO: implement numPassengers
+    /**
+     * A boolean for the handleRequest
+     */
     private boolean handleRequestInState = true;
 
     /**
@@ -118,9 +121,6 @@ public class Elevator implements Runnable {
         if (handleRequestInState) {
             currentState.handleRequest(this, mainFloorEvent);
         }
-    }
-    public void setHandleRequestInState(boolean handle) {
-        this.handleRequestInState = handle;
     }
 
     /**
@@ -437,7 +437,26 @@ public class Elevator implements Runnable {
      */
     public HardwareDevice getMainFloorEvent() { return mainFloorEvent; }
 
+    /**
+     * Sets a HardwareDevice to the mainFloorEvent.
+     */
     public void setMainFloorEvent(HardwareDevice hardwareDevice) {
         mainFloorEvent = hardwareDevice;
+    }
+
+    /**
+     * Sets the handleRequestInState to type boolean
+     * @param handle of type boolean for the handleRequest
+     */
+    public void setHandleRequestInState(boolean handle) {
+        this.handleRequestInState = handle;
+    }
+
+    /**
+     * Returns a boolean for the handleRequestInState
+     * @return A boolean for the handleRequestInState
+     */
+    public boolean getHandleRequestInState() {
+        return handleRequestInState;
     }
 }
