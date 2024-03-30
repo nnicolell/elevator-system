@@ -1,49 +1,63 @@
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
+import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * A class to test the Elevator.
+ * A class to test the Elevator subsystem.
  */
 public class ElevatorTest {
 
     /**
-     * A Scheduler to test with.
+     * A Scheduler to test the Elevator subsystem with.
      */
      private Scheduler scheduler;
+
     /**
-     * A Elevator to test with.
+     * An Elevator to test the Elevator subsystem with.
      */
     private Elevator elevator;
+
+    /**
+     * An integer representing the port number the Elevator receives DatagramPackets on.
+     */
+    private int elevatorPortNum;
+
+    /**
+     * A FloorListener to test the Elevator subsystem with.
+     */
     private FloorListener floorListener;
 
     /**
-     * A random to test with.
-     */;
+     * A Random object to test the Elevator subsystem with.
+     */
     private final Random random = new Random();
+
     /**
-     * Instantiates Scheduler and HardwareDevice.
+     * Returns a random integer between 0 and 9999.
+     *
+     * @return A random integer between 0 and 9999.
+     */
+    private int generateRandomInt() {
+        return random.nextInt(9999 - 1) + 1;
+    }
+
+    /**
+     * Instantiates a Scheduler, Elevator, and a FloorListener before each test.
      */
     @BeforeEach
     void setup() {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
-        int x = generateRandomInt();
-        elevatorPortNumbers.add(x);
-        int y = generateRandomInt();
-        scheduler = new Scheduler(elevatorPortNumbers, y);
+        elevatorPortNum = generateRandomInt();
+        elevatorPortNumbers.add(elevatorPortNum);
+        scheduler = new Scheduler(elevatorPortNumbers, generateRandomInt());
         elevator = scheduler.getElevatorTest();
         floorListener = scheduler.getFloorListener();
     }
+
     /**
-     * Closes the sockets after each test
+     * Closes the FloorListener and Scheduler sockets after each test.
      */
     @AfterEach
     void cleanup() {
@@ -52,53 +66,22 @@ public class ElevatorTest {
     }
 
     /**
-     * Generates a random integer
-     * @return Integer
-     */
-    private int generateRandomInt() {
-        return random.nextInt(9999 - 1) + 1;
-    }
-
-
-    /**
      * Tests the initialization of Elevator.
      */
     @Test
     void testElevator() {
         assertEquals(scheduler, elevator.getScheduler());
-        assertEquals(6, elevator.getStates().size());
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
+        assertEquals(elevatorPortNum, elevator.getPort());
+        assertEquals(0, elevator.getFloorEventsSize());
+        assertEquals(8, elevator.getStates().size());
     }
 
-
+    /**
+     * Tests getting the Scheduler.
+     */
     @Test
     void testGetScheduler() {
         assertEquals(scheduler, elevator.getScheduler());
-    }
-    /**
-     * Tests the Elevator state machine.
-     */
-    @Test
-    void testElevatorStateMachine() {
-        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 4);
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof DoorOpeningState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof DoorClosingState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof MovingBetweenFloorsState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof ReachedDestinationState);
-        hardwareDevice.setArrived();
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof DoorOpeningState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof DoorClosingState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof NotifySchedulerState);
-        elevator.getCurrentState().handleRequest(elevator, hardwareDevice);
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
     }
 
     /**
@@ -106,18 +89,19 @@ public class ElevatorTest {
      */
     @Test
     void testSetState() {
+        elevator.setHandleRequestInState(false);
         elevator.setState("WaitingForElevatorRequest");
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
+        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
         elevator.setState("MovingBetweenFloors");
-        assertTrue(elevator.getCurrentState() instanceof MovingBetweenFloorsState);
+        assertTrue(elevator.getCurrentState() instanceof MovingBetweenFloors);
         elevator.setState("ReachedDestination");
-        assertTrue(elevator.getCurrentState() instanceof ReachedDestinationState);
-        elevator.setState("DoorClosing");
-        assertTrue(elevator.getCurrentState() instanceof DoorClosingState);
-        elevator.setState("DoorOpening");
-        assertTrue(elevator.getCurrentState() instanceof DoorOpeningState);
+        assertTrue(elevator.getCurrentState() instanceof ReachedDestination);
+        elevator.setState("DoorsClosing");
+        assertTrue(elevator.getCurrentState() instanceof DoorsClosing);
+        elevator.setState("DoorsOpening");
+        assertTrue(elevator.getCurrentState() instanceof DoorsOpening);
         elevator.setState("NotifyScheduler");
-        assertTrue(elevator.getCurrentState() instanceof NotifySchedulerState);
+        assertTrue(elevator.getCurrentState() instanceof NotifyScheduler);
     }
 
     /**
@@ -125,11 +109,11 @@ public class ElevatorTest {
      */
     @Test
     void testAddState() {
+        assertEquals(8, elevator.getStates().size());
         String testStateName = "TestState";
-        assertEquals(6, elevator.getStates().size());
-        elevator.addState(testStateName, new WaitingForElevatorRequestState());
+        elevator.addState(testStateName, new WaitingForElevatorRequest());
         HashMap<String, ElevatorState> states = elevator.getStates();
-        assertEquals(7, states.size());
+        assertEquals(9, states.size());
         assertTrue(states.containsKey(testStateName));
     }
 
@@ -140,7 +124,7 @@ public class ElevatorTest {
     void testGetStates() {
         HashMap<String, ElevatorState> states = elevator.getStates();
         assertNotNull(states);
-        assertEquals(6, states.size());
+        assertEquals(8, states.size());
     }
 
     /**
@@ -148,13 +132,13 @@ public class ElevatorTest {
      */
     @Test
     void testGetCurrentState() {
-        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequestState);
-        elevator.setState("MovingBetweenFloors");
-        assertTrue(elevator.getCurrentState() instanceof MovingBetweenFloorsState);
+        elevator.setHandleRequestInState(false);
+        elevator.setState("WaitingForElevatorRequest");
+        assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
     }
 
     /**
-     * Test for loading and unloading passengers from the car
+     * Tests adding and removing passengers from the Elevator car.
      */
     @Test
     void testAddAndRemovePassengers() {
@@ -166,7 +150,7 @@ public class ElevatorTest {
     }
 
     /**
-     * Test for retrieving the number of passengers in the car
+     * Tests getting the number of passengers in the Elevator car.
      */
     @Test
     void testGetNumPassengers() {
@@ -177,28 +161,45 @@ public class ElevatorTest {
     }
 
     /**
-     * Test for elevator moving between floors
+     * Tests moving the Elevator car between floors.
      */
     @Test
     void testMoveBetweenFloors() {
-        LocalTime l = LocalTime.parse("13:02:56.0");
-        HardwareDevice hd = new HardwareDevice(elevator.getName(), l, 3, FloorButton.UP, 5);
-
+        elevator.setHandleRequestInState(false);
         assertEquals(1, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(5, FloorButton.UP);
+        elevator.moveBetweenFloors(false,"MovingBetweenFloors", 5, FloorButton.UP);
         assertEquals(5, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(2, FloorButton.DOWN);
-        assertEquals(2, elevator.getCurrentFloor());
-    }
-
-    /**
-     * Test to retrieve the current floor
-     */
-    @Test
-    void testGetCurrentFloor(){
-        elevator.moveBetweenFloors(3, FloorButton.UP);
+        elevator.moveBetweenFloors(false,"MovingBetweenFloors", 3, FloorButton.DOWN);
         assertEquals(3, elevator.getCurrentFloor());
     }
 
+    /**
+     * Tests getting the current floor.
+     */
+    @Test
+    void testGetCurrentFloor() {
+        elevator.setHandleRequestInState(false);
+        assertEquals(1, elevator.getCurrentFloor());
+        elevator.moveBetweenFloors(false,"MovingBetweenFloors",3, FloorButton.UP);
+        assertEquals(3, elevator.getCurrentFloor());
+    }
 
+    /**
+     * Tests setting the HandleRequestInState.
+     */
+    @Test
+    void testSetAndGetHandleRequestInState() {
+        assertEquals(true, elevator.getHandleRequestInState());
+        elevator.setHandleRequestInState(false);
+        assertEquals(false, elevator.getHandleRequestInState());
+    }
+    /**
+     * Tests getting the number of passengers
+     */
+    @Test
+    void testSetAndGetMainFloorEvent() {
+        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"), 3, FloorButton.UP, 4, Fault.NO_FAULT);
+        elevator.setMainFloorEvent(hardwareDevice);
+        assertEquals(hardwareDevice, elevator.getMainFloorEvent());
+    }
 }

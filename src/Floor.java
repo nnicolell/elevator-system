@@ -2,7 +2,6 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -64,8 +63,8 @@ public class Floor implements Runnable {
 
 
         ////////////RECEIVING FROM SCHEDULER///////////////////////
-        // creates a byte array given a capacity of bytes as 150
-        byte receiveData[] = new byte[150];
+        // creates a byte array given a capacity of bytes as 200
+        byte receiveData[] = new byte[200];
         // creates new receive datagram packet
         receivePacket = new DatagramPacket(receiveData, receiveData.length);
 
@@ -128,7 +127,12 @@ public class Floor implements Runnable {
         int floorFrom = Integer.parseInt(info[1]);
         FloorButton button = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int floorTo = Integer.parseInt(info[3]);
-        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo);
+        StringBuilder resultBuilder = new StringBuilder();
+        for (int i = 4; i < info.length; i++) {
+            resultBuilder.append(info[i]).append(" ");
+        }
+        String fault = resultBuilder.toString().trim();
+        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo, Fault.stringToFault(fault));
     }
 
 }
