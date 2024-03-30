@@ -50,7 +50,7 @@ JDK version 21.0.1 was used to develop the code.
 * [ElevatorState.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
   * This interface provides methods to handle the events that cause state transitions for the Elevator.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
-  * The Floor class represents the floor where the requests happen. 
+  * The Floor class represents the floor where the requests happen.
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
   * The FloorButton enumerator represents whether a passenger would like to move up or down.
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
@@ -69,7 +69,7 @@ JDK version 21.0.1 was used to develop the code.
 * [FloorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorTest.java)
 * [HardwareDeviceTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDeviceTest.java)
 * [SchedulerTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerTest.java)
-  
+
 <!-- Responsibilities -->
 ### Responsibilities
 | Person                   |                                      Responsibilities                                                     |         
@@ -100,7 +100,7 @@ JDK version 21.0.1 was used to develop the code.
 * [ElevatorState.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
   * This interface provides methods to handle the events that cause state transitions for the Elevator.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
-  * The Floor class represents the floor where the requests happen. 
+  * The Floor class represents the floor where the requests happen.
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
   * The FloorButton enumerator represents whether a passenger would like to move up or down.
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
@@ -118,7 +118,7 @@ JDK version 21.0.1 was used to develop the code.
 * [FloorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorTest.java)
 * [HardwareDeviceTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDeviceTest.java)
 * [SchedulerTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerTest.java)
-  
+
 <!-- Responsibilities -->
 ### Responsibilities
 | Person                   |                                      Responsibilities                                       |         
@@ -150,7 +150,7 @@ JDK version 21.0.1 was used to develop the code.
 * [ElevatorState.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorState.java)
   * This interface provides methods to handle the events that cause state transitions for the Elevator.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
-  * The Floor class represents the floor where the requests happen. 
+  * The Floor class represents the floor where the requests happen.
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
   * The FloorButton enumerator represents whether a passenger would like to move up or down.
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
@@ -168,7 +168,7 @@ JDK version 21.0.1 was used to develop the code.
 * [FloorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorTest.java)
 * [HardwareDeviceTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDeviceTest.java)
 * [SchedulerTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/SchedulerTest.java)
-  
+
 <!-- Responsibilities -->
 ### Responsibilities
 | Person                   |                                      Responsibilities                                       |         
@@ -196,7 +196,7 @@ JDK version 21.0.1 was used to develop the code.
 * [ElevatorSystem.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystem.java)
   * The ElevatorSystem class contains the main method and is used to test the ElevatorSystem.
 * [Floor.java](https://github.com/nnicolell/elevator-system/blob/master/src/Floor.java)
-  * The Floor class represents the floor where the requests happen. 
+  * The Floor class represents the floor where the requests happen.
 * [FloorButton.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorButton.java)
   * The FloorButton enumerator represents whether a passenger would like to move up or down.
 * [HardwareDevice.java](https://github.com/nnicolell/elevator-system/blob/master/src/HardwareDevice.java)
