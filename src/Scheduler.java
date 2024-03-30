@@ -274,7 +274,7 @@ public class Scheduler implements Runnable {
         Iterator<Elevator> iterator = availableElevators.iterator();
         while (iterator.hasNext()) {
             Elevator e = iterator.next();
-            HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
+            HardwareDevice floorEvent = floorEventsToHandle.remove(0);
             if (e != null) {
                 int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
                 if (elevatorDistance < distance) {
@@ -409,7 +409,7 @@ public class Scheduler implements Runnable {
      * @return Elevator
      */
     public Elevator getElevatorTest() {
-        return availableElevators.getFirst();
+        return availableElevators.get(0);
     }
 
     /**
