@@ -271,10 +271,10 @@ public class Scheduler implements Runnable {
             }
 
         }
-        HardwareDevice floorEvent = floorEventsToHandle.remove(0);
         Iterator<Elevator> iterator = availableElevators.iterator();
         while (iterator.hasNext()) {
             Elevator e = iterator.next();
+            HardwareDevice floorEvent = floorEventsToHandle.removeFirst();
             if (e != null) {
                 int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
                 if (elevatorDistance < distance) {
@@ -330,7 +330,6 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        //addBusyElevator(elevator);
         distributeFloorEvents();
     }
 
@@ -440,6 +439,7 @@ public class Scheduler implements Runnable {
 
         for (Thread t : elevatorThreads){
             if (t.getName().equals(name)){
+                System.out.println("[Scheduler] Shutting Down " + name);
                 t.interrupt();
             }
         }
