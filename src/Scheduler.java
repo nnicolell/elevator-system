@@ -39,19 +39,9 @@ public class Scheduler implements Runnable {
     private DatagramSocket sendReceiveSocket;
 
     /**
-     * A DatagramPacket to send data to the Floor subsystem.
-     */
-    private DatagramPacket sendPacketFloor;
-
-    /**
      * A DatagramSocket to send DatagramPackets to the Floor subsystem.
      */
     private DatagramSocket sendSocketFloor;
-
-    /**
-     * A DatagramSocket to receive DatagramPackets from the Floor subsystem.
-     */
-    private DatagramSocket receiveSocketFloor;
 
     /**
      * A List of HardwareDevices representing the floor events to handle.
@@ -121,6 +111,7 @@ public class Scheduler implements Runnable {
         addState("WaitingForFloorEvent", new WaitingForFloorEventState());
         addState("NotifyElevator", new NotifyElevatorState());
         addState("NotifyFloor", new NotifyFloorState());
+        addState("SelectElevator", new SelectElevatorState());
         setState("WaitingForFloorEvent");
 
         try {
@@ -135,9 +126,6 @@ public class Scheduler implements Runnable {
         floorListener = new FloorListener(this, portFloor);
         Thread floorListenerThread = new Thread(floorListener);
         floorListenerThread.start();
-    }
-    public void killFloorThread() {
-        floorListenerThread.interrupt();
     }
 
     /**
@@ -211,16 +199,6 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Remove the specified floor event into the floor queue.
-     *
-     * @param hardwareDevice A HardwareDevice representing the floor event.
-     */
-    public synchronized void removeFloorEvent(HardwareDevice hardwareDevice) {
-        floorEventsToHandle.remove(hardwareDevice);
-        notifyAll();
-    }
-
-    /**
      * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator is still
      * running and the number of requests handled is lower than the number of requests or the currentFloorEvent is null,
      * the thread should wait. Once the elevator has arrived, the floor subsystem should be notified.
@@ -229,7 +207,7 @@ public class Scheduler implements Runnable {
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
         System.out.println("[Scheduler] " + hardwareDevice.getElevator() +" has arrived at floor " + hardwareDevice.getCarButton() + ".");
-        setState("NotifyFloor");
+        setState("SelectElevator");
         currentState.handleRequest(this);
         notifyFloorSubsystem(hardwareDevice);
         notifyAll();
@@ -335,6 +313,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice Floor Event that is being sent
      */
     public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
+        setState("NotifyElevator");
         byte[] data = hardwareDevice.toString().getBytes();
         try{
             sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),elevator.getPort());
