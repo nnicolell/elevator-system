@@ -62,8 +62,8 @@ class SchedulerTest {
     @Test
     void testScheduler() {
         assertEquals(1, scheduler.getNumReqsHandled());
-        assertEquals(4, scheduler.getNumReqs());
-        assertEquals(3, scheduler.getStates().size());
+        assertEquals(5, scheduler.getNumReqs());
+        assertEquals(4, scheduler.getStates().size());
         assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
     }
 
@@ -84,7 +84,7 @@ class SchedulerTest {
     void testGetStates() {
         HashMap<String, SchedulerState> states = scheduler.getStates();
         assertNotNull(states);
-        assertEquals(3, states.size());
+        assertEquals(4, states.size());
     }
 
     /**
@@ -105,10 +105,10 @@ class SchedulerTest {
     @Test
     void testAddState() {
         String testStateName = "TestState";
-        assertEquals(3, scheduler.getStates().size());
+        assertEquals(4, scheduler.getStates().size());
         scheduler.addState(testStateName, new WaitingForFloorEventState());
         HashMap<String, SchedulerState> states = scheduler.getStates();
-        assertEquals(4, states.size());
+        assertEquals(5, states.size());
         assertTrue(states.containsKey(testStateName));
     }
 
@@ -126,7 +126,7 @@ class SchedulerTest {
      */
     @Test
     void testSetAndGetNumReqs() {
-        assertEquals(4, scheduler.getNumReqs());
+        assertEquals(5, scheduler.getNumReqs());
 
         scheduler.setNumReqs(2);
         assertEquals(2, scheduler.getNumReqs());
