@@ -211,8 +211,8 @@ public class Elevator implements Runnable {
                         finished.set(1);
                         timer.cancel();
                         System.out.println("[" + name + "] Stuck between floors. Shutting down...");
-                        // TODO: Scheduler needs to kill the Elevator thread
                         currentState = null; // shut down the elevator
+                        scheduler.killElevatorThread(name);
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
             } else {
