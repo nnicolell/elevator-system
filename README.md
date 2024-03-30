@@ -72,13 +72,13 @@ JDK version 21.0.1 was used to develop the code.
   
 <!-- Responsibilities -->
 ### Responsibilities
-| Person                   |                                      Responsibilities                                       |         
-| ------------------------ |:-------------------------------------------------------------------------------------------:|
-| Alexander Hum            |            Floor.java, UML Class Diagram, README.md                                         |
-| Emily Tang               |      Elevator.java, ElevatorStates.java, ElevatorTest.java, README.md                       | 
-| Nicole Lim               |      Scheulder.java, SchedulerTest, README.md                                               |
-| Nivetha Sivasaravanan    |            Floor.java, HardwareDevice.java, ElevatorTest, README.md                         |
-| Rimsha Atif              |             Elevator.java, ElevatorTest, UML Sequence Diagram, README.md                    |
+| Person                   |                                      Responsibilities                                                     |         
+| ------------------------ |:---------------------------------------------------------------------------------------------------------:|
+| Alexander Hum            |            Scheulder.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md                   |
+| Emily Tang               |      Elevator.java, ElevatorStates.java, ElevatorTest.java, UML Class Diagram, README.md                  | 
+| Nicole Lim               |      Scheulder.java, SchedulerStates.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md   |
+| Nivetha Sivasaravanan    |            Floor.java, HardwareDevice.java, ElevatorTest, UML Class Diagram, README.md                    |
+| Rimsha Atif              |             Elevator.java, ElevatorTest,  UML Class Diagram, README.md                                    |
 
 
 <!-- Iteration 3 -->
