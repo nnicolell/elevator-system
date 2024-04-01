@@ -72,10 +72,11 @@ public class Elevator implements Runnable {
      * An integer representing the number of passengers currently in the Elevator car.
      */
     private int numPassengers = 0; // TODO: implement numPassengers
+
     /**
-     * A boolean for the handleRequest
+     * True, if request should be handled when state is being set. False, if not.
      */
-    private boolean handleRequestInState = true;
+    private boolean handleRequestInSetState = true;
 
     /**
      * Initializes an Elevator.
@@ -118,7 +119,7 @@ public class Elevator implements Runnable {
         currentState = states.get(stateName);
         System.out.print("[" + name + "] State: ");
         currentState.displayState();
-        if (handleRequestInState) {
+        if (handleRequestInSetState) {
             currentState.handleRequest(this, mainFloorEvent);
         }
     }
@@ -445,18 +446,20 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Sets the handleRequestInState to type boolean
-     * @param handle of type boolean for the handleRequest
+     * Sets handleRequestInSetState to the specified boolean.
+     *
+     * @param handleRequestInSetState True, if request should be handled when state is being set. False, if not.
      */
-    public void setHandleRequestInState(boolean handle) {
-        this.handleRequestInState = handle;
+    public void setHandleRequestInSetState(boolean handleRequestInSetState) {
+        this.handleRequestInSetState = handleRequestInSetState;
     }
 
     /**
-     * Returns a boolean for the handleRequestInState
-     * @return A boolean for the handleRequestInState
+     * Returns true, if request should be handled when state is being set. False, if not.
+     *
+     * @return True, if request should be handled when state is being set. False, if not.
      */
-    public boolean getHandleRequestInState() {
-        return handleRequestInState;
+    public boolean getHandleRequestInSetState() {
+        return handleRequestInSetState;
     }
 }

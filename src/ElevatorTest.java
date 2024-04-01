@@ -89,7 +89,7 @@ public class ElevatorTest {
      */
     @Test
     void testSetState() {
-        elevator.setHandleRequestInState(false);
+        elevator.setHandleRequestInSetState(false);
         elevator.setState("WaitingForElevatorRequest");
         assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
         elevator.setState("MovingBetweenFloors");
@@ -132,7 +132,7 @@ public class ElevatorTest {
      */
     @Test
     void testGetCurrentState() {
-        elevator.setHandleRequestInState(false);
+        elevator.setHandleRequestInSetState(false);
         elevator.setState("WaitingForElevatorRequest");
         assertTrue(elevator.getCurrentState() instanceof WaitingForElevatorRequest);
     }
@@ -165,7 +165,7 @@ public class ElevatorTest {
      */
     @Test
     void testMoveBetweenFloors() {
-        elevator.setHandleRequestInState(false);
+        elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
         elevator.moveBetweenFloors(false,"MovingBetweenFloors", 5, FloorButton.UP);
         assertEquals(5, elevator.getCurrentFloor());
@@ -178,27 +178,28 @@ public class ElevatorTest {
      */
     @Test
     void testGetCurrentFloor() {
-        elevator.setHandleRequestInState(false);
+        elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
         elevator.moveBetweenFloors(false,"MovingBetweenFloors",3, FloorButton.UP);
         assertEquals(3, elevator.getCurrentFloor());
     }
 
     /**
-     * Tests setting the HandleRequestInState.
+     * Tests setting the handleRequestInSetState variable in Elevator.
      */
     @Test
     void testSetAndGetHandleRequestInState() {
-        assertEquals(true, elevator.getHandleRequestInState());
-        elevator.setHandleRequestInState(false);
-        assertEquals(false, elevator.getHandleRequestInState());
+        assertTrue(elevator.getHandleRequestInSetState());
+        elevator.setHandleRequestInSetState(false);
+        assertFalse(elevator.getHandleRequestInSetState());
     }
     /**
-     * Tests getting the number of passengers
+     * Tests getting the number of passengers.
      */
     @Test
     void testSetAndGetMainFloorEvent() {
-        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"), 3, FloorButton.UP, 4, Fault.NO_FAULT);
+        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
+                3, FloorButton.UP, 4, Fault.NO_FAULT);
         elevator.setMainFloorEvent(hardwareDevice);
         assertEquals(hardwareDevice, elevator.getMainFloorEvent());
     }
