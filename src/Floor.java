@@ -10,13 +10,16 @@ import static java.lang.Thread.sleep;
  * A Floor to represent the floors the elevator car stops at.
  */
 public class Floor implements Runnable {
-    private DatagramPacket sendPacket, receivePacket;
-    private DatagramSocket sendReceiveSocket;
 
     /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
      */
     private final Scheduler scheduler;
+
+    /**
+     * A DatagramSocket to send and receive messages to and from the Scheduler subsystem.
+     */
+    private DatagramSocket sendReceiveSocket;
 
     /**
      * Initializes a new Floor with a Scheduler representing the elevator scheduler to receive and send events to.
@@ -25,6 +28,8 @@ public class Floor implements Runnable {
      */
     public Floor(Scheduler scheduler) {
         this.scheduler = scheduler;
+
+        // initialize the DatagramSocket to send and receive messages to and from the Scheduler subsystem
         try {
             sendReceiveSocket = new DatagramSocket();
         } catch (SocketException se) {
@@ -34,105 +39,87 @@ public class Floor implements Runnable {
     }
 
     /**
-     * Create a DatagramPacket to send to the Scheduler
-     * @param hardwareDevice the HardwareDevice representing the floor event we want to send
+     * Sends a DatagramPacket containing information about the specified HardwareDevice to the Scheduler subsystem, and
+     * receives an acknowledgment from the Scheduler subsystem.
+     *
+     * @param hardwareDevice A HardwareDevice representing the floor event to send to the Scheduler subsystem.
      */
-    private void  prepareSendPacket(HardwareDevice hardwareDevice) {
-        String message = hardwareDevice.toString(); //create message
-        byte msg[] = message.getBytes(); //convert message to byte array
+    private void sendFloorEventAndReceiveAck(HardwareDevice hardwareDevice) {
+        // send a packet to the Scheduler subsystem containing information about hardwareDevice
+        String hardwareDeviceString = hardwareDevice.toString();
+        byte[] hardwareDeviceBytes = hardwareDeviceString.getBytes();
         try {
-            sendPacket = new DatagramPacket(msg, msg.length,
-                    InetAddress.getLocalHost(), 5000); //create packet with destination port 5000
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    /**
-     * Send and Receive DatagramPacket to and from the Scheduler.
-     */
-    private void sendAndReceive() {
-        ///////SENDING TO SCHEDULER//////////////////
-        try {
+            DatagramPacket sendPacket = new DatagramPacket(hardwareDeviceBytes, hardwareDeviceBytes.length,
+                    InetAddress.getLocalHost(), 5000); // create packet with destination port 5000 (Scheduler)
+            System.out.println("[Floor] Sending " + hardwareDeviceString + " to Scheduler.");
             sendReceiveSocket.send(sendPacket);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-
-        ////////////RECEIVING FROM SCHEDULER///////////////////////
-        // creates a byte array given a capacity of bytes as 200
-        byte receiveData[] = new byte[200];
-        // creates new receive datagram packet
-        receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
+        // receive an acknowledgment from the Scheduler subsystem
+        byte[] receiveData = new byte[200];
+        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
-            // receives the datagram packet
             sendReceiveSocket.receive(receivePacket);
         } catch(IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
-
-        // creates a new byte array and copy's the bytes into the new array giving the new array that specific size
-        byte temp[] = new byte[receivePacket.getLength()];
-        for (int j = 0; j < receivePacket.getLength(); j++) {
-            temp[j] = receiveData[j];
-        }
-        // prints that the Floor received the packet from scheduler
-        System.out.println("[Floor] Receives Packet Containing: \n" + new String(temp));
-
+        System.out.println("[Floor] Received "
+                + new String(receivePacket.getData(), 0, receivePacket.getLength()) + " from Scheduler.");
     }
 
     /**
-     * Reads input from text file and creates a HardwareDevice objects to pass into Scheduler to add to the queue.
+     * Reads input.txt and creates a HardwareDevice objects to send to the Scheduler subsystem.
      */
     @Override
     public void run() {
         try {
             List<String> lines = Files.readAllLines(Paths.get("input.txt"));
-            scheduler.setNumReqs(lines.size());
+            scheduler.setNumReqs(lines.size()); // notify Scheduler of how many floor events it will be receiving
 
             if (lines.isEmpty()) {
-                System.out.println("No requests to handle!");
+                System.out.println("[Floor] No requests to handle!");
                 System.exit(0);
             }
 
+            // send each floor event to the Scheduler subsystem
             for (String s : lines) {
                 String[] info = s.split(" ");
                 sleep(1000);
                 System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
-                prepareSendPacket(createHardwareDevice(info));
-                sendAndReceive();
-                //scheduler.addFloorEvent(createHardwareDevice(info));
+                sendFloorEventAndReceiveAck(createHardwareDevice(info));
             }
-            // close socket
-            sendReceiveSocket.close();
+
+            sendReceiveSocket.close(); // close socket once all floor events have been sent to the Scheduler
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
         }
     }
 
     /**
-     * Returns a HardwareDevice with the information provided.
+     * Creates a HardwareDevice with the specified information.
      *
-     * @param info An array of String information including time elevator requester, floor from where it was requested
-     * whether it is going up or down, and floor it is going to
-     * @return A HardwareDevice with the specified properties.
+     * @param info An array of String information to initialize the HardwareDevice.
+     * @return A HardwareDevice with the specified information.
      */
     public HardwareDevice createHardwareDevice(String[] info) {
-        LocalTime l = LocalTime.parse(info[0]);
-        int floorFrom = Integer.parseInt(info[1]);
-        FloorButton button = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
-        int floorTo = Integer.parseInt(info[3]);
-        StringBuilder resultBuilder = new StringBuilder();
+        // process the time, floor, floor button, and car button that was selected
+        LocalTime time = LocalTime.parse(info[0]);
+        int floor = Integer.parseInt(info[1]);
+        FloorButton floorButton = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
+        int carButton = Integer.parseInt(info[3]);
+
+        // process the specified Elevator fault
+        StringBuilder faultStringBuilder = new StringBuilder();
         for (int i = 4; i < info.length; i++) {
-            resultBuilder.append(info[i]).append(" ");
+            faultStringBuilder.append(info[i]).append(" ");
         }
-        String fault = resultBuilder.toString().trim();
-        return new HardwareDevice("Elevator?", l, floorFrom, button, floorTo, Fault.stringToFault(fault));
+        String fault = faultStringBuilder.toString().trim();
+
+        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, Fault.stringToFault(fault));
     }
 
 }

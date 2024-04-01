@@ -1,54 +1,71 @@
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.*;
+import java.util.Arrays;
 
+/**
+ * A class to receive floor events that the Floor subsystem is sending to the Scheduler subsystem.
+ */
 public class FloorListener implements Runnable {
-    private Scheduler scheduler;
-    private DatagramSocket sendSocketFloor, receiveSocketFloor;
-    private static int port;
+
+    /**
+     * A Scheduler representing the elevator scheduler that the Floor subsystem is sending floor events to.
+     */
+    private final Scheduler scheduler;
+
+    /**
+     * A DatagramSocket to receive messages from the Floor subsystem.
+     */
+    private final DatagramSocket receiveSocket;
+
+    /**
+     * A DatagramPacket to send acknowledgments to the Floor subsystem.
+     */
     private DatagramPacket sendPacketFloor;
-    private boolean running=true;
+
+    /**
+     * True, if the FloorListener should be running. False, if not.
+     */
+    private boolean running = true;
+
+    /**
+     * Initializes a FloorListener.
+     *
+     * @param scheduler A Scheduler representing the elevator scheduler that the Floor subsystem is sending floor events
+     *                  to.
+     * @param port An integer representing the port number to receive DatagramPackets from the Floor subsystem on.
+     */
     public FloorListener(Scheduler scheduler, int port) {
-        this.port = port;
         this.scheduler = scheduler;
+
         try {
-            sendSocketFloor = new DatagramSocket();
-            receiveSocketFloor = new DatagramSocket(port);
+            receiveSocket = new DatagramSocket(port);
         } catch (SocketException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Sets the FloorListener to not be running.
+     */
     public void setRunningToFalse() {
         running = false;
     }
-    public void setRunningToTrue() {
-        running = true;
-    }
 
-    public void closeFloorSocket() {
-        receiveSocketFloor.close();
-    }
-
+    /**
+     * Receives floor events from the Floor subsystem while the FloorListener should be running.
+     */
     @Override
     public void run() {
-        while(running) {
-            try {
-                checkForFloorEvent();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        while (running) {
+            receiveFloorEvent();
         }
-        closeFloorSocket();
+        receiveSocket.close();
     }
+
     /**
-     * Receives the next floor event to be processed. Runs as long as there are more requests pending, it will wait
-     * until there is an event added to the floor queue and no floor event is current being processed.
-     *
-     * @throws InterruptedException When a thread is interrupted while it is in a blocked state.
+     * Receives a floor event from the Floor subsystem, and sends an acknowledgment back to the Floor subsystem.
      */
-    public synchronized void checkForFloorEvent() throws InterruptedException {
+    private void receiveFloorEvent() {
         // construct a DatagramPacket for receiving packets up to 100 bytes long
         byte[] floorData = new byte[150];
         DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
@@ -56,7 +73,7 @@ public class FloorListener implements Runnable {
         // block until a DatagramPacket is received from receiveSocket
         System.out.println("[Scheduler] Waiting for packet from floor...");
         try {
-            receiveSocketFloor.receive(floorPacket);
+            receiveSocket.receive(floorPacket);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -64,29 +81,32 @@ public class FloorListener implements Runnable {
 
         // process the received DatagramPacket from the Floor subsystem
         String floorPacketString = new String(floorData, 0, floorPacket.getLength());
-        System.out.println("[Scheduler] Received packet from floor containing: " + floorPacketString);
+        System.out.println("[Scheduler] Received floor event " + floorPacketString + " from Floor.");
         HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
 
         // add the floor event to the appropriate list of floor events to handle
         scheduler.addFloorEvent(floorEvent);
 
         // construct acknowledgment data including the content of the received packet
-        byte[] acknowledgmentData = ("ACK " + floorPacketString).getBytes();
+        String acknowledgmentMsg = "ACK " + floorPacketString;
+        byte[] acknowledgmentData = acknowledgmentMsg.getBytes();
 
         // create a DatagramPacket for the acknowledgment and send it
         sendPacketFloor = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, floorPacket.getAddress(),
                 floorPacket.getPort());
         try {
+            DatagramSocket sendSocketFloor = new DatagramSocket();
             sendSocketFloor.send(sendPacketFloor);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        System.out.println("[Scheduler] Acknowledgment sent to floor!");
+        System.out.println("[Scheduler] Sending " + acknowledgmentMsg + " to Floor.");
     }
 
     public DatagramPacket getSendPacketFloor() {
         return sendPacketFloor;
     }
+
 }

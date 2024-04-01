@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class HardwareDevice {
 
     /**
-     * Elevator running the event
+     * A String representing the elevator executing the floor event.
      */
     private String elevator;
 

@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.net.*;
-import java.sql.PreparedStatement;
 import java.util.*;
 
 /**
@@ -57,18 +56,17 @@ public class Scheduler implements Runnable {
      * A List of Elevators representing the elevators that are currently running
      */
     private List<Elevator> busyElevators;
+
     /**
      * The floor listener for the Scheduler
      */
     private FloorListener floorListener;
+
     /**
      * A List of Threads representing the threads for the elevators.
      */
     private List<Thread> elevatorThreads;
-    /**
-     * The thread for the floor listener
-     */
-    private Thread floorListenerThread;
+
     /**
      * A List containing the failed elevators
      */

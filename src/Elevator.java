@@ -193,6 +193,8 @@ public class Elevator implements Runnable {
      * Moves the Elevator between floors.
      *
      * @param fault True, if a fault should occur. False, if not.
+     * @param state A String representing the state the Elevator state machine should transition to after the elevator
+     *              car has finished moving between floors.
      * @param floor An integer representing the floor the Elevator needs to move to.
      * @param button A FloorButton representing the direction the Elevator needs to move.
      */

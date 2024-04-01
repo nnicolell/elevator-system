@@ -170,7 +170,8 @@ class MovingBetweenFloors implements ElevatorState {
         int currentFloor = context.getCurrentFloor();
         if (currentFloor == mainFloorEvent.getFloor()) {
             // Elevator car is currently on the floor it was requested on
-            context.moveBetweenFloors(fault, "ReachedDestination", mainFloorEvent.getCarButton(), mainFloorEvent.getFloorButton());
+            context.moveBetweenFloors(fault, "ReachedDestination", mainFloorEvent.getCarButton(),
+                    mainFloorEvent.getFloorButton());
         } else {
             // Elevator car is not currently on the floor it was requested on
             FloorButton directionToMove = (currentFloor < mainFloorEvent.getFloor())
