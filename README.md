@@ -74,9 +74,9 @@ JDK version 21.0.1 was used to develop the code.
 ### Responsibilities
 | Person                   |                                      Responsibilities                                                     |         
 | ------------------------ |:---------------------------------------------------------------------------------------------------------:|
-| Alexander Hum            |            Scheulder.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md                   |
+| Alexander Hum            |            Scheduler.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md                   |
 | Emily Tang               |      Elevator.java, ElevatorStates.java, ElevatorTest.java, UML Class Diagram, README.md                  | 
-| Nicole Lim               |      Scheulder.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md                         |
+| Nicole Lim               |      Scheduler.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md                         |
 | Nivetha Sivasaravanan    |            Floor.java, HardwareDevice.java, ElevatorTest, UML Class Diagram, README.md                    |
 | Rimsha Atif              |             Elevator.java, ElevatorTest,  UML Class Diagram, Timing Diagrams, README.md                   |
 
