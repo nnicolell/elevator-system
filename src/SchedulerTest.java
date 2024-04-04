@@ -64,7 +64,7 @@ class SchedulerTest {
         assertEquals(1, scheduler.getNumReqsHandled());
         assertEquals(5, scheduler.getNumReqs());
         assertEquals(4, scheduler.getStates().size());
-        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
+        assertInstanceOf(WaitingForFloorEvent.class, scheduler.getCurrentState());
     }
 
     /**
@@ -72,9 +72,9 @@ class SchedulerTest {
      */
     @Test
     void testGetCurrentState() {
-        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
+        assertInstanceOf(WaitingForFloorEvent.class, scheduler.getCurrentState());
         scheduler.setState("NotifyElevator");
-        assertInstanceOf(NotifyElevatorState.class, scheduler.getCurrentState());
+        assertInstanceOf(NotifyElevator.class, scheduler.getCurrentState());
     }
 
     /**
@@ -92,11 +92,11 @@ class SchedulerTest {
      */
     @Test
     void testSetState() {
-        assertInstanceOf(WaitingForFloorEventState.class, scheduler.getCurrentState());
+        assertInstanceOf(WaitingForFloorEvent.class, scheduler.getCurrentState());
         scheduler.setState("NotifyFloor");
-        assertInstanceOf(NotifyFloorState.class, scheduler.getCurrentState());
+        assertInstanceOf(NotifyFloor.class, scheduler.getCurrentState());
         scheduler.setState("NotifyElevator");
-        assertInstanceOf(NotifyElevatorState.class, scheduler.getCurrentState());
+        assertInstanceOf(NotifyElevator.class, scheduler.getCurrentState());
     }
 
     /**
@@ -106,7 +106,7 @@ class SchedulerTest {
     void testAddState() {
         String testStateName = "TestState";
         assertEquals(4, scheduler.getStates().size());
-        scheduler.addState(testStateName, new WaitingForFloorEventState());
+        scheduler.addState(testStateName, new WaitingForFloorEvent());
         HashMap<String, SchedulerState> states = scheduler.getStates();
         assertEquals(5, states.size());
         assertTrue(states.containsKey(testStateName));

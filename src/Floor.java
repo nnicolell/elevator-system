@@ -22,12 +22,18 @@ public class Floor implements Runnable {
     private DatagramSocket sendReceiveSocket;
 
     /**
+     * An ElevatorSystemLogger to log events.
+     */
+    private final ElevatorSystemLogger logger;
+
+    /**
      * Initializes a new Floor with a Scheduler representing the elevator scheduler to receive and send events to.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
      */
     public Floor(Scheduler scheduler) {
         this.scheduler = scheduler;
+        logger = new ElevatorSystemLogger("Floor");
 
         // initialize the DatagramSocket to send and receive messages to and from the Scheduler subsystem
         try {
@@ -51,7 +57,7 @@ public class Floor implements Runnable {
         try {
             DatagramPacket sendPacket = new DatagramPacket(hardwareDeviceBytes, hardwareDeviceBytes.length,
                     InetAddress.getLocalHost(), 5000); // create packet with destination port 5000 (Scheduler)
-            System.out.println("[Floor] Sending " + hardwareDeviceString + " to Scheduler.");
+            logger.info("Sending " + hardwareDeviceString + " to Scheduler.");
             sendReceiveSocket.send(sendPacket);
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,7 +73,8 @@ public class Floor implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
-        System.out.println("[Floor] Received "
+
+        logger.info("Received "
                 + new String(receivePacket.getData(), 0, receivePacket.getLength()) + " from Scheduler.");
     }
 
@@ -81,7 +88,7 @@ public class Floor implements Runnable {
             scheduler.setNumReqs(lines.size()); // notify Scheduler of how many floor events it will be receiving
 
             if (lines.isEmpty()) {
-                System.out.println("[Floor] No requests to handle!");
+                logger.info("No requests to handle... Exiting.");
                 System.exit(0);
             }
 
@@ -89,7 +96,7 @@ public class Floor implements Runnable {
             for (String s : lines) {
                 String[] info = s.split(" ");
                 sleep(1000);
-                System.out.println("[Floor] Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
+                logger.info("Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
                 sendFloorEventAndReceiveAck(createHardwareDevice(info));
             }
 

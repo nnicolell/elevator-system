@@ -2,18 +2,17 @@
  * This class represents a state in the Scheduler state machine where the Scheduler is waiting for the Elevator to
  * arrive.
  */
-class NotifyElevatorState implements SchedulerState {
+class NotifyElevator implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
         scheduler.setState("WaitingForFloorEvent");
         scheduler.receiveElevatorMessage();
-
     }
 
     @Override
-    public void displayState() {
-        System.out.println("[SchedulerState] Notifying Elevator of request");
+    public String displayState() {
+        return "NotifyElevator";
     }
 
 }
@@ -21,17 +20,16 @@ class NotifyElevatorState implements SchedulerState {
 /**
  * This class represents a state in the Scheduler state machine where the Scheduler is waiting to receive a floor event.
  */
-class WaitingForFloorEventState implements SchedulerState {
+class WaitingForFloorEvent implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
-//        scheduler.distributeFloorEvents();
         scheduler.setState("SelectElevator");
     }
 
     @Override
-    public void displayState() {
-        System.out.println("[SchedulerState] Waiting for Floor Event");
+    public String displayState() {
+        return "WaitingForFloorEvent";
     }
 
 }
@@ -40,7 +38,7 @@ class WaitingForFloorEventState implements SchedulerState {
  * This class represents a state in Scheduler that notifies a floor after an elevator has finished moving and reaches
  * that floor.
  */
-class NotifyFloorState implements SchedulerState {
+class NotifyFloor implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
@@ -48,8 +46,8 @@ class NotifyFloorState implements SchedulerState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("[SchedulerState] Notifying Floor of Elevator arrival");
+    public String displayState() {
+        return "NotifyFloor";
     }
 
 }
@@ -58,7 +56,7 @@ class NotifyFloorState implements SchedulerState {
  * This class represents a state in Scheduler that notifies a floor after an elevator has finished moving and reaches
  * that floor.
  */
-class SelectElevatorState implements SchedulerState {
+class SelectElevator implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
@@ -66,8 +64,8 @@ class SelectElevatorState implements SchedulerState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("[SchedulerState] Selecting Elevator");
+    public String displayState() {
+        return "SelectElevator";
     }
 
 }

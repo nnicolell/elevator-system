@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.net.*;
-import java.util.Arrays;
 
 /**
  * A class to receive floor events that the Floor subsystem is sending to the Scheduler subsystem.
@@ -28,6 +27,11 @@ public class FloorListener implements Runnable {
     private boolean running = true;
 
     /**
+     * An ElevatorSystemLogger to log events.
+     */
+    private final ElevatorSystemLogger logger;
+
+    /**
      * Initializes a FloorListener.
      *
      * @param scheduler A Scheduler representing the elevator scheduler that the Floor subsystem is sending floor events
@@ -36,6 +40,7 @@ public class FloorListener implements Runnable {
      */
     public FloorListener(Scheduler scheduler, int port) {
         this.scheduler = scheduler;
+        logger = new ElevatorSystemLogger("Scheduler");
 
         try {
             receiveSocket = new DatagramSocket(port);
@@ -71,7 +76,7 @@ public class FloorListener implements Runnable {
         DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
 
         // block until a DatagramPacket is received from receiveSocket
-        System.out.println("[Scheduler] Waiting for packet from floor...");
+        logger.info("Waiting for packet from floor...");
         try {
             receiveSocket.receive(floorPacket);
         } catch (IOException e) {
@@ -81,7 +86,7 @@ public class FloorListener implements Runnable {
 
         // process the received DatagramPacket from the Floor subsystem
         String floorPacketString = new String(floorData, 0, floorPacket.getLength());
-        System.out.println("[Scheduler] Received floor event " + floorPacketString + " from Floor.");
+        logger.info("Received floor event " + floorPacketString + " from Floor.");
         HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
 
         // add the floor event to the appropriate list of floor events to handle
@@ -102,7 +107,7 @@ public class FloorListener implements Runnable {
             System.exit(1);
         }
 
-        System.out.println("[Scheduler] Sending " + acknowledgmentMsg + " to Floor.");
+        logger.info("Sending " + acknowledgmentMsg + " to Floor");
     }
 
     public DatagramPacket getSendPacketFloor() {

@@ -11,8 +11,8 @@ public interface SchedulerState {
     void handleRequest(Scheduler scheduler);
 
     /**
-     * Displays the current state information.
+     * Returns a String representing the name of the SchedulerState.
      */
-    void displayState();
+    String displayState();
 
 }

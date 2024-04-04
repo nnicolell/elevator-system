@@ -1,19 +1,26 @@
-[2024-04-04 13:47:03.858] [Elevator3] State: WaitingForElevatorRequest
-[2024-04-04 13:47:03.892] [Elevator3] Waiting for a floor event from Scheduler...
-[2024-04-04 13:47:06.892] [Elevator3] Received floor event {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening} from Scheduler.
-[2024-04-04 13:47:06.893] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening} to Scheduler.
-[2024-04-04 13:47:06.894] [Elevator3] State: MovingBetweenFloors
-[2024-04-04 13:47:06.894] [Elevator3] Currently at floor 1, moving to floor 5...
-[2024-04-04 13:47:06.895] [Elevator3] Currently at floor 2
-[2024-04-04 13:47:06.896] [Elevator3] Currently at floor 3
-[2024-04-04 13:47:06.896] [Elevator3] Currently at floor 4
-[2024-04-04 13:47:06.897] [Elevator3] Currently at floor 5
-[2024-04-04 13:47:06.897] [Elevator3] State: DoorsOpening
-[2024-04-04 13:47:14.703] [Elevator3] State: DoorsNotOpening
-[2024-04-04 13:47:14.707] [Elevator3] Forcing doors open...
-[2024-04-04 13:47:22.393] [Elevator3] State: DoorsClosing
-[2024-04-04 13:47:30.082] [Elevator3] State: MovingBetweenFloors
-[2024-04-04 13:47:30.087] [Elevator3] Currently at floor 5, moving to floor 4...
-[2024-04-04 13:47:30.089] [Elevator3] Currently at floor 4
-[2024-04-04 13:47:30.089] [Elevator3] State: ReachedDestination
-[2024-04-04 13:47:30.090] [Elevator3] State: DoorsOpening
+[2024-04-04 18:57:13.820] [Elevator3] State: WaitingForElevatorRequest
+[2024-04-04 18:57:13.854] [Elevator3] Waiting for a floor event from Scheduler...
+[2024-04-04 18:57:16.871] [Elevator3] Received floor event {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening} from Scheduler.
+[2024-04-04 18:57:16.872] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening} to Scheduler.
+[2024-04-04 18:57:16.873] [Elevator3] State: MovingBetweenFloors
+[2024-04-04 18:57:16.873] [Elevator3] Currently at floor 1, moving to floor 5...
+[2024-04-04 18:57:16.874] [Elevator3] Currently at floor 2
+[2024-04-04 18:57:16.875] [Elevator3] Currently at floor 3
+[2024-04-04 18:57:16.875] [Elevator3] Currently at floor 4
+[2024-04-04 18:57:16.876] [Elevator3] Currently at floor 5
+[2024-04-04 18:57:16.876] [Elevator3] State: DoorsOpening
+[2024-04-04 18:57:24.682] [Elevator3] State: DoorsNotOpening
+[2024-04-04 18:57:24.684] [Elevator3] Forcing doors open...
+[2024-04-04 18:57:32.365] [Elevator3] State: DoorsClosing
+[2024-04-04 18:57:40.048] [Elevator3] State: MovingBetweenFloors
+[2024-04-04 18:57:40.050] [Elevator3] Currently at floor 5, moving to floor 4...
+[2024-04-04 18:57:40.051] [Elevator3] Currently at floor 4
+[2024-04-04 18:57:40.052] [Elevator3] State: ReachedDestination
+[2024-04-04 18:57:40.052] [Elevator3] State: DoorsOpening
+[2024-04-04 18:57:47.857] [Elevator3] State: DoorsNotOpening
+[2024-04-04 18:57:47.858] [Elevator3] Forcing doors open...
+[2024-04-04 18:57:55.542] [Elevator3] State: DoorsClosing
+[2024-04-04 18:58:03.230] [Elevator3] State: NotifyingScheduler
+[2024-04-04 18:58:03.233] [Elevator3] Sending {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening} to Scheduler.
+[2024-04-04 18:58:03.235] [Elevator3] State: WaitingForElevatorRequest
+[2024-04-04 18:58:03.235] [Elevator3] Waiting for a floor event from Scheduler...
