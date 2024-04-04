@@ -12,8 +12,8 @@ public interface ElevatorState {
     void handleRequest(Elevator context, HardwareDevice mainFloorEvent);
 
     /**
-     * Displays the current state information.
+     * Returns a String representing the name of the ElevatorState.
      */
-    void displayState();
+    String displayState();
 
 }

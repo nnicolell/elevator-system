@@ -79,6 +79,11 @@ public class Elevator implements Runnable {
     private boolean handleRequestInSetState = true;
 
     /**
+     * An ElevatorSystemLogger to log events.
+     */
+    private final ElevatorSystemLogger logger;
+
+    /**
      * Initializes an Elevator.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
@@ -99,6 +104,8 @@ public class Elevator implements Runnable {
             System.exit(1);
         }
 
+        logger = new ElevatorSystemLogger(name);
+
         states = new HashMap<>(); // initialize the Elevator state machine
         addState("WaitingForElevatorRequest", new WaitingForElevatorRequest());
         addState("MovingBetweenFloors", new MovingBetweenFloors());
@@ -117,8 +124,7 @@ public class Elevator implements Runnable {
      */
     public void setState(String stateName) {
         currentState = states.get(stateName);
-        System.out.print("[" + name + "] State: ");
-        currentState.displayState();
+        logger.info("State: " + currentState.displayState());
         if (handleRequestInSetState) {
             currentState.handleRequest(this, mainFloorEvent);
         }
@@ -149,7 +155,7 @@ public class Elevator implements Runnable {
      */
     public void sendPacketToScheduler(byte[] data) {
         try {
-            System.out.println("[" + name + "] Sending " + new String(data, 0, data.length) + " to Scheduler.");
+            logger.info("Sending " + new String(data, 0, data.length) + " to Scheduler.");
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
             DatagramSocket sendSocket = new DatagramSocket();
             sendSocket.send(sendPacket);
@@ -169,7 +175,7 @@ public class Elevator implements Runnable {
         byte[] floorEventData = new byte[150];
         DatagramPacket receivePacket = new DatagramPacket(floorEventData, floorEventData.length);
         try {
-            System.out.println("[" + name + "] Waiting for a floor event from Scheduler...");
+            logger.info("Waiting for a floor event from Scheduler...");
             receiveSocket.receive(receivePacket);
         } catch (IOException e) {
             System.err.println(e);
@@ -178,7 +184,7 @@ public class Elevator implements Runnable {
 
         // process the received floor event
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
-        System.out.println("[" + name + "] Received floor event " + floorEvent + " from Scheduler.");
+        logger.info("Received floor event " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
 
@@ -200,7 +206,7 @@ public class Elevator implements Runnable {
      */
     public void moveBetweenFloors(boolean fault, String state, int floor, FloorButton button) {
         int delta = Math.abs(floor - currentFloor); // number of floors to move
-        System.out.println("[" + name + "] Currently at floor " + currentFloor + ", moving to floor " + floor + "...");
+        logger.info("Currently at floor " + currentFloor + ", moving to floor " + floor + "...");
         for (int i = 0; i < delta; i++) {
             // handles the case where an ELEVATOR_STUCK fault occurs
             Timer faultTimer = new Timer();
@@ -213,7 +219,7 @@ public class Elevator implements Runnable {
                     public void run() {
                         finished.set(1);
                         timer.cancel();
-                        System.out.println("[" + name + "] Stuck between floors. Shutting down...");
+                        logger.severe("Stuck between floors. Shutting down...");
                         currentState = null; // shut down the elevator
                         scheduler.killElevatorThread(name);
                     }
@@ -252,13 +258,13 @@ public class Elevator implements Runnable {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
 //                        hardwareDeviceToDelete = hardwareDevice;
-                    System.out.println("[" + name + "] Picked up floor event " + hardwareDevice);
+                    logger.info("Picked up floor event " + hardwareDevice);
                 }
             }
-            System.out.println("[" + name + "] Currently at floor " + currentFloor);
+            logger.info("Currently at floor " + currentFloor);
         }
 
-        if (!fault) { // transition to the next state if a fault does not occur,f
+        if (!fault) { // transition to the next state if a fault does not occur
             setState(state);
         }
     }
@@ -342,7 +348,7 @@ public class Elevator implements Runnable {
      */
     public void forceOpenOrCloseDoors(boolean forceOpen) {
         try {
-            System.out.println("[" + name + "] Forcing doors " + (forceOpen ? "open" : "close") + "...");
+            logger.warning("Forcing doors " + (forceOpen ? "open" : "close") + "...");
             Thread.sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

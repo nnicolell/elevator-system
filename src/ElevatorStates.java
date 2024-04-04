@@ -22,8 +22,8 @@ class WaitingForElevatorRequest implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("WaitingForElevatorRequest");
+    public String displayState() {
+        return "WaitingForElevatorRequest";
     }
 
 }
@@ -41,8 +41,8 @@ class DoorsOpening implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("DoorsOpening");
+    public String displayState() {
+        return "DoorsOpening";
     }
 
 }
@@ -59,8 +59,8 @@ class DoorsNotOpening implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("DoorsNotOpening");
+    public String displayState() {
+        return "DoorsNotOpening";
     }
 }
 
@@ -79,8 +79,8 @@ class DoorsClosing implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("DoorsClosing");
+    public String displayState() {
+        return "DoorsClosing";
     }
 
 }
@@ -103,8 +103,8 @@ class DoorsNotClosing implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("DoorsNotClosing");
+    public String displayState() {
+        return "DoorsNotClosing";
     }
 }
 
@@ -126,8 +126,8 @@ class ReachedDestination implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("ReachedDestination");
+    public String displayState() {
+        return "ReachedDestination";
     }
 
 }
@@ -150,8 +150,8 @@ class NotifyScheduler implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("NotifyingScheduler");
+    public String displayState() {
+        return "NotifyingScheduler";
     }
 
 }
@@ -181,8 +181,8 @@ class MovingBetweenFloors implements ElevatorState {
     }
 
     @Override
-    public void displayState() {
-        System.out.println("MovingBetweenFloors");
+    public String displayState() {
+        return "MovingBetweenFloors";
     }
 
 }
