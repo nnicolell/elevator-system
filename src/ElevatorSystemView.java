@@ -1,3 +1,6 @@
+import java.util.List;
+
 public interface ElevatorSystemView {
-    void update(Elevator elevator);
+    void updateElevator(List<Elevator> elevator);
+    void updateFloor(Elevator elevator, int index);
 }
