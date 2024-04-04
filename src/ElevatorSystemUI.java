@@ -81,6 +81,10 @@ public class ElevatorSystemUI extends JFrame{
         }
     }
 
+    public void update(Elevator elevator) {
+
+    }
+
     public static void main(String[] args) {
         new ElevatorSystemUI(5);
     }
