@@ -1,11 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
-public class ElevatorSystemUI extends JFrame{
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
 
     private int width, height;
     private int numOfElevators;
     private JLabel[][] grid;
-    private JLabel[] elevators;
+    private ArrayList<JLabel> elevators;
     private final int NUM_FLOORS = 22;
     private JPanel buildingFloors;
     private JPanel elevatorsCloseUp;
@@ -35,7 +39,7 @@ public class ElevatorSystemUI extends JFrame{
         elevatorsCloseUp = new JPanel();
         elevatorsCloseUp.setLayout(new GridLayout(1, numOfElevators));
 
-        elevators = new JLabel[numOfElevators];
+        elevators = new ArrayList<>();
         addElevators();
         elevatorsPanel.add(elevatorsCloseUp);
         requestsLog = new JList();
@@ -71,18 +75,50 @@ public class ElevatorSystemUI extends JFrame{
 
     private void addElevators() {
         for (int i = 0; i < numOfElevators; i++) {
-            JLabel e = new JLabel("Elevator " + (i+1));
+            String name = "Elevator " + (i+1);
+            JLabel e = new JLabel(name);
+            e.setName(name);
             // FIXME: THIS IS HOW YOU ADD A NEW LINE IN JLABEL:
-            e.setText("<html>" + e.getText()+"<br/>Direction: "+ "<br/>Current Floor: "+ "<br/>Arrived: "+ "</html>");
+            e.setText("<html>" + name +"<br/>Direction: "+ "<br/>Destination Floor: "+ "<br/>Arrived: "+ "</html>");
             e.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             e.setOpaque(true);
             elevatorsCloseUp.add(e);
-            elevators[i] = e;
+            elevators.add(e);
         }
     }
 
-    public void update(Elevator elevator) {
+//    public void updateElevator(List elevator) {
+////        for (JLabel e : elevators){
+////            if (e.getName() == elevator.getName()){
+////                HardwareDevice floorEvent = elevator.getMainFloorEvent();
+////                e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
+////                        "<br/>Destination Floor: " + floorEvent.getCarButton() + "<br/>Arrived: " + floorEvent.getArrived() + "</html>");
+////            }
+////        }
+//        for (int i = 0; i < numOfElevators; i++){
+////            if (e.getName() == elevator.getName()){
+////                HardwareDevice floorEvent = elevator.getMainFloorEvent();
+////                e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
+////                        "<br/>Destination Floor: " + floorEvent.getCarButton() + "<br/>Arrived: " + floorEvent.getArrived() + "</html>");
+////            }
+//
+//        }
+//    }
 
+    @Override
+    public void updateElevator(List<Elevator> elevator) {
+        for (int i = 0; i < elevator.size(); i++) {
+            if (elevators.get(i).getName().equals(elevator.get(i).getName())) {
+                HardwareDevice floorEvent = elevator.get(i).getMainFloorEvent();
+                JLabel e = elevators.get(i);
+                e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
+                        "<br/>Destination Floor: " + floorEvent.getCarButton() + "<br/>Arrived: " + floorEvent.getArrived() + "</html>");
+            }
+        }
+    }
+
+    public void updateFloor(Elevator elevator, int index) {
+        grid[index][elevator.getMainFloorEvent().getFloor()].setBackground(Color.CYAN);
     }
 
     public static void main(String[] args) {

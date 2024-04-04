@@ -393,7 +393,7 @@ public class Scheduler implements Runnable {
      * @param name Name of the Elevator
      * @return Elevator Object
      */
-    private Elevator getElevator(String name) {
+    public Elevator getElevator(String name) {
         for (Elevator e : allElevators){
             if (e.getName().equals(name)){
                 return e;
@@ -441,5 +441,9 @@ public class Scheduler implements Runnable {
                 t.interrupt();
             }
         }
+    }
+
+    public List<Elevator> getAllElevators() {
+        return allElevators;
     }
 }
