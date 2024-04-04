@@ -13,7 +13,7 @@ public class HardwareDevice {
     /**
      * A LocalTime representing when a passenger requests an elevator.
      */
-    private final LocalTime time;
+    private LocalTime time;
 
     /**
      * An integer representing the floor number a passenger requested an elevator at.
@@ -128,6 +128,13 @@ public class HardwareDevice {
      */
     public void setArrived() {
         this.arrived = true;
+    }
+
+    /**
+     * Updates the Elevator time
+     */
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     /**

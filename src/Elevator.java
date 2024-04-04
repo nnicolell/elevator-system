@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -202,6 +203,7 @@ public class Elevator implements Runnable {
         int delta = Math.abs(floor - currentFloor); // number of floors to move
         System.out.println("[" + name + "] Currently at floor " + currentFloor + ", moving to floor " + floor + "...");
         for (int i = 0; i < delta; i++) {
+
             // handles the case where an ELEVATOR_STUCK fault occurs
             Timer faultTimer = new Timer();
             Timer timer = new Timer();
@@ -225,7 +227,7 @@ public class Elevator implements Runnable {
                         finished.set(2);
                         faultTimer.cancel();
                     }
-                }, 9280); // time it takes to move from one floor to the next
+                }, 10000); // time it takes to move from one floor to the next
             }
 
             // check if timer has finished and cancel the faultTimer
@@ -237,7 +239,7 @@ public class Elevator implements Runnable {
                         faultTimer.cancel();
                     }
                 }
-            }, 9280);
+            }, 10000);
 
             if (button == FloorButton.UP) {
                 currentFloor++;
@@ -256,6 +258,9 @@ public class Elevator implements Runnable {
                 }
             }
             System.out.println("[" + name + "] Currently at floor " + currentFloor);
+            //add time to move floors to hardware device
+            LocalTime newTime = mainFloorEvent.getTime().plusSeconds(10);
+            mainFloorEvent.setTime(newTime);
         }
 
         if (!fault) { // transition to the next state if a fault does not occur,f
@@ -311,7 +316,7 @@ public class Elevator implements Runnable {
                     finished.set(1);
                     timer.cancel();
                 }
-            }, 7800);
+            }, 3000);
         } else {
             timer.schedule(new TimerTask() {
                 @Override
@@ -320,7 +325,7 @@ public class Elevator implements Runnable {
                     finished.set(2);
                     faultTimer.cancel();
                 }
-            }, 7680);
+            }, 3000);
         }
 
         // check which timer finished first and cancel the other timer
@@ -334,7 +339,11 @@ public class Elevator implements Runnable {
                     faultTimer.cancel();
                 }
             }
-        }, 7800);
+        }, 3000);
+
+        //add time to open or close doors
+        LocalTime newTime = mainFloorEvent.getTime().plusSeconds(3);
+        mainFloorEvent.setTime(newTime);
     }
 
     /**
