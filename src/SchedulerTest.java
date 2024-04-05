@@ -52,7 +52,7 @@ class SchedulerTest {
      */
     @AfterEach
     void cleanup() {
-        scheduler.closeSockets();
+        scheduler.closeSendReceiveSocket();
 
     }
 

@@ -62,7 +62,7 @@ public class ElevatorTest {
     @AfterEach
     void cleanup() {
         floorListener.setRunningToFalse();
-        scheduler.closeSockets();
+        scheduler.closeSendReceiveSocket();
     }
 
     /**

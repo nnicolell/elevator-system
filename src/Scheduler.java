@@ -30,17 +30,12 @@ public class Scheduler implements Runnable {
     /**
      * DatagramPackets to send and receive data to the Elevator subsystem
      */
-    private DatagramPacket sendPacketElevator, receivePacketElevator;
+    private DatagramPacket sendPacketElevator;
 
     /**
      * A DatagramSocket to send and receive DatagramPackets from the Elevator subsystem.
      */
     private DatagramSocket sendReceiveSocket;
-
-    /**
-     * A DatagramSocket to send DatagramPackets to the Floor subsystem.
-     */
-    private DatagramSocket sendSocketFloor;
 
     /**
      * A List of HardwareDevices representing the floor events to handle.
@@ -121,7 +116,6 @@ public class Scheduler implements Runnable {
         setState("WaitingForFloorEvent");
 
         try {
-            sendSocketFloor = new DatagramSocket();
             sendReceiveSocket = new DatagramSocket();
             sendReceiveSocket.setSoTimeout(78000);
         } catch (SocketException se){
@@ -173,47 +167,12 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Once the elevator subsystem finishes its task, the floor subsystem will be notified.
-     * The number of requests handled will be incremented and the current floor event is cleared.
-     */
-    public synchronized void notifyFloorSubsystem(HardwareDevice hardwareDevice) {
-        // construct message to Floor subsystem including the content of hardwareDevice
-        String message = "Floor event completed: " + hardwareDevice.toString();
-
-        try {
-            sendSocketFloor.send(floorListener.getSendPacketFloor());
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        logger.info("Message sent to Floor: " + message);
-        numReqsHandled++;
-        notifyAll();
-    }
-
-    /**
      * Adds the specified floor event into the floor queue.
      *
      * @param hardwareDevice A HardwareDevice representing the floor event.
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
         floorEventsToHandle.add(hardwareDevice);
-        notifyAll();
-    }
-
-    /**
-     * Constantly checks the elevator status, waiting for the elevator to complete its task. If the elevator is still
-     * running and the number of requests handled is lower than the number of requests or the currentFloorEvent is null,
-     * the thread should wait. Once the elevator has arrived, the floor subsystem should be notified.
-     *
-     * @param hardwareDevice The updated HardwareDevice.
-     */
-    public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
-        logger.info(hardwareDevice.getElevator() + " has arrived at floor " + hardwareDevice.getCarButton() + ".");
-        setState("SelectElevator");
-        currentState.handleRequest(this);
-        notifyFloorSubsystem(hardwareDevice);
         notifyAll();
     }
 
@@ -287,7 +246,7 @@ public class Scheduler implements Runnable {
                 addBusyElevator(e);
                 iterator.remove();
                 floorEvent.setElevator(e.getName());
-                sendElevatorMessage(e, floorEvent);
+                sendElevatorFloorEvent(e, floorEvent);
                 break;
             }
         }
@@ -310,98 +269,96 @@ public class Scheduler implements Runnable {
         return busyElevators;
     }
 
-
     /**
-     * Sends a Floor Event to the Elevator
-     * @param elevator Elevator that the floor event is going to be sent to
-     * @param hardwareDevice Floor Event that is being sent
+     * Receives a DatagramPacket from an Elevator. Returns a String representing the message from the Elevator.
+     *
+     * @return A String representing the message from the Elevator.
      */
-    public void sendElevatorMessage(Elevator elevator, HardwareDevice hardwareDevice){
-        setState("NotifyElevator");
-        byte[] data = hardwareDevice.toString().getBytes();
-        try{
-            sendPacketElevator = new DatagramPacket(data, data.length, InetAddress.getLocalHost(),elevator.getPort());
-        } catch (UnknownHostException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        logger.info("Sending floor event to " + elevator.getName() + " containing: " + new String(sendPacketElevator.getData(),0,sendPacketElevator.getLength()));
-
-        try{
-            // sends packet to Elevator
-            sendReceiveSocket.send(sendPacketElevator);
-        } catch (IOException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        distributeFloorEvents();
-    }
-
-    /**
-     * Receives a message from an Elevator and sends an acknowledgement to the Elevator
-     */
-    public void receiveElevatorMessage() {
-        distributeFloorEvents();
-        // receive ack from elevator
-        byte[] data = new byte[200];
-        receivePacketElevator = new DatagramPacket(data, data.length);
-
+    private String receiveElevatorPacket() {
+        byte[] receiveBytes = new byte[200];
+        DatagramPacket receivePacket = new DatagramPacket(receiveBytes, receiveBytes.length);
         try {
-            // Waits to receive a packet from the Server
-            logger.info("Waiting for acknowledgment from Elevator...");
-            sendReceiveSocket.receive(receivePacketElevator);
-        } catch (IOException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        String hdString = new String(data,0,receivePacketElevator.getLength());
-        logger.info("Received acknowledgment from Elevator: " + hdString);
-
-        //receive floor event from elevator
-        data = new byte[200];
-        receivePacketElevator = new DatagramPacket(data, data.length);
-
-        try {
-            // Waits to receive a packet from the Server
-            logger.info("Waiting for floor event from Elevator...");
-            sendReceiveSocket.receive(receivePacketElevator);
-        } catch (IOException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-        hdString = new String(data,0,receivePacketElevator.getLength());
-        logger.info("Received floor event from Elevator containing: " + hdString);
-
-        HardwareDevice hardwareDevice = HardwareDevice.stringToHardwareDevice(hdString);
-        // construct acknowledgment data including the content of the received packet
-        byte[] acknowledgmentData = ("ACK " + hdString).getBytes();
-
-        // create a DatagramPacket for the acknowledgment and send it
-        sendPacketElevator = new DatagramPacket(acknowledgmentData, acknowledgmentData.length, receivePacketElevator.getAddress(),
-                receivePacketElevator.getPort());
-        try {
-            sendReceiveSocket.send(sendPacketElevator);
+            sendReceiveSocket.receive(receivePacket);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        logger.info("Acknowledgment sent to Elevator!");
+        // process the received message from the Elevator
+        String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        String elevatorName = HardwareDevice.stringToHardwareDevice(message).getElevator();
+        logger.info("Received " + message + " from " + elevatorName + ".");
+        return message;
+    }
 
-        availableElevators.add(getElevator(hardwareDevice.getElevator()));
-        busyElevators.remove(getElevator(hardwareDevice.getElevator()));
+    /**
+     * Sends a DatagramPacket to the specified elevator containing the specified message.
+     *
+     * @param elevator An Elevator to send the specified message to.
+     * @param message A String representing the message to send to the specified Elevator.
+     */
+    private void sendElevatorPacket(Elevator elevator, String message) {
+        byte[] messageBytes = message.getBytes();
+        try {
+            DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length,
+                    InetAddress.getLocalHost(), elevator.getPort());
+            sendReceiveSocket.send(sendPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        logger.info("Sending " + message + " to " + elevator.getName() + ".");
+    }
+
+    /**
+     * Sends the specified floor event to the specified elevator.
+     *
+     * @param elevator An Elevator that the floor event is going to be sent to.
+     * @param hardwareDevice A HardwareDevice representing a floor event.
+     */
+    private void sendElevatorFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
+        // send the floor event to the elevator and receive an acknowledgment
+        sendElevatorPacket(elevator, hardwareDevice.toString());
+        receiveElevatorPacket();
+
+        distributeFloorEvents();
+        setState("NotifyElevator");
+    }
+
+    /**
+     * Receives a message from an Elevator and sends an acknowledgement back.
+     */
+    public void receiveElevatorFloorEvent() {
+        distributeFloorEvents();
+
+        // receive a completed floor event from an elevator and send an acknowledgment back
+        String message = receiveElevatorPacket();
+        Elevator elevator = getElevator(HardwareDevice.stringToHardwareDevice(message).getElevator());
+        sendElevatorPacket(elevator, "ACK " + message);
+
+        // TODO: this will add the elevator back into the availableElevators even if it still has floor events to run
+        // should add a flag in the message to prevent this...?
+        // should change the state machine to wait for a DatagramPacket from any Elevator
+        // this way we can check for the number of runs as well
+        // if complete floor event + no more floor events -> elevator is available, send notif to floor, numRuns++
+        // if complete floor event + more floor events -> elevator is not available, send notif to floor
+        // if picked up floor event -> take the picked up floor event out of the floor events to distribute list
+        availableElevators.add(elevator);
+        busyElevators.remove(elevator);
         distributeFloorEvents();
     }
 
     /**
-     * Get the Elevator object based on the name
-     * @param name Name of the Elevator
-     * @return Elevator Object
+     * Returns an Elevator with the specified name.
+     *
+     * @param name A String representing the name of the elevator.
+     * @return An Elevator with the specified name. Null, if an Elevator with the specified name could not be found.
      */
     private Elevator getElevator(String name) {
-        for (Elevator e : allElevators){
-            if (e.getName().equals(name)){
-                return e;
+        for (Elevator elevator : allElevators) {
+            if (elevator.getName().equals(name)) {
+                return elevator;
             }
         }
         return null;
@@ -409,41 +366,43 @@ public class Scheduler implements Runnable {
 
     /**
      * Gets the first elevator available.
-     * @return Elevator
+     *
+     * @return An Elevator representing the first available elevator.
      */
     public Elevator getElevatorTest() {
         return availableElevators.get(0);
     }
 
     /**
-     * Closes the sockets.
+     * Closes the sendReceiveSocket.
      */
-    public void closeSockets() {
+    public void closeSendReceiveSocket() {
         sendReceiveSocket.close();
-        sendSocketFloor.close();
     }
 
     /**
-     * Gets the floor listener
-     * @return The floor listener
+     * Returns the floor listener.
+     *
+     * @return The floor listener.
      */
     public FloorListener getFloorListener() {
         return floorListener;
     }
 
     /**
-     * Kills the specified elevator thread
-     * @param name The name of the elevator thread to be killed
+     * Kills the specified elevator thread.
+     * @param name A String representing the name of the elevator thread to be killed.
      */
-    public void killElevatorThread(String name){
-        failedElevators.add(getElevator(name));
-        availableElevators.remove(getElevator(name));
-        busyElevators.remove(getElevator(name));
+    public void killElevatorThread(String name) {
+        Elevator elevator = getElevator(name);
+        failedElevators.add(elevator);
+        availableElevators.remove(elevator);
+        busyElevators.remove(elevator);
 
-        for (Thread t : elevatorThreads){
-            if (t.getName().equals(name)){
-                logger.info("Shutting down " + name);
-                t.interrupt();
+        for (Thread elevatorThread : elevatorThreads) {
+            if (elevatorThread.getName().equals(name)) {
+                logger.info("Shutting down " + name + ".");
+                elevatorThread.interrupt();
             }
         }
     }

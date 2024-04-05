@@ -31,6 +31,10 @@ public class FloorListener implements Runnable {
      */
     private final ElevatorSystemLogger logger;
 
+    private InetAddress floorAddress;
+
+    private int floorPort;
+
     /**
      * Initializes a FloorListener.
      *
@@ -92,6 +96,10 @@ public class FloorListener implements Runnable {
         // add the floor event to the appropriate list of floor events to handle
         scheduler.addFloorEvent(floorEvent);
 
+        // save the floor's address and port to send messages when floor events have been completed
+        floorAddress = floorPacket.getAddress();
+        floorPort = floorPacket.getPort();
+
         // construct acknowledgment data including the content of the received packet
         String acknowledgmentMsg = "ACK " + floorPacketString;
         byte[] acknowledgmentData = acknowledgmentMsg.getBytes();
@@ -112,6 +120,23 @@ public class FloorListener implements Runnable {
 
     public DatagramPacket getSendPacketFloor() {
         return sendPacketFloor;
+    }
+
+    public void notifyFloorSubsystem(String message) {
+        // notify the Floor subsystem that a floor event has been completed
+        byte[] messageBytes = message.getBytes();
+        try {
+            DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, floorAddress, floorPort);
+            DatagramSocket sendSocket = new DatagramSocket();
+            sendSocket.send(sendPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        logger.info("Sending " + message + " to Floor.");
+
+        // TODO: receive an acknowledgment from the Floor subsystem that it has received the arrival message
     }
 
 }

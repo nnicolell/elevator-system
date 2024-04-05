@@ -156,7 +156,6 @@ public class Elevator implements Runnable {
     private void sendPacketToScheduler(byte[] data) {
         try {
             logger.info("Sending " + new String(data, 0, data.length) + " to Scheduler.");
-            System.out.println(currentState.displayState());
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
             DatagramSocket sendSocket = new DatagramSocket();
             sendSocket.send(sendPacket);
@@ -291,12 +290,12 @@ public class Elevator implements Runnable {
      * @return True, if there are more floor events to be fulfilled in the current run. False, if not.
      */
     public boolean moreFloorEventsToFulfill() {
-        // TODO: this is redundant, find a way to have scheduler call checkElevatorStatus on itself
-        scheduler.checkElevatorStatus(mainFloorEvent);
+        // notify the Scheduler subsystem that the main floor event has been completed
         sendPacketToScheduler(mainFloorEvent.toString().getBytes());
 
         // receive an acknowledgment from the Scheduler
         String acknowledgment = receivePacketFromScheduler();
+        System.out.println(acknowledgment);
         logger.info("Received " + acknowledgment + " from Scheduler.");
 
         // mainFloorEvent has been fulfilled

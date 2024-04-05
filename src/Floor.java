@@ -45,37 +45,43 @@ public class Floor implements Runnable {
     }
 
     /**
-     * Sends a DatagramPacket containing information about the specified HardwareDevice to the Scheduler subsystem, and
-     * receives an acknowledgment from the Scheduler subsystem.
+     * Sends a DatagramPacket to the Scheduler with the specified message.
      *
-     * @param hardwareDevice A HardwareDevice representing the floor event to send to the Scheduler subsystem.
+     * @param message A String representing a message to send to the Scheduler.
      */
-    private void sendFloorEventAndReceiveAck(HardwareDevice hardwareDevice) {
-        // send a packet to the Scheduler subsystem containing information about hardwareDevice
-        String hardwareDeviceString = hardwareDevice.toString();
-        byte[] hardwareDeviceBytes = hardwareDeviceString.getBytes();
+    private void sendPacket(String message) {
+        byte[] messageBytes = message.getBytes();
         try {
-            DatagramPacket sendPacket = new DatagramPacket(hardwareDeviceBytes, hardwareDeviceBytes.length,
-                    InetAddress.getLocalHost(), 5000); // create packet with destination port 5000 (Scheduler)
-            logger.info("Sending " + hardwareDeviceString + " to Scheduler.");
+            DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length,
+                    InetAddress.getLocalHost(), 5000);
             sendReceiveSocket.send(sendPacket);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        // receive an acknowledgment from the Scheduler subsystem
-        byte[] receiveData = new byte[200];
-        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+        logger.info("Sending " + message + " to Scheduler.");
+    }
+
+    /**
+     * Receives a DatagramPacket from the Scheduler. Returns a String representing the message from the Scheduler.
+     *
+     * @return A String representing the message from the Scheduler.
+     */
+    private String receivePacket() {
+        byte[] receiveBytes = new byte[200];
+        DatagramPacket receivePacket = new DatagramPacket(receiveBytes, receiveBytes.length);
         try {
             sendReceiveSocket.receive(receivePacket);
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
 
-        logger.info("Received "
-                + new String(receivePacket.getData(), 0, receivePacket.getLength()) + " from Scheduler.");
+        // process the received message from the Scheduler
+        String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        logger.info("Received " + message + " from Scheduler.");
+        return message;
     }
 
     /**
@@ -83,6 +89,7 @@ public class Floor implements Runnable {
      */
     @Override
     public void run() {
+        // send all floor events from input.txt to the Scheduler
         try {
             List<String> lines = Files.readAllLines(Paths.get("input.txt"));
             scheduler.setNumReqs(lines.size()); // notify Scheduler of how many floor events it will be receiving
@@ -97,20 +104,33 @@ public class Floor implements Runnable {
                 String[] info = s.split(" ");
                 sleep(1000);
                 logger.info("Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
-                sendFloorEventAndReceiveAck(createHardwareDevice(info));
-            }
 
-            sendReceiveSocket.close(); // close socket once all floor events have been sent to the Scheduler
+                // send the floor event to the Scheduler and receive an acknowledgment
+                sendPacket(createHardwareDevice(info).toString());
+                receivePacket();
+            }
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
         }
+
+        logger.info("All floor events from input.txt have been sent to Scheduler.");
+
+        // receive DatagramPackets from the Scheduler once a floor event has finished running and send an acknowledgment
+        while (scheduler.getNumReqsHandled() <= scheduler.getNumReqs()) {
+            logger.info("Waiting for a completed floor event from Scheduler...");
+            String completedFloorEvent = receivePacket();
+            sendPacket("ACK " + completedFloorEvent);
+        }
+
+        logger.info("All floor events have been completed.");
+        sendReceiveSocket.close(); // close socket once all floor events have been fulfilled
     }
 
     /**
      * Creates a HardwareDevice with the specified information.
      *
      * @param info An array of String information to initialize the HardwareDevice.
-     * @return A HardwareDevice with the specified information.
+     * @return A HardwareDevice representing the specified information.
      */
     public HardwareDevice createHardwareDevice(String[] info) {
         // process the time, floor, floor button, and car button that was selected
