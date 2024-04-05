@@ -70,6 +70,15 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
         this.setVisible(true);
     }
 
+    private void setElevators() {
+        for (int i = 0; i < numElevators; i++) {
+            String name = "Elevator" + (i+1);
+            JLabel e = new JLabel(name);
+            e.setName(name);
+            elevators.add(e);
+        }
+    }
+
     private void addFloors() {
         for (int i = numFloors; i > 0; i--) {
             JLabel floor = new JLabel("Floor " + i);
@@ -79,6 +88,7 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
                 JLabel e = new JLabel();
                 e.setName("");
                 e.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+                e.setBackground(Color.WHITE);
                 e.setOpaque(true);
                 buildingFloors.add(e);
                 grid[j][i-1] = e;
@@ -89,15 +99,6 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
             buildingFloors.add(new JLabel(""+ (i+1)));
         }
         //buildingFloors.add()
-    }
-
-    private void setElevators() {
-        for (int i = 0; i < numElevators; i++) {
-            String name = "Elevator" + (i+1);
-            JLabel e = new JLabel(name);
-            e.setName(name);
-            elevators.add(e);
-        }
     }
 
     private void addElevators() {
@@ -126,10 +127,28 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     public void updateFloor(Elevator elevator) {
         for (int i = 0; i < elevators.size(); i++) {
             if (elevators.get(i).getName().equals(elevator.getName())) {
+                grid[i][elevator.getCurrentFloor()-1].setBackground(Color.GREEN);
                 for (int j = 0; j < numFloors; j++) {
                     grid[i][j].setBackground(Color.WHITE);
                 }
-                grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.CYAN);
+                grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.GREEN);
+            }
+        }
+    }
+
+    @Override
+    public void updateFaults(Elevator elevator) {
+        for (int i = 0; i < elevators.size(); i++) {
+            if (elevators.get(i).getName().equals(elevator.getName())) {
+                if (elevator.getCurrentState() == null){
+                    grid[i][elevator.getCurrentFloor()-1].setBackground(Color.RED);
+                }
+                else if ((elevator.getCurrentState() instanceof DoorsNotClosing) || elevator.getCurrentState() instanceof DoorsNotOpening){
+                    grid[i][elevator.getCurrentFloor()-1].setBackground(Color.YELLOW);
+                }
+                else {
+                    grid[i][elevator.getCurrentFloor()-1].setBackground(Color.GREEN);
+                }
             }
         }
     }

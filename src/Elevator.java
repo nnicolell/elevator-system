@@ -218,6 +218,7 @@ public class Elevator implements Runnable {
                         timer.cancel();
                         System.out.println("[" + name + "] Stuck between floors. Shutting down...");
                         currentState = null; // shut down the elevator
+                        view.updateFaults(Elevator.this);
                         scheduler.killElevatorThread(name);
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
@@ -308,10 +309,12 @@ public class Elevator implements Runnable {
         AtomicInteger finished = new AtomicInteger(0);
 
         if (fault) {
+            view.updateFaults(Elevator.this);
             faultTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     setState(faultState); // assume a fault if doors don't open/close within 7.8 seconds
+                    view.updateFaults(Elevator.this);
                     finished.set(1);
                     timer.cancel();
                 }
