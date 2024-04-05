@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class to test the ElevatorSystem.
@@ -14,8 +15,6 @@ public class ElevatorSystem {
         Thread schedulerThread = new Thread(scheduler, "Scheduler");
         new ElevatorSystemUI(5, 22, scheduler.getAllElevators());
         schedulerThread.start();
-
-        new ElevatorSystemUI(5);
     }
 }
 
