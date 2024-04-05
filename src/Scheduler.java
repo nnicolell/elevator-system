@@ -210,7 +210,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice The updated HardwareDevice.
      */
     public synchronized void checkElevatorStatus(HardwareDevice hardwareDevice) {
-        logger.info(hardwareDevice.getElevator() +" has arrived at floor " + hardwareDevice.getCarButton() + ".");
+        logger.info(hardwareDevice.getElevator() + " has arrived at floor " + hardwareDevice.getCarButton() + ".");
         setState("SelectElevator");
         currentState.handleRequest(this);
         notifyFloorSubsystem(hardwareDevice);

@@ -153,9 +153,10 @@ public class Elevator implements Runnable {
      *
      * @param data An array of bytes representing the data to send.
      */
-    public void sendPacketToScheduler(byte[] data) {
+    private void sendPacketToScheduler(byte[] data) {
         try {
             logger.info("Sending " + new String(data, 0, data.length) + " to Scheduler.");
+            System.out.println(currentState.displayState());
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
             DatagramSocket sendSocket = new DatagramSocket();
             sendSocket.send(sendPacket);
@@ -167,30 +168,43 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Receives a floor event from the Scheduler and processes it. Sends an acknowledgment message back to the
-     * Scheduler.
+     * Receives a DatagramPacket from the Scheduler and returns a String representing the contents of the
+     * DatagramPacket.
+     *
+     * @return A String representing the contents of the DatagramPacket received from the Scheduler.
      */
-    public void getFloorEvent() {
-        // receive a floor event from the Scheduler
-        byte[] floorEventData = new byte[150];
-        DatagramPacket receivePacket = new DatagramPacket(floorEventData, floorEventData.length);
+    private String receivePacketFromScheduler() {
+        // receive a DatagramPacket from the Scheduler
+        byte[] receiveData = new byte[150];
+        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
-            logger.info("Waiting for a floor event from Scheduler...");
             receiveSocket.receive(receivePacket);
         } catch (IOException e) {
             System.err.println(e);
             System.exit(1);
         }
 
-        // process the received floor event
-        String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
-        logger.info("Received floor event " + floorEvent + " from Scheduler.");
-        mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-        floorEvents.add(mainFloorEvent);
-
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
         schedulerPort = receivePacket.getPort();
+
+        // return the received message from the Scheduler
+        return new String(receivePacket.getData(), 0, receivePacket.getLength());
+    }
+
+    /**
+     * Receives a floor event from the Scheduler and processes it. Sends an acknowledgment message back to the
+     * Scheduler.
+     */
+    public void getFloorEvent() {
+        // receive a floor event from the Scheduler
+        logger.info("Waiting for a floor event from Scheduler...");
+        String floorEvent = receivePacketFromScheduler();
+        logger.info("Received " + floorEvent + " from Scheduler.");
+
+        // the floor event received from the Scheduler is the main floor event
+        mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
+        floorEvents.add(mainFloorEvent);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
     }
@@ -261,7 +275,8 @@ public class Elevator implements Runnable {
                     logger.info("Picked up floor event " + hardwareDevice);
                 }
             }
-            logger.info("Currently at floor " + currentFloor);
+
+            logger.info((currentFloor == floor? "Arrived" : "Currently") + " at floor " + currentFloor + ".");
         }
 
         if (!fault) { // transition to the next state if a fault does not occur
@@ -279,7 +294,10 @@ public class Elevator implements Runnable {
         // TODO: this is redundant, find a way to have scheduler call checkElevatorStatus on itself
         scheduler.checkElevatorStatus(mainFloorEvent);
         sendPacketToScheduler(mainFloorEvent.toString().getBytes());
-        // TODO: must receive an acknowledgment from Scheduler
+
+        // receive an acknowledgment from the Scheduler
+        String acknowledgment = receivePacketFromScheduler();
+        logger.info("Received " + acknowledgment + " from Scheduler.");
 
         // mainFloorEvent has been fulfilled
         floorEvents.remove(mainFloorEvent);
@@ -348,7 +366,7 @@ public class Elevator implements Runnable {
      */
     public void forceOpenOrCloseDoors(boolean forceOpen) {
         try {
-            logger.warning("Forcing doors " + (forceOpen ? "open" : "close") + "...");
+            logger.warning("Forcing doors " + (forceOpen ? "open" : "closed") + "...");
             Thread.sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

@@ -1,38 +1,34 @@
-[2024-04-04 18:57:13.820] [Scheduler] State: WaitingForFloorEvent
-[2024-04-04 18:57:13.855] [Scheduler] State: SelectElevator
-[2024-04-04 18:57:13.855] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:13.856] [Scheduler] State: WaitingForFloorEvent
-[2024-04-04 18:57:14.848] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:14.848] [Scheduler] Sending floor event to Elevator1 containing: {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault}
-[2024-04-04 18:57:15.858] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:15.859] [Scheduler] Sending floor event to Elevator2 containing: {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors}
-[2024-04-04 18:57:16.870] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:16.871] [Scheduler] Sending floor event to Elevator3 containing: {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening}
-[2024-04-04 18:57:17.879] [Scheduler] Waiting for acknowledgment from Elevator...
-[2024-04-04 18:57:17.881] [Scheduler] Received acknowledgment from Elevator: ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault}
-[2024-04-04 18:57:17.881] [Scheduler] Waiting for floor event from Elevator...
-[2024-04-04 18:57:17.881] [Scheduler] Received floor event from Elevator containing: ACK {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors}
-[2024-04-04 18:57:17.882] [Scheduler] Acknowledgment sent to Elevator!
-[2024-04-04 18:57:17.882] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:17.883] [Scheduler] Sending floor event to Elevator2 containing: {Elevator: Elevator2, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault}
-[2024-04-04 18:57:18.887] [Scheduler] State: WaitingForFloorEvent
-[2024-04-04 18:57:18.887] [Scheduler] Waiting for acknowledgment from Elevator...
-[2024-04-04 18:57:18.888] [Scheduler] Received acknowledgment from Elevator: ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening}
-[2024-04-04 18:57:18.888] [Scheduler] Waiting for floor event from Elevator...
-[2024-04-04 18:57:26.870] [Scheduler] Shutting down Elevator2
-[2024-04-04 18:57:45.607] [Scheduler] Elevator1 has arrived at floor 6.
-[2024-04-04 18:57:45.607] [Scheduler] State: SelectElevator
-[2024-04-04 18:57:45.607] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:45.608] [Scheduler] Message sent to Floor: Floor event completed: {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault}
-[2024-04-04 18:57:45.609] [Scheduler] Received floor event from Elevator containing: {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault}
-[2024-04-04 18:57:45.610] [Scheduler] Acknowledgment sent to Elevator!
-[2024-04-04 18:57:45.610] [Scheduler] State: NotifyElevator
-[2024-04-04 18:57:45.612] [Scheduler] Sending floor event to Elevator1 containing: {Elevator: Elevator1, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing}
-[2024-04-04 18:58:03.231] [Scheduler] Elevator3 has arrived at floor 4.
-[2024-04-04 18:58:03.231] [Scheduler] State: SelectElevator
-[2024-04-04 18:58:03.232] [Scheduler] State: NotifyElevator
-[2024-04-04 18:58:03.233] [Scheduler] Message sent to Floor: Floor event completed: {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening}
-[2024-04-04 18:58:31.972] [Scheduler] Elevator1 has arrived at floor 5.
-[2024-04-04 18:58:31.973] [Scheduler] State: SelectElevator
-[2024-04-04 18:58:31.973] [Scheduler] State: NotifyElevator
-[2024-04-04 18:58:31.974] [Scheduler] Message sent to Floor: Floor event completed: {Elevator: Elevator1, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: true, Fault: Doors not closing}
+[2024-04-04 20:42:34.889] [Scheduler] State: WaitingForFloorEvent
+[2024-04-04 20:42:34.924] [Scheduler] State: SelectElevator
+[2024-04-04 20:42:34.925] [Scheduler] State: NotifyElevator
+[2024-04-04 20:42:34.925] [Scheduler] State: WaitingForFloorEvent
+[2024-04-04 20:42:35.931] [Scheduler] State: NotifyElevator
+[2024-04-04 20:42:35.931] [Scheduler] Sending floor event to Elevator1 containing: {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault}
+[2024-04-04 20:42:36.945] [Scheduler] State: NotifyElevator
+[2024-04-04 20:42:36.946] [Scheduler] Sending floor event to Elevator2 containing: {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors}
+[2024-04-04 20:42:37.957] [Scheduler] State: NotifyElevator
+[2024-04-04 20:42:37.958] [Scheduler] Sending floor event to Elevator3 containing: {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening}
+[2024-04-04 20:42:38.967] [Scheduler] Waiting for acknowledgment from Elevator...
+[2024-04-04 20:42:38.969] [Scheduler] Received acknowledgment from Elevator: ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault}
+[2024-04-04 20:42:38.970] [Scheduler] Waiting for floor event from Elevator...
+[2024-04-04 20:42:38.971] [Scheduler] Received floor event from Elevator containing: ACK {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors}
+[2024-04-04 20:42:38.971] [Scheduler] Acknowledgment sent to Elevator!
+[2024-04-04 20:42:38.972] [Scheduler] State: NotifyElevator
+[2024-04-04 20:42:38.972] [Scheduler] Sending floor event to Elevator2 containing: {Elevator: Elevator2, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault}
+[2024-04-04 20:42:39.978] [Scheduler] State: WaitingForFloorEvent
+[2024-04-04 20:42:39.978] [Scheduler] Waiting for acknowledgment from Elevator...
+[2024-04-04 20:42:39.979] [Scheduler] Received acknowledgment from Elevator: ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening}
+[2024-04-04 20:42:39.979] [Scheduler] Waiting for floor event from Elevator...
+[2024-04-04 20:42:47.956] [Scheduler] Shutting down Elevator2
+[2024-04-04 20:43:06.683] [Scheduler] Elevator1 has arrived at floor 6.
+[2024-04-04 20:43:06.684] [Scheduler] State: SelectElevator
+[2024-04-04 20:43:06.684] [Scheduler] State: NotifyElevator
+[2024-04-04 20:43:06.685] [Scheduler] Message sent to Floor: Floor event completed: {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault}
+[2024-04-04 20:43:06.686] [Scheduler] Received floor event from Elevator containing: {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault}
+[2024-04-04 20:43:06.687] [Scheduler] Acknowledgment sent to Elevator!
+[2024-04-04 20:43:06.687] [Scheduler] State: NotifyElevator
+[2024-04-04 20:43:06.690] [Scheduler] Sending floor event to Elevator1 containing: {Elevator: Elevator1, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing}
+[2024-04-04 20:43:24.327] [Scheduler] Elevator3 has arrived at floor 4.
+[2024-04-04 20:43:24.327] [Scheduler] State: SelectElevator
+[2024-04-04 20:43:24.328] [Scheduler] State: NotifyElevator
+[2024-04-04 20:43:24.329] [Scheduler] Message sent to Floor: Floor event completed: {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening}

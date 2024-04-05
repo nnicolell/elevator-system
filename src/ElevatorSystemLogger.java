@@ -1,14 +1,22 @@
 import java.util.logging.*;
 
+/**
+ * A class to log information regarding the ElevatorSystem.
+ */
 public class ElevatorSystemLogger extends Logger {
 
+    /**
+     * Initializes an ElevatorLogger.
+     *
+     * @param name A String representing the name of the log file.
+     */
     public ElevatorSystemLogger(String name) {
         super(name, null);
         try {
             FileHandler fileHandler = new FileHandler(name + ".log");
             addHandler(fileHandler);
 
-            // Remove the default console handler to prevent duplicate log messages
+            // remove the default console handler to prevent duplicate log messages
             setUseParentHandlers(false);
 
             ConsoleHandler consoleHandler = new ConsoleHandler();
@@ -24,7 +32,7 @@ public class ElevatorSystemLogger extends Logger {
             fileHandler.setFormatter(formatter);
             consoleHandler.setFormatter(formatter);
         } catch (Exception e) {
-            severe("Error occured while creating log file for elevator: " + name);
+            severe("Error occurred while creating log file " + name + ".");
         }
     }
 
