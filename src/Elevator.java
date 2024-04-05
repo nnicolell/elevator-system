@@ -77,6 +77,7 @@ public class Elevator implements Runnable {
      * True, if request should be handled when state is being set. False, if not.
      */
     private boolean handleRequestInSetState = true;
+    private ElevatorSystemView view;
 
     /**
      * Initializes an Elevator.
@@ -153,6 +154,7 @@ public class Elevator implements Runnable {
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
             DatagramSocket sendSocket = new DatagramSocket();
             sendSocket.send(sendPacket);
+            view.updateElevator(this);
             sendSocket.close();
         } catch (IOException e) {
             System.err.println(e);
@@ -181,6 +183,7 @@ public class Elevator implements Runnable {
         System.out.println("[" + name + "] Received floor event " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
+        view.updateElevator(this);
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -256,6 +259,7 @@ public class Elevator implements Runnable {
                 }
             }
             System.out.println("[" + name + "] Currently at floor " + currentFloor);
+            view.updateFloor(this);
         }
 
         if (!fault) { // transition to the next state if a fault does not occur,f
@@ -463,5 +467,9 @@ public class Elevator implements Runnable {
      */
     public boolean getHandleRequestInSetState() {
         return handleRequestInSetState;
+    }
+
+    public void setView(ElevatorSystemView v) {
+        view = v;
     }
 }
