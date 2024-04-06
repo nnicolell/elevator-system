@@ -41,6 +41,12 @@ public class HardwareDevice {
     private final Fault fault;
 
     /**
+     * True, if the Elevator that has arrived at its main floor event destination still has floor events to fulfill.
+     * False, if not.
+     */
+    private boolean moreFloorEvents = false;
+
+    /**
      * Initializes a HardwareDevice with a LocalTime representing when a passenger requests an elevator, an integer
      * representing the floor number a passenger requested an elevator at, a FloorButton representing whether the
      * passenger would like to move up or down, and an integer representing the floor number a passenger would like to
@@ -140,15 +146,26 @@ public class HardwareDevice {
     }
 
     /**
+     * Sets if the Elevator that has arrived at its main floor event destination still has floor events to fulfill or
+     * not.
+     *
+     * @param moreFloorEvents True, if the Elevator that has arrived at its main floor event destination still has floor
+     *                        events to fulfill. False, if not.
+     */
+    public void setMoreFloorEvents(boolean moreFloorEvents) {
+        this.moreFloorEvents = moreFloorEvents;
+    }
+
+    /**
      * Returns a string representing the HardwareDevice.
      *
      * @return A String representing the HardwareDevice.
      */
     @Override
     public String toString() {
-        return "{Elevator: " + elevator + ", Time: " + getTime() + ", Requested Floor: " + getFloor()
-                + ", Direction: " + getFloorButton() + ", Car Button: " + getCarButton() +", Arrived: " + getArrived()
-                + ", Fault: " + getFault().toString() + "}";
+        return "{Elevator: " + elevator + ", Time: " + time + ", Requested Floor: " + floor
+                + ", Direction: " + floorButton + ", Car Button: " + carButton +", Arrived: " + arrived
+                + ", Fault: " + fault.toString() + ", More Floor Events: " + moreFloorEvents + "}";
     }
 
     /**
@@ -158,7 +175,7 @@ public class HardwareDevice {
      * @return A HardwareDevice created from the parameter string.
      */
     public static HardwareDevice stringToHardwareDevice(String hardwareDeviceString) {
-        String[] hardwareDeviceStringArray = new String[7];
+        String[] hardwareDeviceStringArray = new String[8];
         int i = 0;
         hardwareDeviceString = hardwareDeviceString.substring(1, hardwareDeviceString.length() - 1);
         String[] hdArray = hardwareDeviceString.split(",");
@@ -181,6 +198,7 @@ public class HardwareDevice {
         if (a) {
             hardwareDevice.setArrived();
         }
+        hardwareDevice.setMoreFloorEvents(hardwareDeviceStringArray[7].equalsIgnoreCase("true"));
         return hardwareDevice;
     }
 

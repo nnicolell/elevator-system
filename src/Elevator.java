@@ -174,7 +174,7 @@ public class Elevator implements Runnable {
      */
     private String receivePacketFromScheduler() {
         // receive a DatagramPacket from the Scheduler
-        byte[] receiveData = new byte[150];
+        byte[] receiveData = new byte[200];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
             receiveSocket.receive(receivePacket);
@@ -290,25 +290,45 @@ public class Elevator implements Runnable {
      * @return True, if there are more floor events to be fulfilled in the current run. False, if not.
      */
     public boolean moreFloorEventsToFulfill() {
+        // main floor event has been fulfilled
+        HardwareDevice fulfilledFloorEvent = mainFloorEvent;
+        floorEvents.remove(mainFloorEvent);
+        mainFloorEvent = null;
+
+        // determine if the Elevator has picked up passengers on its way to its main destination
+        boolean moreEventsToFulfill = false;
+        // if its has picked up passengers, it must continue executing the rest of the floor events
+        if (floorEvents.size() > 0) {
+            moreEventsToFulfill = true;
+            // TODO: the main floor event that gets assigned should be the closest one to the currentFloor
+            mainFloorEvent = floorEvents.get(0); // assign a new main floor event
+        }
+
+        // update the fulfilled floor event to allow the Scheduler to know if there's more floor events to be completed
+        // or not
+        fulfilledFloorEvent.setMoreFloorEvents(moreEventsToFulfill);
+
         // notify the Scheduler subsystem that the main floor event has been completed
-        sendPacketToScheduler(mainFloorEvent.toString().getBytes());
+        sendPacketToScheduler(fulfilledFloorEvent.toString().getBytes());
 
         // receive an acknowledgment from the Scheduler
         String acknowledgment = receivePacketFromScheduler();
         logger.info("Received " + acknowledgment + " from Scheduler.");
 
-        // mainFloorEvent has been fulfilled
-        floorEvents.remove(mainFloorEvent);
-        mainFloorEvent = null;
+//        // mainFloorEvent has been fulfilled
+//        floorEvents.remove(mainFloorEvent);
+//        mainFloorEvent = null;
+//
+//        // the Elevator has picked up passengers on its way to its main destination, must continue executing the rest of
+//        // the floor events
+//        if (floorEvents.size() > 0) {
+//            mainFloorEvent = floorEvents.get(0);
+//            return true; // the Elevator has more floor events to execute
+//        }
+//
+//        return false; // the Elevator currently has no more floor events to execute
 
-        // the Elevator has picked up passengers on its way to its main destination, must continue executing the rest of
-        // the floor events
-        if (floorEvents.size() > 0) {
-            mainFloorEvent = floorEvents.get(0);
-            return true; // the Elevator has more floor events to execute
-        }
-
-        return false; // the Elevator currently has no more floor events to execute
+        return moreEventsToFulfill;
     }
 
     /**
