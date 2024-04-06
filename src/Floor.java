@@ -138,7 +138,7 @@ public class Floor implements Runnable {
         int floor = Integer.parseInt(info[1]);
         FloorButton floorButton = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int carButton = Integer.parseInt(info[3]);
-        int numPassengers = Integer.parseInt(info[4]);
+        int numPassengers = Integer.parseInt(info[4]); //number of passengers for the floor event
 
         // process the specified Elevator fault
         StringBuilder faultStringBuilder = new StringBuilder();
