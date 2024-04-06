@@ -251,13 +251,14 @@ public class Scheduler implements Runnable {
         Iterator<Elevator> iterator = availableElevators.iterator();
         while (iterator.hasNext()) {
             Elevator e = iterator.next();
-            HardwareDevice floorEvent = floorEventsToHandle.remove(0);
-            if (e != null) {
+            HardwareDevice floorEvent = floorEventsToHandle.get(0);
+            if (e != null && !e.isMaxCapacity()) {
                 int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
                 if (elevatorDistance < distance) {
                     distance = elevatorDistance;
                 }
                 addBusyElevator(e);
+                floorEventsToHandle.remove(0);
                 iterator.remove();
                 floorEvent.setElevator(e.getName());
                 sendElevatorFloorEvent(e, floorEvent);
@@ -289,7 +290,7 @@ public class Scheduler implements Runnable {
      * @return A String representing the message from the Elevator.
      */
     private String receiveElevatorPacket() {
-        byte[] receiveBytes = new byte[200];
+        byte[] receiveBytes = new byte[250];
         DatagramPacket receivePacket = new DatagramPacket(receiveBytes, receiveBytes.length);
         try {
             sendReceiveSocket.receive(receivePacket);

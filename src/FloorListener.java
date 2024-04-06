@@ -84,7 +84,7 @@ public class FloorListener implements Runnable {
      */
     private void receiveFloorEvent() {
         // construct a DatagramPacket for receiving packets up to 200 bytes long
-        byte[] floorData = new byte[200];
+        byte[] floorData = new byte[250];
         DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
 
         // block until a DatagramPacket is received from receiveSocket
