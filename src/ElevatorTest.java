@@ -143,9 +143,9 @@ public class ElevatorTest {
     @Test
     void testAddAndRemovePassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassenger();
+        elevator.addPassenger(1);
         assertEquals(1, elevator.getNumPassengers());
-        elevator.removePassenger();
+        elevator.removePassenger(1);
         assertEquals(0, elevator.getNumPassengers());
     }
 
@@ -155,9 +155,9 @@ public class ElevatorTest {
     @Test
     void testGetNumPassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassenger();
-        elevator.addPassenger();
-        assertEquals(2, elevator.getNumPassengers());
+        elevator.addPassenger(2);
+        elevator.addPassenger(3);
+        assertEquals(5, elevator.getNumPassengers());
     }
 
     /**
@@ -166,7 +166,7 @@ public class ElevatorTest {
     @Test
     void testMoveBetweenFloors() {
         HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
-                3, FloorButton.UP, 4, Fault.NO_FAULT);
+                3, FloorButton.UP, 4, 3, Fault.NO_FAULT);
         elevator.setMainFloorEvent(hardwareDevice);
         elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
@@ -182,7 +182,7 @@ public class ElevatorTest {
     @Test
     void testGetCurrentFloor() {
         HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
-                3, FloorButton.UP, 4, Fault.NO_FAULT);
+                3, FloorButton.UP, 4,2, Fault.NO_FAULT);
         elevator.setMainFloorEvent(hardwareDevice);
         elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
@@ -205,7 +205,7 @@ public class ElevatorTest {
     @Test
     void testSetAndGetMainFloorEvent() {
         HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
-                3, FloorButton.UP, 4, Fault.NO_FAULT);
+                3, FloorButton.UP, 4, 1,Fault.NO_FAULT);
         elevator.setMainFloorEvent(hardwareDevice);
         assertEquals(hardwareDevice, elevator.getMainFloorEvent());
     }

@@ -87,6 +87,10 @@ public class Elevator implements Runnable {
      */
     private final ElevatorSystemLogger logger;
 
+    private final int CAPACITY = 5;
+
+    private boolean maxCapacity;
+
     /**
      * Initializes an Elevator.
      *
@@ -98,6 +102,7 @@ public class Elevator implements Runnable {
         this.scheduler = scheduler;
         this.port = port;
         this.name = name;
+        maxCapacity = false;
 
         floorEvents = new ArrayList<>(); // initialize the ArrayList of floor events
 
@@ -179,7 +184,7 @@ public class Elevator implements Runnable {
      */
     private String receivePacketFromScheduler() {
         // receive a DatagramPacket from the Scheduler
-        byte[] receiveData = new byte[200];
+        byte[] receiveData = new byte[250];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
             receiveSocket.receive(receivePacket);
@@ -192,7 +197,8 @@ public class Elevator implements Runnable {
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
         logger.info("Received " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-        floorEvents.add(mainFloorEvent);
+        //floorEvents.add(mainFloorEvent);
+        addPassenger(mainFloorEvent.getNumPassengers());
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -214,6 +220,7 @@ public class Elevator implements Runnable {
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
+        addPassenger(mainFloorEvent.getNumPassengers());
         view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
@@ -292,6 +299,7 @@ public class Elevator implements Runnable {
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
+                    addPassenger(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 
                     // FIXME: non-UDP way of implementing this...
@@ -321,6 +329,7 @@ public class Elevator implements Runnable {
     public boolean moreFloorEventsToFulfill() {
         // main floor event has been fulfilled
         HardwareDevice fulfilledFloorEvent = mainFloorEvent;
+        removePassenger(mainFloorEvent.getNumPassengers());
         floorEvents.remove(mainFloorEvent);
         mainFloorEvent = null;
 
@@ -446,15 +455,23 @@ public class Elevator implements Runnable {
     /**
      * Increment the number of passengers in the Elevator car by 1.
      */
-    public void addPassenger() {
-        numPassengers++;
+    public void addPassenger(int passengers) {
+
+        numPassengers += passengers;
+        if(numPassengers == CAPACITY){
+            maxCapacity =true;
+            System.out.println("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
+        }
     }
 
     /**
      * Decrement the number of passengers in the Elevator car by 1.
      */
-    public void removePassenger() {
-        numPassengers--;
+    public void removePassenger(int passengers) {
+        numPassengers-= passengers;
+        if(numPassengers < CAPACITY){
+            maxCapacity = false;
+        }
     }
 
     /**
@@ -561,5 +578,9 @@ public class Elevator implements Runnable {
 
     public void setView(ElevatorSystemView v) {
         view = v;
+    }
+
+    public boolean isMaxCapacity() {
+        return maxCapacity;
     }
 }

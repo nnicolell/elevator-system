@@ -14,11 +14,12 @@ class HardwareDeviceTest {
     @Test
     void testHardwareDevice() {
         LocalTime time = LocalTime.parse("14:05:15.0");
-        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,2, FloorButton.UP, 4, Fault.NO_FAULT);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,2, FloorButton.UP, 4, 2,Fault.NO_FAULT);
         assertEquals("Elevator1", hardwareDevice.getElevator());
         assertEquals(time, hardwareDevice.getTime());
         assertEquals(2, hardwareDevice.getFloor());
         assertEquals(FloorButton.UP, hardwareDevice.getFloorButton());
+        assertEquals(2, hardwareDevice.getNumPassengers());
         assertEquals(4, hardwareDevice.getCarButton());
         assertFalse(hardwareDevice.getArrived());
     }
@@ -29,7 +30,7 @@ class HardwareDeviceTest {
     @Test
     void testSetArrived() {
         LocalTime time = LocalTime.parse("22:48:59.2");
-        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,6, FloorButton.DOWN, 1, Fault.NO_FAULT);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,6, FloorButton.DOWN, 1, 1,Fault.NO_FAULT);
         assertFalse(hardwareDevice.getArrived());
         hardwareDevice.setArrived();
         assertTrue(hardwareDevice.getArrived());
@@ -41,7 +42,7 @@ class HardwareDeviceTest {
     @Test
     void testToString() {
         LocalTime time = LocalTime.parse("13:14:15.6");
-        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2, Fault.NO_FAULT);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2, 3,Fault.NO_FAULT);
         assertEquals("{Elevator: Elevator1, Time: 13:14:15.600, Requested Floor: 1, Direction: UP, Car Button: 2, Arrived: false, Fault: No Fault}",
                 hardwareDevice.toString());
     }
@@ -52,7 +53,7 @@ class HardwareDeviceTest {
     @Test
     void testStringToHardwareDevice() {
         LocalTime time = LocalTime.parse("13:14:15.6");
-        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2, Fault.NO_FAULT);
+        HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2,2, Fault.NO_FAULT);
         hardwareDevice.setArrived();
         String hardwareDeviceString = hardwareDevice.toString();
         assertEquals(hardwareDevice.toString(),
