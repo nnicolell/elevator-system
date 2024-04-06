@@ -260,7 +260,7 @@ public class Scheduler implements Runnable {
                 addBusyElevator(e);
                 iterator.remove();
                 floorEvent.setElevator(e.getName());
-                sendElevatorFloorEvent(e, floorEvent);
+                sendElevatorMessage(e, floorEvent);
                 break;
             }
         }
@@ -411,12 +411,11 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Returns an Elevator with the specified name.
-     *
-     * @param name A String representing the name of the elevator.
-     * @return An Elevator with the specified name. Null, if an Elevator with the specified name could not be found.
+     * Get the Elevator object based on the name
+     * @param name Name of the Elevator
+     * @return Elevator Object
      */
-    private Elevator getElevator(String name) {
+    public Elevator getElevator(String name) {
         for (Elevator elevator : allElevators) {
             if (elevator.getName().equals(name)) {
                 return elevator;
@@ -427,8 +426,7 @@ public class Scheduler implements Runnable {
 
     /**
      * Gets the first elevator available.
-     *
-     * @return An Elevator representing the first available elevator.
+     * @return Elevator
      */
     public Elevator getElevatorTest() {
         return availableElevators.get(0);
@@ -474,5 +472,9 @@ public class Scheduler implements Runnable {
         }
 
         notifyAll();
+    }
+
+    public List<Elevator> getAllElevators() {
+        return allElevators;
     }
 }

@@ -1,7 +1,10 @@
 import java.io.IOException;
 import java.net.*;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.lang.Thread.sleep;
 
 /**
  * An Elevator to represent an elevator car moving up or down floors.
@@ -77,6 +80,7 @@ public class Elevator implements Runnable {
      * True, if request should be handled when state is being set. False, if not.
      */
     private boolean handleRequestInSetState = true;
+    private ElevatorSystemView view;
 
     /**
      * An ElevatorSystemLogger to log events.
@@ -159,6 +163,7 @@ public class Elevator implements Runnable {
             DatagramPacket sendPacket = new DatagramPacket(data, data.length, schedulerAddress, schedulerPort);
             DatagramSocket sendSocket = new DatagramSocket();
             sendSocket.send(sendPacket);
+            view.updateElevator(this);
             sendSocket.close();
         } catch (IOException e) {
             System.err.println(e);
@@ -177,11 +182,18 @@ public class Elevator implements Runnable {
         byte[] receiveData = new byte[200];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
+            System.out.println("[" + name + "] Waiting for a floor event from Scheduler...");
             receiveSocket.receive(receivePacket);
         } catch (IOException e) {
             System.err.println(e);
             System.exit(1);
         }
+
+        // process the received floor event
+        String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
+        System.out.println("[" + name + "] Received floor event " + floorEvent + " from Scheduler.");
+        mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
+        floorEvents.add(mainFloorEvent);
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -204,6 +216,7 @@ public class Elevator implements Runnable {
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
+        view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
     }
@@ -221,6 +234,7 @@ public class Elevator implements Runnable {
         int delta = Math.abs(floor - currentFloor); // number of floors to move
         logger.info("Currently at floor " + currentFloor + ", moving to floor " + floor + "...");
         for (int i = 0; i < delta; i++) {
+
             // handles the case where an ELEVATOR_STUCK fault occurs
             Timer faultTimer = new Timer();
             Timer timer = new Timer();
@@ -230,23 +244,33 @@ public class Elevator implements Runnable {
                 faultTimer.schedule(new TimerTask() {
                     @Override
                     public void run() {
+                        try {
+                            sleep(11000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         finished.set(1);
                         timer.cancel();
 
                         // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
-                        currentState = null;
+                        view.updateFaults(Elevator.this);
                         scheduler.killElevatorThread(name, floorEvents.size());
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
             } else {
+                try {
+                    sleep(10000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
                         finished.set(2);
                         faultTimer.cancel();
                     }
-                }, 9280); // time it takes to move from one floor to the next
+                }, 10000); // time it takes to move from one floor to the next
             }
 
             // check if timer has finished and cancel the faultTimer
@@ -258,7 +282,7 @@ public class Elevator implements Runnable {
                         faultTimer.cancel();
                     }
                 }
-            }, 9280);
+            }, 10000);
 
             if (button == FloorButton.UP) {
                 currentFloor++;
@@ -279,9 +303,13 @@ public class Elevator implements Runnable {
             }
 
             logger.info((currentFloor == floor? "Arrived" : "Currently") + " at floor " + currentFloor + ".");
+            // add time to move floors to hardware device
+            LocalTime newTime = mainFloorEvent.getTime().plusSeconds(10);
+            mainFloorEvent.setTime(newTime);
+            view.updateFloor(this);
         }
 
-        if (!fault) { // transition to the next state if a fault does not occur
+        if (!fault) { // transition to the next state if a fault does not occur,f
             setState(state);
         }
     }
@@ -336,23 +364,35 @@ public class Elevator implements Runnable {
         AtomicInteger finished = new AtomicInteger(0);
 
         if (fault) {
+            view.updateFaults(Elevator.this);
             faultTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    try {
+                        sleep(7000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     setState(faultState); // assume a fault if doors don't open/close within 7.8 seconds
+                    view.updateFaults(Elevator.this);
                     finished.set(1);
                     timer.cancel();
                 }
-            }, 7800);
+            }, 7000);
         } else {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    try {
+                        sleep(3000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     setState(normalState);
                     finished.set(2);
                     faultTimer.cancel();
                 }
-            }, 7680);
+            }, 3000);
         }
 
         // check which timer finished first and cancel the other timer
@@ -366,7 +406,11 @@ public class Elevator implements Runnable {
                     faultTimer.cancel();
                 }
             }
-        }, 7800);
+        }, 3000);
+
+        //add time to open or close doors
+        LocalTime newTime = mainFloorEvent.getTime().plusSeconds(3);
+        mainFloorEvent.setTime(newTime);
     }
 
     /**
@@ -375,7 +419,7 @@ public class Elevator implements Runnable {
     public void forceOpenOrCloseDoors(boolean forceOpen) {
         try {
             logger.warning("Forcing doors " + (forceOpen ? "open" : "closed") + "...");
-            Thread.sleep(7680); // load time including doors opening and closing
+            sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -495,5 +539,9 @@ public class Elevator implements Runnable {
      */
     public boolean getHandleRequestInSetState() {
         return handleRequestInSetState;
+    }
+
+    public void setView(ElevatorSystemView v) {
+        view = v;
     }
 }

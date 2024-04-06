@@ -165,6 +165,9 @@ public class ElevatorTest {
      */
     @Test
     void testMoveBetweenFloors() {
+        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
+                3, FloorButton.UP, 4, Fault.NO_FAULT);
+        elevator.setMainFloorEvent(hardwareDevice);
         elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
         elevator.moveBetweenFloors(false,"MovingBetweenFloors", 5, FloorButton.UP);
@@ -178,6 +181,9 @@ public class ElevatorTest {
      */
     @Test
     void testGetCurrentFloor() {
+        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
+                3, FloorButton.UP, 4, Fault.NO_FAULT);
+        elevator.setMainFloorEvent(hardwareDevice);
         elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
         elevator.moveBetweenFloors(false,"MovingBetweenFloors",3, FloorButton.UP);
