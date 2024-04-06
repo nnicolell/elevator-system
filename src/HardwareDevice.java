@@ -157,6 +157,17 @@ public class HardwareDevice {
     }
 
     /**
+     * Returns a boolean representing if the Elevator that has arrived at its main floor event destination still has
+     * floor events to fulfill or not.
+     *
+     * @return True, if the Elevator that has arrived at its main floor event destination still has floor events to
+     * fulfill. False, if not.
+     */
+    public boolean getMoreFloorEvents() {
+        return moreFloorEvents;
+    }
+
+    /**
      * Returns a string representing the HardwareDevice.
      *
      * @return A String representing the HardwareDevice.

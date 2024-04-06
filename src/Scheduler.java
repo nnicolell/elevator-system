@@ -336,19 +336,35 @@ public class Scheduler implements Runnable {
 
         // receive a completed floor event from an elevator and send an acknowledgment back
         String message = receiveElevatorPacket();
-        Elevator elevator = getElevator(HardwareDevice.stringToHardwareDevice(message).getElevator());
+        HardwareDevice fulfilledFloorEvent = HardwareDevice.stringToHardwareDevice(message);
+        Elevator elevator = getElevator(fulfilledFloorEvent.getElevator());
         sendElevatorPacket(elevator, "ACK " + message);
 
-        // TODO: this will add the elevator back into the availableElevators even if it still has floor events to run
-        // should add a flag in the message to prevent this...?
-        // should change the state machine to wait for a DatagramPacket from any Elevator
-        // this way we can check for the number of runs as well
-        // if complete floor event + no more floor events -> elevator is available, send notif to floor, numRuns++
-        // if complete floor event + more floor events -> elevator is not available, send notif to floor
-        // if picked up floor event -> take the picked up floor event out of the floor events to distribute list
-        availableElevators.add(elevator);
-        busyElevators.remove(elevator);
-        distributeFloorEvents();
+        // TODO: if picked up floor event -> take the picked up floor event out of the floor events to distribute list
+
+        // if the Elevator has no more floor events to complete, then the elevator is available and the run is complete
+        if (fulfilledFloorEvent.getMoreFloorEvents()) {
+            availableElevators.add(elevator);
+            busyElevators.remove(elevator);
+            distributeFloorEvents();
+            // TODO: numRuns++
+        }
+
+        // TODO: send a notification to Floor that the floor event has been fulfilled
+    }
+
+    // FIXME: non-UDP way of implementing this...
+    /**
+     * The specified Elevator has picked up the specified floor event to fulfill. Removes the specified floor event
+     * from the list of floor events to handle.
+     *
+     * @param elevator An Elevator that has picked up a floor event.
+     * @param hardwareDevice A HardwareDevice representing a floor event the specified Elevator picked up.
+     */
+    public synchronized void pickedUpFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
+        logger.info(elevator.getName() + " has picked up " + hardwareDevice.toString() + ".");
+        floorEventsToHandle.remove(hardwareDevice);
+        notifyAll();
     }
 
     /**

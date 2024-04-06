@@ -264,14 +264,15 @@ public class Elevator implements Runnable {
                 currentFloor--;
             }
 
-            // TODO: need to notify the Scheduler subsystem of what hardwareDevice is being picked up...?
-//            HardwareDevice hardwareDeviceToDelete = null;
             ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
-//                        hardwareDeviceToDelete = hardwareDevice;
                     logger.info("Picked up floor event " + hardwareDevice);
+
+                    // FIXME: non-UDP way of implementing this...
+                    // notify the Scheduler that we have picked up a floor event
+                    scheduler.pickedUpFloorEvent(this, hardwareDevice);
                 }
             }
 
