@@ -252,7 +252,7 @@ public class Scheduler implements Runnable {
         while (iterator.hasNext()) {
             Elevator e = iterator.next();
             HardwareDevice floorEvent = floorEventsToHandle.get(0);
-            if (e != null && !e.isMaxCapacity()) {
+            if (e != null && !e.isMaxCapacity()) { //if the elevator is not full
                 int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
                 if (elevatorDistance < distance) {
                     distance = elevatorDistance;

@@ -87,8 +87,14 @@ public class Elevator implements Runnable {
      */
     private final ElevatorSystemLogger logger;
 
+    /**
+     * The maximum passenger capacity for a car
+     */
     private final int CAPACITY = 5;
 
+    /**
+     * True if the car has reached maximum capacity
+     */
     private boolean maxCapacity;
 
     /**
@@ -198,7 +204,7 @@ public class Elevator implements Runnable {
         logger.info("Received " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers());
+        addPassenger(mainFloorEvent.getNumPassengers()); //increase the total passengers
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -453,7 +459,7 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Increment the number of passengers in the Elevator car by 1.
+     * Increment the number of passengers in the Elevator car by passengers.
      */
     public void addPassenger(int passengers) {
 
@@ -465,7 +471,7 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Decrement the number of passengers in the Elevator car by 1.
+     * Decrement the number of passengers in the Elevator car by passengers.
      */
     public void removePassenger(int passengers) {
         numPassengers-= passengers;
@@ -580,6 +586,12 @@ public class Elevator implements Runnable {
         view = v;
     }
 
+
+    /**
+     * Returns true, if car has reached maximum capacity
+     *
+     * @return True, if car has reached maximum capacity
+     */
     public boolean isMaxCapacity() {
         return maxCapacity;
     }
