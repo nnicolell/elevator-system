@@ -42,9 +42,9 @@ public class FloorListener implements Runnable {
      *                  to.
      * @param port An integer representing the port number to receive DatagramPackets from the Floor subsystem on.
      */
-    public FloorListener(Scheduler scheduler, int port) {
+    public FloorListener(Scheduler scheduler, int port, ElevatorSystemLogger logger) {
         this.scheduler = scheduler;
-        logger = new ElevatorSystemLogger("Scheduler");
+        this.logger = logger;
 
         try {
             receiveSocket = new DatagramSocket(port);
@@ -80,7 +80,6 @@ public class FloorListener implements Runnable {
         DatagramPacket floorPacket = new DatagramPacket(floorData, floorData.length);
 
         // block until a DatagramPacket is received from receiveSocket
-        logger.info("Waiting for packet from floor...");
         try {
             receiveSocket.receive(floorPacket);
         } catch (IOException e) {
@@ -90,7 +89,7 @@ public class FloorListener implements Runnable {
 
         // process the received DatagramPacket from the Floor subsystem
         String floorPacketString = new String(floorData, 0, floorPacket.getLength());
-        logger.info("Received floor event " + floorPacketString + " from Floor.");
+        logger.info("Received " + floorPacketString + " from Floor.");
         HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
 
         // add the floor event to the appropriate list of floor events to handle
@@ -115,7 +114,7 @@ public class FloorListener implements Runnable {
             System.exit(1);
         }
 
-        logger.info("Sending " + acknowledgmentMsg + " to Floor");
+        logger.info("Sending " + acknowledgmentMsg + " to Floor.");
     }
 
     public DatagramPacket getSendPacketFloor() {

@@ -81,8 +81,6 @@ public class Scheduler implements Runnable {
      * Initializes a Scheduler.
      */
     public Scheduler(ArrayList<Integer> portNumbers, int portFloor) {
-        logger = new ElevatorSystemLogger("Scheduler");
-
         // start the Floor thread
         Thread floor = new Thread(new Floor(this),"Floor");
         floor.start();
@@ -108,13 +106,6 @@ public class Scheduler implements Runnable {
         numReqsHandled = 1;
         numReqs = 10000;
 
-        states = new HashMap<>();
-        addState("WaitingForFloorEvent", new WaitingForFloorEvent());
-        addState("NotifyElevator", new NotifyElevator());
-        addState("NotifyFloor", new NotifyFloor());
-        addState("SelectElevator", new SelectElevator());
-        setState("WaitingForFloorEvent");
-
         try {
             sendReceiveSocket = new DatagramSocket();
             sendReceiveSocket.setSoTimeout(78000);
@@ -123,9 +114,20 @@ public class Scheduler implements Runnable {
             System.exit(1);
         }
 
-        floorListener = new FloorListener(this, portFloor);
+        // create a logger for Scheduler and FloorListener to log events on
+        logger = new ElevatorSystemLogger("Scheduler");
+
+        // start the FloorListener thread
+        floorListener = new FloorListener(this, portFloor, logger);
         Thread floorListenerThread = new Thread(floorListener);
         floorListenerThread.start();
+
+        states = new HashMap<>();
+        addState("WaitingForFloorEvent", new WaitingForFloorEvent());
+        addState("NotifyElevator", new NotifyElevator());
+        addState("NotifyFloor", new NotifyFloor());
+        addState("SelectElevator", new SelectElevator());
+        setState("WaitingForFloorEvent");
     }
 
     /**

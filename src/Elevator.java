@@ -295,7 +295,6 @@ public class Elevator implements Runnable {
 
         // receive an acknowledgment from the Scheduler
         String acknowledgment = receivePacketFromScheduler();
-        System.out.println(acknowledgment);
         logger.info("Received " + acknowledgment + " from Scheduler.");
 
         // mainFloorEvent has been fulfilled
