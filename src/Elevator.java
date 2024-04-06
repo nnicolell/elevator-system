@@ -210,7 +210,6 @@ public class Elevator implements Runnable {
         // receive a floor event from the Scheduler
         logger.info("Waiting for a floor event from Scheduler...");
         String floorEvent = receivePacketFromScheduler();
-        logger.info("Received " + floorEvent + " from Scheduler.");
 
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
@@ -325,13 +324,18 @@ public class Elevator implements Runnable {
         floorEvents.remove(mainFloorEvent);
         mainFloorEvent = null;
 
+        // TODO: what if there's more than one floor event that has finished when we reach the current floor?
+        // make a list of fulfilled floor events (remove fulfilled floor events from floorEvents)
+        // check if the Elevator has more floor events to fulfill (floorEvents.size() > 0) after checking if there are more fulfilled floor events
+        // set the moreFloorEvents param for each floor event in the list of fulfilled floor events appropriately
+        // send DatagramPackets to the Scheduler and receive acknowledgements from the Scheduler for each fulfilled floor event
+
         // determine if the Elevator has picked up passengers on its way to its main destination
         boolean moreEventsToFulfill = false;
         // if its has picked up passengers, it must continue executing the rest of the floor events
         if (floorEvents.size() > 0) {
             moreEventsToFulfill = true;
-            // TODO: the main floor event that gets assigned should be the closest one to the currentFloor
-            mainFloorEvent = floorEvents.get(0); // assign a new main floor event
+            mainFloorEvent = getClosestFloorEvent(); // assign a new main floor event
         }
 
         // update the fulfilled floor event to allow the Scheduler to know if there's more floor events to be completed
@@ -340,12 +344,27 @@ public class Elevator implements Runnable {
 
         // notify the Scheduler subsystem that the main floor event has been completed
         sendPacketToScheduler(fulfilledFloorEvent.toString().getBytes());
-
-        // receive an acknowledgment from the Scheduler
-        String acknowledgment = receivePacketFromScheduler();
-        logger.info("Received " + acknowledgment + " from Scheduler.");
+        receivePacketFromScheduler(); // receive an acknowledgment from the Scheduler
 
         return moreEventsToFulfill;
+    }
+
+    /**
+     * Returns a floor event that is the closest to the current floor.
+     *
+     * @return A HardwareDevice representing a floor event that is closest to the current floor.
+     */
+    private HardwareDevice getClosestFloorEvent() {
+        HardwareDevice closestFloorEvent = null;
+        int smallestNumFloorsAway = -1;
+        for (HardwareDevice floorEvent : floorEvents) {
+            int distance = Math.abs(currentFloor - floorEvent.getCarButton());
+            if (smallestNumFloorsAway == -1 || smallestNumFloorsAway > distance) {
+                smallestNumFloorsAway = distance;
+                closestFloorEvent = floorEvent;
+            }
+        }
+        return closestFloorEvent;
     }
 
     /**
