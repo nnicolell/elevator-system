@@ -260,7 +260,7 @@ public class Scheduler implements Runnable {
                 addBusyElevator(e);
                 iterator.remove();
                 floorEvent.setElevator(e.getName());
-                sendElevatorMessage(e, floorEvent);
+                sendElevatorFloorEvent(e, floorEvent);
                 break;
             }
         }

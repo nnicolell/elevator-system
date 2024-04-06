@@ -182,7 +182,6 @@ public class Elevator implements Runnable {
         byte[] receiveData = new byte[200];
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
-            System.out.println("[" + name + "] Waiting for a floor event from Scheduler...");
             receiveSocket.receive(receivePacket);
         } catch (IOException e) {
             System.err.println(e);
@@ -191,7 +190,7 @@ public class Elevator implements Runnable {
 
         // process the received floor event
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
-        System.out.println("[" + name + "] Received floor event " + floorEvent + " from Scheduler.");
+        logger.info("Received " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
 
