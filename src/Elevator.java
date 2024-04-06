@@ -197,7 +197,7 @@ public class Elevator implements Runnable {
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
         logger.info("Received " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-        //floorEvents.add(mainFloorEvent);
+        floorEvents.add(mainFloorEvent);
         addPassenger(mainFloorEvent.getNumPassengers());
 
         // save the Scheduler's address and port to communicate with it later
@@ -459,7 +459,7 @@ public class Elevator implements Runnable {
 
         numPassengers += passengers;
         if(numPassengers == CAPACITY){
-            maxCapacity =true;
+            maxCapacity = true;
             System.out.println("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
         }
     }
