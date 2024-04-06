@@ -232,9 +232,11 @@ public class Elevator implements Runnable {
                     public void run() {
                         finished.set(1);
                         timer.cancel();
+
+                        // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
-                        currentState = null; // shut down the elevator
-                        scheduler.killElevatorThread(name);
+                        currentState = null;
+                        scheduler.killElevatorThread(name, floorEvents.size());
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
             } else {
@@ -315,19 +317,6 @@ public class Elevator implements Runnable {
         // receive an acknowledgment from the Scheduler
         String acknowledgment = receivePacketFromScheduler();
         logger.info("Received " + acknowledgment + " from Scheduler.");
-
-//        // mainFloorEvent has been fulfilled
-//        floorEvents.remove(mainFloorEvent);
-//        mainFloorEvent = null;
-//
-//        // the Elevator has picked up passengers on its way to its main destination, must continue executing the rest of
-//        // the floor events
-//        if (floorEvents.size() > 0) {
-//            mainFloorEvent = floorEvents.get(0);
-//            return true; // the Elevator has more floor events to execute
-//        }
-//
-//        return false; // the Elevator currently has no more floor events to execute
 
         return moreEventsToFulfill;
     }

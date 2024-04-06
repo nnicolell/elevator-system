@@ -104,7 +104,7 @@ public class Scheduler implements Runnable {
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
-        numReqs = 10000;
+//        numReqs = 10000;
 
         try {
             sendReceiveSocket = new DatagramSocket();
@@ -350,6 +350,9 @@ public class Scheduler implements Runnable {
             distributeFloorEvents();
         }
 
+        numReqsHandled++;
+        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+
         // TODO: send a notification to Floor that the floor event has been fulfilled
     }
 
@@ -409,19 +412,27 @@ public class Scheduler implements Runnable {
 
     /**
      * Kills the specified elevator thread.
+     *
      * @param name A String representing the name of the elevator thread to be killed.
+     * @param numFloorEventsHandling An integer representing the number of floor events the Elevator was handling at the
+     *                               time it was killed.
      */
-    public void killElevatorThread(String name) {
+    public synchronized void killElevatorThread(String name, int numFloorEventsHandling) {
         Elevator elevator = getElevator(name);
         failedElevators.add(elevator);
         availableElevators.remove(elevator);
         busyElevators.remove(elevator);
 
+        numReqsHandled += numFloorEventsHandling;
+
         for (Thread elevatorThread : elevatorThreads) {
             if (elevatorThread.getName().equals(name)) {
-                logger.info("Shutting down " + name + ".");
+                logger.info("Shutting down " + name + ". It was handling " + numFloorEventsHandling
+                        + " floor event(s).");
                 elevatorThread.interrupt();
             }
         }
+
+        notifyAll();
     }
 }
