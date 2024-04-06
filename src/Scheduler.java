@@ -28,11 +28,6 @@ public class Scheduler implements Runnable {
     private final HashMap<String, SchedulerState> states;
 
     /**
-     * DatagramPackets to send and receive data to the Elevator subsystem
-     */
-    private DatagramPacket sendPacketElevator;
-
-    /**
      * A DatagramSocket to send and receive DatagramPackets from the Elevator subsystem.
      */
     private DatagramSocket sendReceiveSocket;
@@ -40,42 +35,47 @@ public class Scheduler implements Runnable {
     /**
      * A List of HardwareDevices representing the floor events to handle.
      */
-    private ArrayList<HardwareDevice> floorEventsToHandle;
+    private final ArrayList<HardwareDevice> floorEventsToHandle;
 
     /**
      * A List of Elevators representing the elevators that are not currently running
      */
-    private List<Elevator> availableElevators;
+    private final List<Elevator> availableElevators;
 
     /**
      * A List of Elevators representing the elevators that are currently running
      */
-    private List<Elevator> busyElevators;
+    private final List<Elevator> busyElevators;
 
     /**
-     * The floor listener for the Scheduler
+     * The FloorListener for the Scheduler.
      */
-    private FloorListener floorListener;
+    private final FloorListener floorListener;
 
     /**
      * A List of Threads representing the threads for the elevators.
      */
-    private List<Thread> elevatorThreads;
+    private final List<Thread> elevatorThreads;
 
     /**
-     * A List containing the failed elevators
+     * A List containing the failed elevators.
      */
-    private List<Elevator> failedElevators;
+    private final List<Elevator> failedElevators;
 
     /**
-     * A List containing all elevators
+     * A List containing all elevators.
      */
-    private List<Elevator> allElevators;
+    private final List<Elevator> allElevators;
 
     /**
      * An ElevatorSystemLogger to log events.
      */
     private final ElevatorSystemLogger logger;
+
+    /**
+     * An integer to represent the number of movements the elevators have made.
+     */
+    private int numMovements = 0;
 
     /**
      * Initializes a Scheduler.
@@ -340,14 +340,14 @@ public class Scheduler implements Runnable {
         Elevator elevator = getElevator(fulfilledFloorEvent.getElevator());
         sendElevatorPacket(elevator, "ACK " + message);
 
-        // TODO: if picked up floor event -> take the picked up floor event out of the floor events to distribute list
-
-        // if the Elevator has no more floor events to complete, then the elevator is available and the run is complete
-        if (fulfilledFloorEvent.getMoreFloorEvents()) {
+        // if the Elevator has no more floor events to complete, then the movement is complete and the elevator is
+        // available
+        if (!fulfilledFloorEvent.getMoreFloorEvents()) {
+            numMovements++;
+            logger.info(elevator.getName() + " has completed a movement. numMovements: " + numMovements + ".");
             availableElevators.add(elevator);
             busyElevators.remove(elevator);
             distributeFloorEvents();
-            // TODO: numRuns++
         }
 
         // TODO: send a notification to Floor that the floor event has been fulfilled

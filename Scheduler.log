@@ -1,33 +1,37 @@
-[2024-04-06 00:01:59.663] [Scheduler] State: WaitingForFloorEvent
-[2024-04-06 00:01:59.696] [Scheduler] State: SelectElevator
-[2024-04-06 00:01:59.696] [Scheduler] State: NotifyElevator
-[2024-04-06 00:02:00.702] [Scheduler] Received {Elevator: Elevator?, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} from Floor.
-[2024-04-06 00:02:00.703] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} to Floor.
-[2024-04-06 00:02:00.704] [Scheduler] Sending {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} to Elevator1.
-[2024-04-06 00:02:00.705] [Scheduler] Received ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} from Elevator1.
-[2024-04-06 00:02:01.713] [Scheduler] Received {Elevator: Elevator?, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} from Floor.
-[2024-04-06 00:02:01.715] [Scheduler] Sending {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} to Elevator2.
-[2024-04-06 00:02:01.715] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} to Floor.
-[2024-04-06 00:02:01.717] [Scheduler] Received ACK {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} from Elevator2.
-[2024-04-06 00:02:02.726] [Scheduler] Received {Elevator: Elevator?, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Floor.
-[2024-04-06 00:02:02.728] [Scheduler] Sending {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Elevator3.
-[2024-04-06 00:02:02.728] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Floor.
-[2024-04-06 00:02:02.730] [Scheduler] Received ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Elevator3.
-[2024-04-06 00:02:03.735] [Scheduler] Received {Elevator: Elevator?, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Floor.
-[2024-04-06 00:02:03.737] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Floor.
-[2024-04-06 00:02:03.739] [Scheduler] State: NotifyElevator
-[2024-04-06 00:02:03.740] [Scheduler] State: NotifyElevator
-[2024-04-06 00:02:03.740] [Scheduler] State: NotifyElevator
-[2024-04-06 00:02:04.749] [Scheduler] Received {Elevator: Elevator?, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing, More Floor Events: false} from Floor.
-[2024-04-06 00:02:04.750] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing, More Floor Events: false} to Floor.
-[2024-04-06 00:02:12.725] [Scheduler] Shutting down Elevator2.
-[2024-04-06 00:02:31.459] [Scheduler] Received {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault, More Floor Events: false} from Elevator1.
-[2024-04-06 00:02:31.462] [Scheduler] Sending ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault, More Floor Events: false} to Elevator1.
-[2024-04-06 00:02:31.462] [Scheduler] State: WaitingForFloorEvent
-[2024-04-06 00:02:31.463] [Scheduler] State: SelectElevator
-[2024-04-06 00:02:31.463] [Scheduler] State: NotifyElevator
-[2024-04-06 00:02:49.091] [Scheduler] Received {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening, More Floor Events: false} from Elevator3.
-[2024-04-06 00:02:49.094] [Scheduler] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening, More Floor Events: false} to Elevator3.
-[2024-04-06 00:02:49.094] [Scheduler] State: WaitingForFloorEvent
-[2024-04-06 00:02:49.094] [Scheduler] State: SelectElevator
-[2024-04-06 00:02:49.095] [Scheduler] State: NotifyElevator
+[2024-04-06 00:11:40.839] [Scheduler] State: WaitingForFloorEvent
+[2024-04-06 00:11:40.871] [Scheduler] State: SelectElevator
+[2024-04-06 00:11:40.871] [Scheduler] State: NotifyElevator
+[2024-04-06 00:11:41.871] [Scheduler] Received {Elevator: Elevator?, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} from Floor.
+[2024-04-06 00:11:41.872] [Scheduler] Sending {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} to Elevator1.
+[2024-04-06 00:11:41.872] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} to Floor.
+[2024-04-06 00:11:41.874] [Scheduler] Received ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: false, Fault: No fault, More Floor Events: false} from Elevator1.
+[2024-04-06 00:11:42.883] [Scheduler] Received {Elevator: Elevator?, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} from Floor.
+[2024-04-06 00:11:42.885] [Scheduler] Sending {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} to Elevator2.
+[2024-04-06 00:11:42.885] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} to Floor.
+[2024-04-06 00:11:42.887] [Scheduler] Received ACK {Elevator: Elevator2, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} from Elevator2.
+[2024-04-06 00:11:43.892] [Scheduler] Received {Elevator: Elevator?, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Floor.
+[2024-04-06 00:11:43.893] [Scheduler] Sending {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Elevator3.
+[2024-04-06 00:11:43.893] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Floor.
+[2024-04-06 00:11:43.894] [Scheduler] Received ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Elevator3.
+[2024-04-06 00:11:44.898] [Scheduler] Received {Elevator: Elevator?, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Floor.
+[2024-04-06 00:11:44.899] [Scheduler] State: NotifyElevator
+[2024-04-06 00:11:44.899] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Floor.
+[2024-04-06 00:11:44.899] [Scheduler] State: NotifyElevator
+[2024-04-06 00:11:44.900] [Scheduler] State: NotifyElevator
+[2024-04-06 00:11:45.907] [Scheduler] Received {Elevator: Elevator?, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing, More Floor Events: false} from Floor.
+[2024-04-06 00:11:45.908] [Scheduler] Sending ACK {Elevator: Elevator?, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing, More Floor Events: false} to Floor.
+[2024-04-06 00:11:53.895] [Scheduler] Shutting down Elevator2.
+[2024-04-06 00:12:12.621] [Scheduler] Received {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault, More Floor Events: false} from Elevator1.
+[2024-04-06 00:12:12.629] [Scheduler] Sending ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Arrived: true, Fault: No fault, More Floor Events: false} to Elevator1.
+[2024-04-06 00:12:12.630] [Scheduler] Elevator1 has completed a movement. numMovements: 1.
+[2024-04-06 00:12:12.630] [Scheduler] Sending {Elevator: Elevator1, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Elevator1.
+[2024-04-06 00:12:12.634] [Scheduler] Received ACK {Elevator: Elevator1, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Elevator1.
+[2024-04-06 00:12:12.635] [Scheduler] State: NotifyElevator
+[2024-04-06 00:12:12.635] [Scheduler] State: WaitingForFloorEvent
+[2024-04-06 00:12:12.635] [Scheduler] State: SelectElevator
+[2024-04-06 00:12:12.635] [Scheduler] State: NotifyElevator
+[2024-04-06 00:12:30.255] [Scheduler] Received {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening, More Floor Events: false} from Elevator3.
+[2024-04-06 00:12:30.259] [Scheduler] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening, More Floor Events: false} to Elevator3.
+[2024-04-06 00:12:30.260] [Scheduler] Elevator3 has completed a movement. numMovements: 2.
+[2024-04-06 00:12:30.261] [Scheduler] Sending {Elevator: Elevator3, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing, More Floor Events: false} to Elevator3.
+[2024-04-06 00:12:30.264] [Scheduler] Received ACK {Elevator: Elevator3, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Arrived: false, Fault: Doors not closing, More Floor Events: false} from Elevator3.
