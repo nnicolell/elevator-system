@@ -257,8 +257,8 @@ public class Scheduler implements Runnable {
                 if (elevatorDistance < distance) {
                     distance = elevatorDistance;
                 }
-                addBusyElevator(e);
                 floorEventsToHandle.remove(0);
+                addBusyElevator(e);
                 iterator.remove();
                 floorEvent.setElevator(e.getName());
                 sendElevatorFloorEvent(e, floorEvent);
