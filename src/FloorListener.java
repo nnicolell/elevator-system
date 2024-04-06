@@ -65,10 +65,18 @@ public class FloorListener implements Runnable {
      */
     @Override
     public void run() {
-        while (running) {
+        while (scheduler.getNumReqsReceived() < scheduler.getNumReqs()) {
             receiveFloorEvent();
         }
         receiveSocket.close();
+    }
+
+    public InetAddress getFloorAddress() {
+        return floorAddress;
+    }
+
+    public int getFloorPort() {
+        return floorPort;
     }
 
     /**
@@ -92,8 +100,9 @@ public class FloorListener implements Runnable {
         logger.info("Received " + floorPacketString + " from Floor.");
         HardwareDevice floorEvent = HardwareDevice.stringToHardwareDevice(floorPacketString);
 
-        // add the floor event to the appropriate list of floor events to handle
+        // add the floor event to the list of floor events to handle and increment the number of requests received
         scheduler.addFloorEvent(floorEvent);
+        scheduler.incrementNumReqsReceived();
 
         // save the floor's address and port to send messages when floor events have been completed
         floorAddress = floorPacket.getAddress();
@@ -115,27 +124,6 @@ public class FloorListener implements Runnable {
         }
 
         logger.info("Sending " + acknowledgmentMsg + " to Floor.");
-    }
-
-    public DatagramPacket getSendPacketFloor() {
-        return sendPacketFloor;
-    }
-
-    public void notifyFloorSubsystem(String message) {
-        // notify the Floor subsystem that a floor event has been completed
-        byte[] messageBytes = message.getBytes();
-        try {
-            DatagramPacket sendPacket = new DatagramPacket(messageBytes, messageBytes.length, floorAddress, floorPort);
-            DatagramSocket sendSocket = new DatagramSocket();
-            sendSocket.send(sendPacket);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        logger.info("Sending " + message + " to Floor.");
-
-        // TODO: receive an acknowledgment from the Floor subsystem that it has received the arrival message
     }
 
 }

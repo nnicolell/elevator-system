@@ -18,6 +18,11 @@ public class Scheduler implements Runnable {
     private int numReqsHandled;
 
     /**
+     * An integer representing the number of requests that have been received from the Floor subsystem.
+     */
+    private int numReqsReceived = 0;
+
+    /**
      * The current state of the Scheduler state machine.
      */
     private SchedulerState currentState;
@@ -104,7 +109,6 @@ public class Scheduler implements Runnable {
 
         floorEventsToHandle = new ArrayList<>();
         numReqsHandled = 1;
-//        numReqs = 10000;
 
         try {
             sendReceiveSocket = new DatagramSocket();
@@ -128,6 +132,14 @@ public class Scheduler implements Runnable {
         addState("NotifyFloor", new NotifyFloor());
         addState("SelectElevator", new SelectElevator());
         setState("WaitingForFloorEvent");
+    }
+
+    public int getNumReqsReceived() {
+        return numReqsReceived;
+    }
+
+    public void incrementNumReqsReceived() {
+        numReqsReceived++;
     }
 
     /**
@@ -353,7 +365,35 @@ public class Scheduler implements Runnable {
         numReqsHandled++;
         System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
 
-        // TODO: send a notification to Floor that the floor event has been fulfilled
+        notifyFloor(message);
+    }
+
+    private void notifyFloor(String fulfilledFloorEvent) {
+        // notify Floor that a floor event has been fulfilled
+        byte[] sendBytes = fulfilledFloorEvent.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(sendBytes, sendBytes.length, floorListener.getFloorAddress(),
+                floorListener.getFloorPort());
+        try {
+            DatagramSocket sendSocket = new DatagramSocket();
+            sendSocket.send(sendPacket);
+            sendSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        logger.info("Sending " + fulfilledFloorEvent + " to Floor.");
+
+        // receive an acknowledgment from the Floor
+        byte[] ackBytes = new byte[200];
+        DatagramPacket receivePacket = new DatagramPacket(ackBytes, ackBytes.length);
+        try {
+            sendReceiveSocket.receive(receivePacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        logger.info("Received " + new String(receivePacket.getData(), 0, receivePacket.getLength())
+                + " from Floor.");
     }
 
     // FIXME: non-UDP way of implementing this...
