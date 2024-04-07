@@ -74,12 +74,16 @@ public class Elevator implements Runnable {
     /**
      * An integer representing the number of passengers currently in the Elevator car.
      */
-    private int numPassengers = 0; // TODO: implement numPassengers
+    private int numPassengers = 0;
 
     /**
      * True, if request should be handled when state is being set. False, if not.
      */
     private boolean handleRequestInSetState = true;
+
+    /**
+     * An ElevatorSystemView to represent the view of the Elevator in the MVC pattern.
+     */
     private ElevatorSystemView view;
 
     /**
@@ -88,22 +92,22 @@ public class Elevator implements Runnable {
     private final ElevatorSystemLogger logger;
 
     /**
-     * The maximum passenger capacity for a car
+     * An integer representing the maximum passenger capacity for a car.
      */
     private final int CAPACITY = 5;
 
     /**
-     * True if the car has reached maximum capacity
+     * True, if the car has reached its maximum capacity. False, if not.
      */
     private boolean maxCapacity;
 
     /**
-     * True if a transient fault occurs
+     * Tru,e if a transient fault occurs. False, if not.
      */
     private boolean transientFault = false;
 
     /**
-     * True if a hard fault occurs
+     * True, if a hard fault occurs. False, if not.
      */
     private boolean hardFault = false;
 
@@ -278,7 +282,6 @@ public class Elevator implements Runnable {
                         view.updateFloor(Elevator.this);
                         // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
-                        //view.updateFaults(Elevator.this);
                         scheduler.killElevatorThread(name, floorEvents.size());
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
@@ -571,7 +574,7 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Returns true, if request should be handled when state is being set. False, if not.
+     * Returns True, if request should be handled when state is being set. False, if not.
      *
      * @return True, if request should be handled when state is being set. False, if not.
      */
@@ -579,20 +582,37 @@ public class Elevator implements Runnable {
         return handleRequestInSetState;
     }
 
-    public void setView(ElevatorSystemView v) {
-        view = v;
+    /**
+     * Sets the view of the Elevator.
+     *
+     * @param view An ElevatorSystemView representing the view of the Elevator.
+     */
+    public void setView(ElevatorSystemView view) {
+        this.view = view;
     }
 
 
     /**
-     * Returns true, if car has reached maximum capacity
+     * Returns True, if car has reached its maximum capacity. False, if not.
      *
-     * @return True, if car has reached maximum capacity
+     * @return True, if car has reached its maximum capacity. False, if not.
      */
     public boolean isMaxCapacity() {
         return maxCapacity;
     }
 
+    /**
+     * Returns True, if a transient fault occurs. False, if not.
+     *
+     * @return True, if a transient fault occurs. False, if not.
+     */
     public boolean getTransientFault() { return transientFault; }
+
+    /**
+     * Returns True, if a hard fault occurs. False, if not.
+     *
+     * @return True, if a hard fault occurs. False, if not.
+     */
     public boolean getHardFault() { return hardFault; }
+
 }
