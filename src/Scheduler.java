@@ -243,7 +243,7 @@ public class Scheduler implements Runnable {
         while (numReqsHandled < numReqs) {
             currentState.handleRequest(this);
         }
-        System.out.println("i'm here!");
+        logger.info("Scheduler has executed all floor events.");
     }
 
     /**
