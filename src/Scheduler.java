@@ -364,7 +364,6 @@ public class Scheduler implements Runnable {
         }
 
         numReqsHandled++;
-        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
 
         notifyFloor(message);
     }

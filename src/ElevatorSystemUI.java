@@ -127,11 +127,17 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     public void updateFloor(Elevator elevator) {
         for (int i = 0; i < elevators.size(); i++) {
             if (elevators.get(i).getName().equals(elevator.getName())) {
-                grid[i][elevator.getCurrentFloor()-1].setBackground(Color.GREEN);
-                for (int j = 0; j < numFloors; j++) {
-                    grid[i][j].setBackground(Color.WHITE);
+                if (elevator.getTransientFault() == true) {
+                    grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.YELLOW);
+                } else if (elevator.getHardFault() == true) {
+                    grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.RED);
+                } else {
+                    grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.GREEN);
+                    for (int j = 0; j < numFloors; j++) {
+                        grid[i][j].setBackground(Color.WHITE);
+                    }
+                    grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.GREEN);
                 }
-                grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.GREEN);
             }
         }
     }

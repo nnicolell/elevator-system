@@ -21,7 +21,7 @@ public class ElevatorSystemController {
         //ui.update();
     }
 
-    public void updateFloor(Elevator elevator) {
+    public void updateFloor(Elevator elevator) throws InterruptedException {
         ui.updateFloor(elevator);
     }
 
