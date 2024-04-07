@@ -135,6 +135,7 @@ public class Scheduler implements Runnable {
         addState("NotifyElevator", new NotifyElevator());
         addState("NotifyFloor", new NotifyFloor());
         addState("SelectElevator", new SelectElevator());
+        addState("WaitingForElevator", new WaitingForElevator());
         setState("WaitingForFloorEvent");
         arrived = false;
     }
@@ -339,11 +340,14 @@ public class Scheduler implements Runnable {
      */
     private void sendElevatorFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
         // send the floor event to the elevator and receive an acknowledgment
+        currentState.handleRequest(this);
         sendElevatorPacket(elevator, hardwareDevice.toString());
+        currentState.handleRequest(this);
         receiveElevatorPacket();
 
         distributeFloorEvents();
-        setState("NotifyElevator");
+        receiveElevatorFloorEvent();
+        //setState("NotifyElevator");
     }
 
     /**
@@ -363,6 +367,9 @@ public class Scheduler implements Runnable {
         if (!fulfilledFloorEvent.getMoreFloorEvents()) {
             numMovements++;
             logger.info(elevator.getName() + " has completed a movement. numMovements: " + numMovements + ".");
+            arrived = true;
+            currentState.handleRequest(this);
+            arrived = false;
             availableElevators.add(elevator);
             busyElevators.remove(elevator);
             distributeFloorEvents();
@@ -386,6 +393,7 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
+        currentState.handleRequest(this);
         logger.info("Sending " + fulfilledFloorEvent + " to Floor.");
 
         // receive an acknowledgment from the Floor
