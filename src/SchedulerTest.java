@@ -34,7 +34,7 @@ class SchedulerTest {
         elevatorPortNumbers.add(x);
         int y = generateRandomInt();
         scheduler = new Scheduler(elevatorPortNumbers, y);
-        elevator = scheduler.getElevatorTest();
+        elevator = scheduler.getFirstAvailableElevator();
         hardwareDevice = new HardwareDevice("E1",LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6, Fault.NO_FAULT);
     }
 

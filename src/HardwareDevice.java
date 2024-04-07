@@ -200,6 +200,8 @@ public class HardwareDevice {
 
         for (String s : hdArray) {
             String[] deviceArray = s.split(": ");
+            System.out.println("In HardwareDevice!");
+            System.out.println(s);
             String value = deviceArray[1].trim();
             hardwareDeviceStringArray[i] = value;
             i++;
