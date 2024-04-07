@@ -81,6 +81,10 @@ public class Scheduler implements Runnable {
      * An integer to represent the number of movements the elevators have made.
      */
     private int numMovements = 0;
+    /**
+     * A boolean to signal that the elevator has arrived.
+     */
+    private boolean arrived;
 
     /**
      * Initializes a Scheduler.
@@ -132,6 +136,7 @@ public class Scheduler implements Runnable {
         addState("NotifyFloor", new NotifyFloor());
         addState("SelectElevator", new SelectElevator());
         setState("WaitingForFloorEvent");
+        arrived = false;
     }
 
     public int getNumReqsReceived() {
@@ -474,7 +479,19 @@ public class Scheduler implements Runnable {
         notifyAll();
     }
 
+    /**
+     * Returns the list of all elevators
+     * @return A List of all elevators
+     */
     public List<Elevator> getAllElevators() {
         return allElevators;
+    }
+
+    /**
+     * Returns the arrived boolean
+     * @return arrived boolean
+     */
+    public boolean getArrived() {
+        return arrived;
     }
 }
