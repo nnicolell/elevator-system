@@ -12,6 +12,11 @@ import static java.lang.Thread.sleep;
 public class Elevator implements Runnable {
 
     /**
+     * An integer representing the maximum passenger capacity for a car.
+     */
+    private final int CAPACITY = 5;
+
+    /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
      */
     private final Scheduler scheduler;
@@ -90,11 +95,6 @@ public class Elevator implements Runnable {
      * An ElevatorSystemLogger to log events.
      */
     private final ElevatorSystemLogger logger;
-
-    /**
-     * An integer representing the maximum passenger capacity for a car.
-     */
-    private final int CAPACITY = 5;
 
     /**
      * True, if the car has reached its maximum capacity. False, if not.
@@ -218,7 +218,7 @@ public class Elevator implements Runnable {
         logger.info("Received " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers()); //increase the total passengers
+        addPassengers(mainFloorEvent.getNumPassengers()); //increase the total passengers
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -241,7 +241,7 @@ public class Elevator implements Runnable {
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers());
+        addPassengers(mainFloorEvent.getNumPassengers());
         view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
@@ -321,7 +321,7 @@ public class Elevator implements Runnable {
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
-                    addPassenger(hardwareDevice.getNumPassengers());
+                    addPassengers(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 
                     // FIXME: non-UDP way of implementing this...
@@ -351,7 +351,7 @@ public class Elevator implements Runnable {
     public boolean moreFloorEventsToFulfill() {
         // main floor event has been fulfilled
         HardwareDevice fulfilledFloorEvent = mainFloorEvent;
-        removePassenger(mainFloorEvent.getNumPassengers());
+        removePassengers(mainFloorEvent.getNumPassengers());
         floorEvents.remove(mainFloorEvent);
         mainFloorEvent = null;
 
@@ -459,23 +459,32 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Increment the number of passengers in the Elevator car by passengers.
+     * Increment the number of passengers in the car by the specified number of passengers.
+     *
+     * @param passengers An integer representing the number of passengers to add to the car.
      */
-    public void addPassenger(int passengers) {
-
-        numPassengers += passengers;
-        if(numPassengers == CAPACITY){
-            maxCapacity = true;
-            System.out.println("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
+    public void addPassengers(int passengers) {
+        int tempNumPassengers = numPassengers + passengers;
+        if (tempNumPassengers <= CAPACITY) {
+            numPassengers = tempNumPassengers;
+            if (numPassengers == CAPACITY) {
+                maxCapacity = true;
+                logger.info("Reached max capacity. Cannot fit anymore passengers.");
+            }
         }
     }
 
     /**
-     * Decrement the number of passengers in the Elevator car by passengers.
+     * Decrement the number of passengers in the car by the specified number of passengers.
+     *
+     * @param passengers An integer representing the number of passengers to remove from the car.
      */
-    public void removePassenger(int passengers) {
-        numPassengers-= passengers;
-        if(numPassengers < CAPACITY){
+    public void removePassengers(int passengers) {
+        numPassengers -= passengers;
+        if (numPassengers < 0) {
+            numPassengers = 0;
+        }
+        if (numPassengers < CAPACITY) {
             maxCapacity = false;
         }
     }
@@ -606,13 +615,13 @@ public class Elevator implements Runnable {
      *
      * @return True, if a transient fault occurs. False, if not.
      */
-    public boolean getTransientFault() { return transientFault; }
+    public boolean isTransientFault() { return transientFault; }
 
     /**
      * Returns True, if a hard fault occurs. False, if not.
      *
      * @return True, if a hard fault occurs. False, if not.
      */
-    public boolean getHardFault() { return hardFault; }
+    public boolean isHardFault() { return hardFault; }
 
 }

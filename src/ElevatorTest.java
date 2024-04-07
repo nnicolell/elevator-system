@@ -143,9 +143,9 @@ public class ElevatorTest {
     @Test
     void testAddAndRemovePassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassenger(1);
+        elevator.addPassengers(1);
         assertEquals(1, elevator.getNumPassengers());
-        elevator.removePassenger(1);
+        elevator.removePassengers(1);
         assertEquals(0, elevator.getNumPassengers());
     }
 
@@ -155,8 +155,8 @@ public class ElevatorTest {
     @Test
     void testGetNumPassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassenger(2);
-        elevator.addPassenger(3);
+        elevator.addPassengers(2);
+        elevator.addPassengers(3);
         assertEquals(5, elevator.getNumPassengers());
     }
 
