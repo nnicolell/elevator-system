@@ -273,7 +273,7 @@ public class Elevator implements Runnable {
                         finished.set(1);
                         timer.cancel();
                         hardFault = true;
-                        System.out.println("Hard Fault True");
+//                        System.out.println("Hard Fault True");
                         view.updateFloor(Elevator.this);
                         // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
@@ -466,7 +466,7 @@ public class Elevator implements Runnable {
             transientFault = true;
             view.updateFloor(this);
             transientFault = false;
-            System.out.println("Transient Fault Set True");
+//            System.out.println("Transient Fault Set True");
             logger.warning("Forcing doors " + (forceOpen ? "open" : "closed") + "...");
             sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
@@ -482,7 +482,7 @@ public class Elevator implements Runnable {
         numPassengers += passengers;
         if(numPassengers == CAPACITY){
             maxCapacity = true;
-            System.out.println("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
+            logger.info("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
         }
     }
 
