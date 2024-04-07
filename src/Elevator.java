@@ -98,6 +98,16 @@ public class Elevator implements Runnable {
     private boolean maxCapacity;
 
     /**
+     * True if a transient fault occurs
+     */
+    private boolean transientFault = false;
+
+    /**
+     * True if a hard fault occurs
+     */
+    private boolean hardFault = false;
+
+    /**
      * Initializes an Elevator.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
@@ -263,10 +273,12 @@ public class Elevator implements Runnable {
                         }
                         finished.set(1);
                         timer.cancel();
-
+                        hardFault = true;
+                        System.out.println("Hard Fault True");
+                        view.updateFloor(Elevator.this);
                         // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
-                        view.updateFaults(Elevator.this);
+                        //view.updateFaults(Elevator.this);
                         scheduler.killElevatorThread(name, floorEvents.size());
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
@@ -432,6 +444,10 @@ public class Elevator implements Runnable {
      */
     public void forceOpenOrCloseDoors(boolean forceOpen) {
         try {
+            transientFault = true;
+            view.updateFloor(this);
+            transientFault = false;
+            System.out.println("Transient Fault Set True");
             logger.warning("Forcing doors " + (forceOpen ? "open" : "closed") + "...");
             sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
@@ -576,4 +592,7 @@ public class Elevator implements Runnable {
     public boolean isMaxCapacity() {
         return maxCapacity;
     }
+
+    public boolean getTransientFault() { return transientFault; }
+    public boolean getHardFault() { return hardFault; }
 }
