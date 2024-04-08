@@ -67,7 +67,13 @@ JDK version 21.0.1 was used to develop the code.
 * [FloorListener.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorListener.java)
   * The FloorListener class contains methods to constantly be listening to the Floor for any new events.
 * [ElevatorSystemController.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystemController.java)
-  * The ElevatorSystemController for the UI
+  * The ElevatorSystemController for the grahical user interface of the elevator system.
+* [ElevatorSystemUI.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystemUI.java)
+  * The ElevatorSystemUI for the User Interface that shows the Elevators movement.
+* [ElevatorSystemLogger.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystemLogger.java)
+  * The ElevatorSystemLogger class is for logging in information regarding the elvator system.
+* [ElevatorSystemView.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystemView.java)
+  * The ElevatorSystemView class is for displaying information from the model.
 
 #### Test Files
 * [ElevatorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorTest.java)
@@ -79,9 +85,9 @@ JDK version 21.0.1 was used to develop the code.
 ### Responsibilities
 | Person                   |                                      Responsibilities                                                     |         
 | ------------------------ |:---------------------------------------------------------------------------------------------------------:|
-| Alexander Hum            |            Elevator.java, ElevatorSystemUI.java, ElevatorTest.java, UML Class Diagram, README.md                   |
+| Alexander Hum            |            Elevator.java, ElevatorSystemUI.java, ElevatorTest.java, ElevatorSystemView.java, UML Class Diagram, README.md                   |
 | Emily Tang               |      Elevator.java, Scheduler.java, ElevatorTest.java, ElevatorSystemLogger.java, UML Class Diagram, README.md                  | 
-| Nicole Lim               |      Elevator.java, ElevatorSystemUI.java, SchedulerStates.java, UML Class Diagram, README.md                         |
+| Nicole Lim               |      Elevator.java, ElevatorSystemUI.java, SchedulerStates.java, ElevatorSystemView.java, UML Class Diagram, README.md                         |
 | Nivetha Sivasaravanan    |            Elevator.java, HardwareDevice.java, ElevatorTest.java, UML Class Diagram, README.md                    |
 | Rimsha Atif              |             Elevator.java, Scheduler.java, UML Class Diagram, README.md                   |
 
