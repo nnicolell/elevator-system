@@ -67,7 +67,7 @@ JDK version 21.0.1 was used to develop the code.
 * [FloorListener.java](https://github.com/nnicolell/elevator-system/blob/master/src/FloorListener.java)
   * The FloorListener class contains methods to constantly be listening to the Floor for any new events.
 * [ElevatorSystemController.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorSystemController.java)
-  * The ElevatorSystemController for the UI 
+  * The ElevatorSystemController for the UI
 
 #### Test Files
 * [ElevatorTest.java](https://github.com/nnicolell/elevator-system/blob/master/src/ElevatorTest.java)
@@ -79,11 +79,11 @@ JDK version 21.0.1 was used to develop the code.
 ### Responsibilities
 | Person                   |                                      Responsibilities                                                     |         
 | ------------------------ |:---------------------------------------------------------------------------------------------------------:|
-| Alexander Hum            |            ElevatorSystemUI.java, Elevator.java, ElevatorTest, UML Class Diagram, README.md                   |
+| Alexander Hum            |            Elevator.java, ElevatorSystemUI.java, ElevatorTest.java, UML Class Diagram, README.md                   |
 | Emily Tang               |      Elevator.java, Scheduler.java, ElevatorTest.java, ElevatorSystemLogger.java, UML Class Diagram, README.md                  | 
-| Nicole Lim               |      Scheduler.java, SchedulerTest, UML Class Diagram, Timing Diagrams, README.md                         |
-| Nivetha Sivasaravanan    |            Floor.java, HardwareDevice.java, ElevatorTest, UML Class Diagram, README.md                    |
-| Rimsha Atif              |             Elevator.java, ElevatorTest,  UML Class Diagram, Timing Diagrams, README.md                   |
+| Nicole Lim               |      Elevator.java, ElevatorSystemUI.java, SchedulerStates.java, UML Class Diagram, README.md                         |
+| Nivetha Sivasaravanan    |            Elevator.java, HardwareDevice.java, ElevatorTest.java, UML Class Diagram, README.md                    |
+| Rimsha Atif              |             Elevator.java, Scheduler.java, UML Class Diagram, README.md                   |
 
 <!-- Iteration 4 -->
 ## Iteration 4
