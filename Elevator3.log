@@ -1,9 +1,20 @@
-[2024-04-07 20:41:34.884] [Elevator3] State: WaitingForElevatorRequest
-[2024-04-07 20:41:34.916] [Elevator3] Waiting for a floor event from Scheduler...
-[2024-04-07 20:41:37.923] [Elevator3] Received {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Scheduler.
-[2024-04-07 20:41:37.924] [Elevator3] [Elevator3] has reached max capacity. Cannot fit anymore passengers.
-[2024-04-07 20:41:37.928] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Scheduler.
-[2024-04-07 20:41:37.929] [Elevator3] State: MovingBetweenFloors
-[2024-04-07 20:41:37.929] [Elevator3] Currently at floor 1, moving to floor 5...
-[2024-04-07 20:41:47.936] [Elevator3] Currently at floor 2.
-[2024-04-07 20:41:57.939] [Elevator3] Currently at floor 3.
+[2024-04-08 19:08:02.297] [Elevator3] State: WaitingForElevatorRequest
+[2024-04-08 19:08:02.332] [Elevator3] Waiting for a floor event from Scheduler...
+[2024-04-08 19:08:05.357] [Elevator3] Received {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Scheduler.
+[2024-04-08 19:08:05.358] [Elevator3] [Elevator3] has reached max capacity. Cannot fit anymore passengers.
+[2024-04-08 19:08:05.361] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Scheduler.
+[2024-04-08 19:08:05.361] [Elevator3] State: MovingBetweenFloors
+[2024-04-08 19:08:05.362] [Elevator3] Currently at floor 1, moving to floor 5...
+[2024-04-08 19:08:15.368] [Elevator3] Currently at floor 2.
+[2024-04-08 19:08:25.380] [Elevator3] Currently at floor 3.
+[2024-04-08 19:08:35.389] [Elevator3] Currently at floor 4.
+[2024-04-08 19:08:45.402] [Elevator3] Arrived at floor 5.
+[2024-04-08 19:08:45.403] [Elevator3] State: DoorsOpening
+[2024-04-08 19:08:59.418] [Elevator3] State: DoorsNotOpening
+[2024-04-08 19:08:59.419] [Elevator3] Forcing doors open...
+[2024-04-08 19:09:07.100] [Elevator3] State: DoorsClosing
+[2024-04-08 19:09:13.114] [Elevator3] State: MovingBetweenFloors
+[2024-04-08 19:09:13.115] [Elevator3] Currently at floor 5, moving to floor 4...
+[2024-04-08 19:09:23.118] [Elevator3] Arrived at floor 4.
+[2024-04-08 19:09:23.118] [Elevator3] State: ReachedDestination
+[2024-04-08 19:09:23.118] [Elevator3] State: DoorsOpening

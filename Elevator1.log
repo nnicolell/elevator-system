@@ -1,8 +1,24 @@
-[2024-04-07 20:41:34.883] [Elevator1] State: WaitingForElevatorRequest
-[2024-04-07 20:41:34.916] [Elevator1] Waiting for a floor event from Scheduler...
-[2024-04-07 20:41:35.901] [Elevator1] Received {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
-[2024-04-07 20:41:35.908] [Elevator1] Sending ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
-[2024-04-07 20:41:35.909] [Elevator1] State: MovingBetweenFloors
-[2024-04-07 20:41:35.909] [Elevator1] Currently at floor 1, moving to floor 4...
-[2024-04-07 20:41:45.916] [Elevator1] Currently at floor 2.
-[2024-04-07 20:41:55.920] [Elevator1] Currently at floor 3.
+[2024-04-08 19:08:02.297] [Elevator1] State: WaitingForElevatorRequest
+[2024-04-08 19:08:02.332] [Elevator1] Waiting for a floor event from Scheduler...
+[2024-04-08 19:08:03.319] [Elevator1] Received {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 19:08:03.324] [Elevator1] Sending ACK {Elevator: Elevator1, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 19:08:03.325] [Elevator1] State: MovingBetweenFloors
+[2024-04-08 19:08:03.325] [Elevator1] Currently at floor 1, moving to floor 4...
+[2024-04-08 19:08:13.336] [Elevator1] Currently at floor 2.
+[2024-04-08 19:08:23.340] [Elevator1] Currently at floor 3.
+[2024-04-08 19:08:33.346] [Elevator1] Arrived at floor 4.
+[2024-04-08 19:08:33.348] [Elevator1] State: DoorsOpening
+[2024-04-08 19:08:39.362] [Elevator1] State: DoorsClosing
+[2024-04-08 19:08:45.368] [Elevator1] State: MovingBetweenFloors
+[2024-04-08 19:08:45.369] [Elevator1] Currently at floor 4, moving to floor 6...
+[2024-04-08 19:08:55.378] [Elevator1] Currently at floor 5.
+[2024-04-08 19:09:05.385] [Elevator1] Arrived at floor 6.
+[2024-04-08 19:09:05.386] [Elevator1] State: ReachedDestination
+[2024-04-08 19:09:05.386] [Elevator1] State: DoorsOpening
+[2024-04-08 19:09:11.398] [Elevator1] State: DoorsClosing
+[2024-04-08 19:09:17.407] [Elevator1] State: NotifyingScheduler
+[2024-04-08 19:09:17.412] [Elevator1] Sending {Elevator: Elevator1, Time: 13:03:58, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: true, Fault: No fault, More Floor Events: true} to Scheduler.
+[2024-04-08 19:09:17.417] [Elevator1] Received ACK {Elevator: Elevator1, Time: 13:03:58, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-08 19:09:17.417] [Elevator1] State: MovingBetweenFloors
+[2024-04-08 19:09:17.418] [Elevator1] Currently at floor 6, moving to floor 4...
+[2024-04-08 19:09:27.423] [Elevator1] Currently at floor 5.

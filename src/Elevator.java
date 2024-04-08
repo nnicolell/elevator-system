@@ -235,8 +235,8 @@ public class Elevator implements Runnable {
 
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-        floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers());
+//        floorEvents.add(mainFloorEvent);
+//        addPassenger(mainFloorEvent.getNumPassengers());
         view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
