@@ -81,6 +81,10 @@ public class Scheduler implements Runnable {
      * An integer to represent the number of movements the elevators have made.
      */
     private int numMovements = 0;
+    /**
+     * A boolean to signal that the elevator has arrived.
+     */
+    private boolean arrived;
 
     /**
      * A long representing the time, in nanoseconds, when a floor event is first sent to an Elevator.
@@ -141,7 +145,9 @@ public class Scheduler implements Runnable {
         addState("NotifyElevator", new NotifyElevator());
         addState("NotifyFloor", new NotifyFloor());
         addState("SelectElevator", new SelectElevator());
+        addState("WaitingForElevator", new WaitingForElevator());
         setState("WaitingForFloorEvent");
+        arrived = false;
     }
 
     /**
@@ -355,7 +361,9 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice A HardwareDevice representing a floor event.
      */
     private void sendElevatorFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
-        sendElevatorPacket(elevator, hardwareDevice.toString()); // send the floor event to the elevator
+        // send the floor event to the elevator and receive an acknowledgment
+        currentState.handleRequest(this);
+        sendElevatorPacket(elevator, hardwareDevice.toString());
 
         // start the timer if its hasn't been started already
         if (startTime == -1) {
@@ -363,10 +371,12 @@ public class Scheduler implements Runnable {
             logger.info("Timer has been started!");
         }
 
-        receiveElevatorPacket(); // receive an acknowledgement from the elevator
+        currentState.handleRequest(this);
+        receiveElevatorPacket();
 
         distributeFloorEvents();
-        setState("NotifyElevator");
+        receiveElevatorFloorEvent();
+        //setState("NotifyElevator");
     }
 
     /**
@@ -386,6 +396,9 @@ public class Scheduler implements Runnable {
         if (!fulfilledFloorEvent.getMoreFloorEvents()) {
             numMovements++;
             logger.info(elevator.getName() + " has completed a movement. numMovements: " + numMovements + ".");
+            arrived = true;
+            currentState.handleRequest(this);
+            arrived = false;
             availableElevators.add(elevator);
             busyElevators.remove(elevator);
             distributeFloorEvents();
@@ -428,6 +441,7 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
+        currentState.handleRequest(this);
         logger.info("Sending " + fulfilledFloorEvent + " to Floor.");
 
         // receive an acknowledgment from the Floor
@@ -443,6 +457,7 @@ public class Scheduler implements Runnable {
                 + " from Floor.");
     }
 
+    // FIXME: non-UDP way of implementing this...
     /**
      * The specified Elevator has picked up the specified floor event to fulfill. Removes the specified floor event
      * from the list of floor events to handle.
@@ -530,6 +545,14 @@ public class Scheduler implements Runnable {
      */
     public List<Elevator> getAllElevators() {
         return allElevators;
+    }
+
+    /**
+     * Returns the arrived boolean
+     * @return arrived boolean
+     */
+    public boolean getArrived() {
+        return arrived;
     }
 
 }
