@@ -214,7 +214,7 @@ public class Elevator implements Runnable {
         logger.info("Received " + floorEvent + " from Scheduler.");
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
         floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers()); //increase the total passengers
+        addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();

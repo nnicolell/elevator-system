@@ -126,7 +126,7 @@ public class Scheduler implements Runnable {
 
         try {
             sendReceiveSocket = new DatagramSocket();
-            sendReceiveSocket.setSoTimeout(78000);
+//            sendReceiveSocket.setSoTimeout(78000);
         } catch (SocketException se){
             se.printStackTrace();
             System.exit(1);
