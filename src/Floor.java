@@ -138,15 +138,16 @@ public class Floor implements Runnable {
         int floor = Integer.parseInt(info[1]);
         FloorButton floorButton = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int carButton = Integer.parseInt(info[3]);
+        int numPassengers = Integer.parseInt(info[4]); //number of passengers for the floor event
 
         // process the specified Elevator fault
         StringBuilder faultStringBuilder = new StringBuilder();
-        for (int i = 4; i < info.length; i++) {
+        for (int i = 5; i < info.length; i++) {
             faultStringBuilder.append(info[i]).append(" ");
         }
         String fault = faultStringBuilder.toString().trim();
 
-        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, Fault.stringToFault(fault));
+        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, numPassengers,Fault.stringToFault(fault));
     }
 
 }
