@@ -1,20 +1,9 @@
-[2024-04-07 19:55:32.304] [Elevator3] State: WaitingForElevatorRequest
-[2024-04-07 19:55:32.337] [Elevator3] Waiting for a floor event from Scheduler...
-[2024-04-07 19:55:35.344] [Elevator3] Received {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Scheduler.
-[2024-04-07 19:55:35.350] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Scheduler.
-[2024-04-07 19:55:35.351] [Elevator3] State: MovingBetweenFloors
-[2024-04-07 19:55:35.351] [Elevator3] Currently at floor 1, moving to floor 5...
-[2024-04-07 19:55:45.358] [Elevator3] Currently at floor 2.
-[2024-04-07 19:55:55.364] [Elevator3] Currently at floor 3.
-[2024-04-07 19:56:05.373] [Elevator3] Currently at floor 4.
-[2024-04-07 19:56:15.377] [Elevator3] Arrived at floor 5.
-[2024-04-07 19:56:15.377] [Elevator3] State: DoorsOpening
-[2024-04-07 19:56:29.388] [Elevator3] State: DoorsNotOpening
-[2024-04-07 19:56:29.390] [Elevator3] Forcing doors open...
-[2024-04-07 19:56:37.076] [Elevator3] State: DoorsClosing
-[2024-04-07 19:56:43.091] [Elevator3] State: MovingBetweenFloors
-[2024-04-07 19:56:43.092] [Elevator3] Currently at floor 5, moving to floor 4...
-[2024-04-07 19:56:53.098] [Elevator3] Arrived at floor 4.
-[2024-04-07 19:56:53.100] [Elevator3] State: ReachedDestination
-[2024-04-07 19:56:53.101] [Elevator3] State: NotifyingScheduler
-[2024-04-07 19:56:53.102] [Elevator3] Sending {Elevator: Elevator3, Time: 16:07:31, Requested Floor: 5, Direction: DOWN, Car Button: 4, Arrived: true, Fault: Doors not opening, More Floor Events: true} to Scheduler.
+[2024-04-07 20:41:34.884] [Elevator3] State: WaitingForElevatorRequest
+[2024-04-07 20:41:34.916] [Elevator3] Waiting for a floor event from Scheduler...
+[2024-04-07 20:41:37.923] [Elevator3] Received {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Scheduler.
+[2024-04-07 20:41:37.924] [Elevator3] [Elevator3] has reached max capacity. Cannot fit anymore passengers.
+[2024-04-07 20:41:37.928] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Scheduler.
+[2024-04-07 20:41:37.929] [Elevator3] State: MovingBetweenFloors
+[2024-04-07 20:41:37.929] [Elevator3] Currently at floor 1, moving to floor 5...
+[2024-04-07 20:41:47.936] [Elevator3] Currently at floor 2.
+[2024-04-07 20:41:57.939] [Elevator3] Currently at floor 3.
