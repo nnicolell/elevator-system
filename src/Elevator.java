@@ -38,7 +38,7 @@ public class Elevator implements Runnable {
 
     /**
      * A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
-     *
+     * <p>
      * It does not represent the floor events that were picked up while executing the floor event the Scheduler assigned
      * to the Elevator.
      */
@@ -61,7 +61,7 @@ public class Elevator implements Runnable {
 
     /**
      * An integer representing the port number to send DatagramPackets to the Scheduler.
-     *
+     * <p>
      * If 0, the Elevator has not received a DatagramPacket from the Scheduler yet.
      */
     private int schedulerPort = 0;
@@ -90,7 +90,7 @@ public class Elevator implements Runnable {
     /**
      * The maximum passenger capacity for a car
      */
-    private final int CAPACITY = 5;
+    private int CAPACITY = 5;
 
     /**
      * True if the car has reached maximum capacity
@@ -111,8 +111,8 @@ public class Elevator implements Runnable {
      * Initializes an Elevator.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
-     * @param port An integer representing the port number to receive DatagramPackets from the Scheduler on.
-     * @param name A String representing the name of the Elevator.
+     * @param port      An integer representing the port number to receive DatagramPackets from the Scheduler on.
+     * @param name      A String representing the name of the Elevator.
      */
     public Elevator(Scheduler scheduler, int port, String name) {
         this.scheduler = scheduler;
@@ -158,7 +158,7 @@ public class Elevator implements Runnable {
     /**
      * Adds the given state to the Elevator state machine.
      *
-     * @param name A String representing the name of the state.
+     * @param name          A String representing the name of the state.
      * @param elevatorState An ElevatorState to be added to the Elevator state machine.
      */
     public void addState(String name, ElevatorState elevatorState) {
@@ -247,10 +247,10 @@ public class Elevator implements Runnable {
     /**
      * Moves the Elevator between floors.
      *
-     * @param fault True, if a fault should occur. False, if not.
-     * @param state A String representing the state the Elevator state machine should transition to after the elevator
-     *              car has finished moving between floors.
-     * @param floor An integer representing the floor the Elevator needs to move to.
+     * @param fault  True, if a fault should occur. False, if not.
+     * @param state  A String representing the state the Elevator state machine should transition to after the elevator
+     *               car has finished moving between floors.
+     * @param floor  An integer representing the floor the Elevator needs to move to.
      * @param button A FloorButton representing the direction the Elevator needs to move.
      */
     public void moveBetweenFloors(boolean fault, String state, int floor, FloorButton button) {
@@ -329,7 +329,7 @@ public class Elevator implements Runnable {
                 }
             }
 
-            logger.info((currentFloor == floor? "Arrived" : "Currently") + " at floor " + currentFloor + ".");
+            logger.info((currentFloor == floor ? "Arrived" : "Currently") + " at floor " + currentFloor + ".");
             // add time to move floors to hardware device
             LocalTime newTime = mainFloorEvent.getTime().plusSeconds(10);
             mainFloorEvent.setTime(newTime);
@@ -406,9 +406,9 @@ public class Elevator implements Runnable {
     /**
      * Sets a timer to handle a fault in the case where a door does not open or close.
      *
-     * @param fault True, if a fault should occur. False, if not.
-     * @param faultState A String representing the state the Elevator state machine should transition to if a fault
-     *                   occurs.
+     * @param fault       True, if a fault should occur. False, if not.
+     * @param faultState  A String representing the state the Elevator state machine should transition to if a fault
+     *                    occurs.
      * @param normalState A String representing the state the Elevator state machine should transition to if a fault
      *                    does not occur.
      */
@@ -501,8 +501,8 @@ public class Elevator implements Runnable {
      * Decrement the number of passengers in the Elevator car by passengers.
      */
     public void removePassenger(int passengers) {
-        numPassengers-= passengers;
-        if(numPassengers < CAPACITY){
+        numPassengers -= passengers;
+        if (numPassengers < CAPACITY) {
             maxCapacity = false;
         }
     }
@@ -521,7 +521,9 @@ public class Elevator implements Runnable {
      *
      * @return The current state of the Elevator state machine.
      */
-    public ElevatorState getCurrentState() { return currentState; }
+    public ElevatorState getCurrentState() {
+        return currentState;
+    }
 
     /**
      * Returns a HashMap of states in the Elevator state machine.
@@ -582,7 +584,9 @@ public class Elevator implements Runnable {
      *
      * @return A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
      */
-    public HardwareDevice getMainFloorEvent() { return mainFloorEvent; }
+    public HardwareDevice getMainFloorEvent() {
+        return mainFloorEvent;
+    }
 
     /**
      * Sets a HardwareDevice to the mainFloorEvent.
@@ -609,10 +613,13 @@ public class Elevator implements Runnable {
         return handleRequestInSetState;
     }
 
+    /**
+     * Sets the view for the ElevatorSystemView
+     * @param v View for the ElevatorsSystem
+     */
     public void setView(ElevatorSystemView v) {
         view = v;
     }
-
 
     /**
      * Returns true, if car has reached maximum capacity
@@ -623,6 +630,57 @@ public class Elevator implements Runnable {
         return maxCapacity;
     }
 
-    public boolean getTransientFault() { return transientFault; }
-    public boolean getHardFault() { return hardFault; }
+    /**
+     * Returns the max capacity of passengers
+     *
+     * @return int of max passengers
+     */
+    public int getMaxCapacity() {
+        return CAPACITY;
+    }
+
+    /**
+     * Sets the max capacity of passengers
+     *
+     * @param cap the number of passengers
+     */
+    public void setMaxCapacity(int cap) {
+        CAPACITY = cap;
+    }
+
+    /**
+     * Returns if a transient fault occurs
+     *
+     * @return True, if there is a transient fault
+     */
+    public boolean isTransientFault() {
+        return transientFault;
+    }
+
+    /**
+     * Returns if a hard fault occurs
+     *
+     * @return True if there is a hard fault
+     */
+    public boolean isHardFault() {
+        return hardFault;
+    }
+
+    /**
+     * Sets the transient fault
+     *
+     * @param transFault if there is a transient fault or not
+     */
+    public void setTransientFault(boolean transFault) {
+        transientFault = transFault;
+    }
+
+    /**
+     * Sets the hard fault
+     *
+     * @param fault if there is a hard fault or not
+     */
+    public void setHardFault(boolean fault) {
+        hardFault = fault;
+    }
 }

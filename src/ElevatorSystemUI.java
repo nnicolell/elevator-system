@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,9 +187,9 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     public void updateFloor(Elevator elevator) {
         for (int i = 0; i < elevators.size(); i++) {
             if (elevators.get(i).getName().equals(elevator.getName())) {
-                if (elevator.getTransientFault() == true) {
+                if (elevator.isTransientFault() == true) {
                     grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.YELLOW);
-                } else if (elevator.getHardFault() == true) {
+                } else if (elevator.isHardFault() == true) {
                     grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.RED);
                 } else {
                     grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.GREEN);
