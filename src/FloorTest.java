@@ -1,11 +1,9 @@
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import java.util.*;
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -14,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FloorTest {
 
     private List<String> lines;
-
 
     /**
      * Setup before each method to read from test input file
@@ -51,14 +48,14 @@ public class FloorTest {
         Floor floor = new Floor(scheduler);
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.get(0).split(" "));
         LocalTime localTime = LocalTime.parse("13:02:56.0");
-        HardwareDevice expectedHardwareDevice = new HardwareDevice("Elevator1", localTime, 4, FloorButton.UP, 6, 3, Fault.NO_FAULT);
+        HardwareDevice expectedHardwareDevice = new HardwareDevice("Elevator1", localTime, 4,
+                FloorButton.UP, 6, 3, Fault.NO_FAULT);
 
         assertEquals(hardwareDevice.getTime(), expectedHardwareDevice.getTime());
         assertEquals(hardwareDevice.getFloor(), expectedHardwareDevice.getFloor());
         assertEquals(hardwareDevice.getFloorButton(), expectedHardwareDevice.getFloorButton());
         assertEquals(hardwareDevice.getArrived(), expectedHardwareDevice.getArrived());
         assertEquals(hardwareDevice.getCarButton(), expectedHardwareDevice.getCarButton());
-
     }
 
     /**

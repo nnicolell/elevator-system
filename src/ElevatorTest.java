@@ -34,8 +34,6 @@ public class ElevatorTest {
      */
     private final Random random = new Random();
 
-    private ElevatorSystemView view;
-
     /**
      * Returns a random integer between 0 and 9999.
      *
