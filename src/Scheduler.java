@@ -81,6 +81,20 @@ public class Scheduler implements Runnable {
      * An integer to represent the number of movements the elevators have made.
      */
     private int numMovements = 0;
+    /**
+     * A boolean to signal that the elevator has arrived.
+     */
+    private boolean arrived;
+
+    /**
+     * A long representing the time, in nanoseconds, when a floor event is first sent to an Elevator.
+     */
+    private long startTime = -1;
+
+    /**
+     * A long representing the time, in nanoseconds, it takes to execute all the floor events.
+     */
+    private long endTime;
 
     /**
      * Initializes a Scheduler.
@@ -108,11 +122,10 @@ public class Scheduler implements Runnable {
         }
 
         floorEventsToHandle = new ArrayList<>();
-        numReqsHandled = 1;
 
         try {
             sendReceiveSocket = new DatagramSocket();
-            sendReceiveSocket.setSoTimeout(78000);
+//            sendReceiveSocket.setSoTimeout(78000);
         } catch (SocketException se){
             se.printStackTrace();
             System.exit(1);
@@ -131,13 +144,23 @@ public class Scheduler implements Runnable {
         addState("NotifyElevator", new NotifyElevator());
         addState("NotifyFloor", new NotifyFloor());
         addState("SelectElevator", new SelectElevator());
+        addState("WaitingForElevator", new WaitingForElevator());
         setState("WaitingForFloorEvent");
+        arrived = false;
     }
 
+    /**
+     * Returns an integer representing the number of requests that have been received from the Floor subsystem.
+     *
+     * @return An integer representing the number of requests that have been received from the Floor subsystem.
+     */
     public int getNumReqsReceived() {
         return numReqsReceived;
     }
 
+    /**
+     * Increments the number of requests received from the Floor subsystem by one.
+     */
     public void incrementNumReqsReceived() {
         numReqsReceived++;
     }
@@ -225,18 +248,20 @@ public class Scheduler implements Runnable {
         while (numReqsHandled < numReqs) {
             currentState.handleRequest(this);
         }
+        logger.info("Scheduler has executed all floor events.");
     }
 
     /**
-     * Returns the list of the floor events to handle
-     * @return The list of the floor events to handle
+     * Returns the list of the floor events to handle.
+     *
+     * @return The list of the floor events to handle.
      */
     public ArrayList<HardwareDevice> getFloorEventsToHandle() {
         return floorEventsToHandle;
     }
 
     /**
-     * Distributes the floor events to the closest available elevator
+     * Distributes the floor events to the closest available elevator.
      */
     public synchronized void distributeFloorEvents() {
         int distance = 0;
@@ -269,16 +294,18 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Adds an elevator to the busy elevators list
-     * @param elevator Elevator to get added to the busyElevators list
+     * Adds the specified elevator to the list of busy elevators.
+     *
+     * @param elevator An Elevator to add to the list of busy elevators.
      */
     public void addBusyElevator(Elevator elevator) {
         busyElevators.add(elevator);
     }
 
     /**
-     * Returns a list of busy elevators
-     * @return The list of busy elevators
+     * Returns a List of Elevators representing a list of busy elevators.
+     *
+     * @return A List of Elevators representing a list of busy elevators.
      */
     public List<Elevator> getBusyElevators() {
         return busyElevators;
@@ -334,11 +361,23 @@ public class Scheduler implements Runnable {
      */
     private void sendElevatorFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
         // send the floor event to the elevator and receive an acknowledgment
-        sendElevatorPacket(elevator, hardwareDevice.toString());
-        receiveElevatorPacket();
+        currentState.handleRequest(this);
+        if (!hardwareDevice.getArrived()) {
+            sendElevatorPacket(elevator, hardwareDevice.toString());
 
-        distributeFloorEvents();
-        setState("NotifyElevator");
+            // start the timer if its hasn't been started already
+            if (startTime == -1) {
+                startTime = System.nanoTime();
+                logger.info("Timer has been started!");
+            }
+
+            currentState.handleRequest(this);
+            receiveElevatorPacket();
+
+            distributeFloorEvents();
+            receiveElevatorFloorEvent();
+            //setState("NotifyElevator");
+        }
     }
 
     /**
@@ -358,6 +397,9 @@ public class Scheduler implements Runnable {
         if (!fulfilledFloorEvent.getMoreFloorEvents()) {
             numMovements++;
             logger.info(elevator.getName() + " has completed a movement. numMovements: " + numMovements + ".");
+            arrived = true;
+            currentState.handleRequest(this);
+            arrived = false;
             availableElevators.add(elevator);
             busyElevators.remove(elevator);
             distributeFloorEvents();
@@ -365,10 +407,29 @@ public class Scheduler implements Runnable {
 
         numReqsHandled++;
         System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+        isFloorEventsComplete();
 
         notifyFloor(message);
     }
 
+    /**
+     * Checks if all the floor events received from the Floor subsystem is complete.
+     */
+    private void isFloorEventsComplete() {
+        if (numReqsHandled == numReqs) {
+            // stop the timer and log the time it takes, in milliseconds, to execute all the floor events
+            endTime = System.nanoTime();
+            logger.info("It took " + ((endTime - startTime) / 100000) + " ms to execute " + numReqs
+                    + " floor event(s).");
+        }
+    }
+
+    /**
+     * Notifies the Floor subsystem of a fulfilled floor event. Sends the String representation of the fulfilled floor
+     * event to the Floor susbsystem, and receives an acknowledgment back.
+     *
+     * @param fulfilledFloorEvent A String representing the fulfilled floor event to send to the Floor subsystem.
+     */
     private void notifyFloor(String fulfilledFloorEvent) {
         // notify Floor that a floor event has been fulfilled
         byte[] sendBytes = fulfilledFloorEvent.getBytes();
@@ -382,6 +443,7 @@ public class Scheduler implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
+        currentState.handleRequest(this);
         logger.info("Sending " + fulfilledFloorEvent + " to Floor.");
 
         // receive an acknowledgment from the Floor
@@ -412,9 +474,10 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Get the Elevator object based on the name
-     * @param name Name of the Elevator
-     * @return Elevator Object
+     * Returns the Elevator with the specified name.
+     *
+     * @param name A String representing the name of the Elevator.
+     * @return An Elevator with the specified name. Null, if an Elevator with the specified name does not exist.
      */
     public Elevator getElevator(String name) {
         for (Elevator elevator : allElevators) {
@@ -426,10 +489,11 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Gets the first elevator available.
-     * @return Elevator
+     * Returns the first available elevator.
+     *
+     * @return The first available elevator.
      */
-    public Elevator getElevatorTest() {
+    public Elevator getFirstAvailableElevator() {
         return availableElevators.get(0);
     }
 
@@ -463,6 +527,8 @@ public class Scheduler implements Runnable {
         busyElevators.remove(elevator);
 
         numReqsHandled += numFloorEventsHandling;
+        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+        isFloorEventsComplete();
 
         for (Thread elevatorThread : elevatorThreads) {
             if (elevatorThread.getName().equals(name)) {
@@ -475,7 +541,21 @@ public class Scheduler implements Runnable {
         notifyAll();
     }
 
+    /**
+     * Returns a List of Elevators representing all the elevators in the ElevatorSystem.
+     *
+     * @return A List of Elevators representing all the elevators in the ElevatorSystem.
+     */
     public List<Elevator> getAllElevators() {
         return allElevators;
     }
+
+    /**
+     * Returns the arrived boolean
+     * @return arrived boolean
+     */
+    public boolean getArrived() {
+        return arrived;
+    }
+
 }

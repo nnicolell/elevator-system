@@ -6,8 +6,9 @@ class NotifyElevator implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
-        scheduler.receiveElevatorFloorEvent();
-        scheduler.setState("WaitingForFloorEvent");
+        //scheduler.receiveElevatorFloorEvent();
+        scheduler.setState("WaitingForElevator");
+
     }
 
     @Override
@@ -25,6 +26,7 @@ class WaitingForFloorEvent implements SchedulerState {
     @Override
     public void handleRequest(Scheduler scheduler) {
         scheduler.setState("SelectElevator");
+        scheduler.distributeFloorEvents();
     }
 
     @Override
@@ -42,7 +44,12 @@ class NotifyFloor implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
-        scheduler.setState("WaitingForFloorEvent");
+        if (scheduler.getBusyElevators().isEmpty()){
+            scheduler.setState("WaitingForFloorEvent");
+        }
+        else {
+            scheduler.setState("SelectElevator");
+        }
     }
 
     @Override
@@ -68,4 +75,23 @@ class SelectElevator implements SchedulerState {
         return "SelectElevator";
     }
 
+}
+
+/**
+ * This class represents a state in Scheduler that waits for an Elevator to complete its event.
+ */
+class WaitingForElevator implements SchedulerState {
+
+    @Override
+    public void handleRequest(Scheduler scheduler) {
+        if (scheduler.getArrived()){
+            scheduler.setState("NotifyFloor");
+        }
+    }
+
+
+    @Override
+    public String displayState() {
+        return "WaitingForElevator";
+    }
 }

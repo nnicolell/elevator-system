@@ -47,9 +47,9 @@ public class HardwareDevice {
     private boolean moreFloorEvents = false;
 
     /**
-     * The number of passengers related to the floor event
+     * An integer representing the number of passengers related to the floor event.
      */
-    private int numPassengers;
+    private final int numPassengers;
 
     /**
      * Initializes a HardwareDevice with a LocalTime representing when a passenger requests an elevator, an integer
@@ -61,10 +61,11 @@ public class HardwareDevice {
      * @param time A LocalTime representing when a passenger requests an elevator.
      * @param floor An integer representing the floor number a passenger requested an elevator at.
      * @param floorButton A FloorButton representing whether the passenger would like to move up or down.
+     * @param numPassengers An integer representing the number of passengers related to the floor event.
      * @param carButton An integer representing the floor number a passenger would like to move to.
      * @param fault A Fault related to the floor event.
      */
-    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton,int numPassengers, Fault fault) {
+    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton, int numPassengers, Fault fault) {
         this.elevator = elevator;
         this.time = time;
         this.floor = floor;
@@ -196,9 +197,10 @@ public class HardwareDevice {
      */
     @Override
     public String toString() {
-        return "{Elevator: " + elevator + ", Time: " + getTime() + ", Requested Floor: " + getFloor()
-                + ", Direction: " + getFloorButton() + ", Car Button: " + getCarButton() + ", Number of Passengers: " + getNumPassengers() + ", Arrived: " + getArrived()
-                + ", Fault: " + getFault().toString() + "}";
+        return "{Elevator: " + elevator + ", Time: " + time + ", Requested Floor: " + floor
+                + ", Direction: " + floorButton + ", Car Button: " + carButton
+                + ", Number of Passengers: " + numPassengers + ", Arrived: " + arrived
+                + ", Fault: " + fault.toString() + ", More Floor Events: " + moreFloorEvents + "}";
     }
 
     /**
@@ -225,10 +227,12 @@ public class HardwareDevice {
         int np = Integer.parseInt(hardwareDeviceStringArray[5]);
         boolean a = hardwareDeviceStringArray[6].equalsIgnoreCase("true");
         Fault ft = Fault.stringToFault(hardwareDeviceStringArray[7]);
+        boolean moreFloorEvents = hardwareDeviceStringArray[8].equalsIgnoreCase("true");
         HardwareDevice hardwareDevice = new HardwareDevice(e, t, f, fb, cb, np, ft);
         if (a) {
             hardwareDevice.setArrived();
         }
+        hardwareDevice.setMoreFloorEvents(moreFloorEvents);
         return hardwareDevice;
     }
 
