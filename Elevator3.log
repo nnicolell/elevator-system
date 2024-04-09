@@ -1,22 +1,32 @@
-[2024-04-09 00:57:26.320] [Elevator3] State: WaitingForElevatorRequest
-[2024-04-09 00:57:26.380] [Elevator3] Waiting for a floor event from Scheduler...
-[2024-04-09 00:57:29.359] [Elevator3] Received {Elevator: Elevator3, Time: 02:22:25.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
-[2024-04-09 00:57:29.362] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 02:22:25.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
-[2024-04-09 00:57:29.364] [Elevator3] State: DoorsOpening
-[2024-04-09 00:57:35.370] [Elevator3] State: DoorsClosing
-[2024-04-09 00:57:41.372] [Elevator3] State: MovingBetweenFloors
-[2024-04-09 00:57:41.372] [Elevator3] Currently at floor 1, moving to floor 20...
-[2024-04-09 00:57:51.375] [Elevator3] Currently at floor 2.
-[2024-04-09 00:58:01.390] [Elevator3] Currently at floor 3.
-[2024-04-09 00:58:11.397] [Elevator3] Currently at floor 4.
-[2024-04-09 00:58:21.400] [Elevator3] Currently at floor 5.
-[2024-04-09 00:58:31.403] [Elevator3] Currently at floor 6.
-[2024-04-09 00:58:41.406] [Elevator3] Currently at floor 7.
-[2024-04-09 00:58:51.409] [Elevator3] Currently at floor 8.
-[2024-04-09 00:59:01.414] [Elevator3] Currently at floor 9.
-[2024-04-09 00:59:11.417] [Elevator3] Currently at floor 10.
-[2024-04-09 00:59:21.419] [Elevator3] Currently at floor 11.
-[2024-04-09 00:59:31.421] [Elevator3] Currently at floor 12.
-[2024-04-09 00:59:41.424] [Elevator3] Currently at floor 13.
-[2024-04-09 00:59:51.428] [Elevator3] Currently at floor 14.
-[2024-04-09 01:00:01.430] [Elevator3] Currently at floor 15.
+[2024-04-09 01:16:02.640] [Elevator3] State: WaitingForElevatorRequest
+[2024-04-09 01:16:02.733] [Elevator3] Waiting for a floor event from Scheduler...
+[2024-04-09 01:16:05.721] [Elevator3] Received {Elevator: Elevator3, Time: 02:22:25.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-09 01:16:05.725] [Elevator3] Sending ACK {Elevator: Elevator3, Time: 02:22:25.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-09 01:16:05.726] [Elevator3] State: DoorsOpening
+[2024-04-09 01:16:11.735] [Elevator3] State: DoorsClosing
+[2024-04-09 01:16:17.744] [Elevator3] State: MovingBetweenFloors
+[2024-04-09 01:16:17.744] [Elevator3] Currently at floor 1, moving to floor 20...
+[2024-04-09 01:16:27.749] [Elevator3] Currently at floor 2.
+[2024-04-09 01:16:37.752] [Elevator3] Currently at floor 3.
+[2024-04-09 01:16:47.758] [Elevator3] Currently at floor 4.
+[2024-04-09 01:16:57.763] [Elevator3] Currently at floor 5.
+[2024-04-09 01:17:07.769] [Elevator3] Currently at floor 6.
+[2024-04-09 01:17:17.773] [Elevator3] Currently at floor 7.
+[2024-04-09 01:17:27.777] [Elevator3] Currently at floor 8.
+[2024-04-09 01:17:37.783] [Elevator3] Currently at floor 9.
+[2024-04-09 01:17:47.788] [Elevator3] Currently at floor 10.
+[2024-04-09 01:17:57.792] [Elevator3] Currently at floor 11.
+[2024-04-09 01:18:07.797] [Elevator3] Currently at floor 12.
+[2024-04-09 01:18:17.802] [Elevator3] Currently at floor 13.
+[2024-04-09 01:18:27.804] [Elevator3] Currently at floor 14.
+[2024-04-09 01:18:37.811] [Elevator3] Currently at floor 15.
+[2024-04-09 01:18:47.817] [Elevator3] Currently at floor 16.
+[2024-04-09 01:18:57.823] [Elevator3] Currently at floor 17.
+[2024-04-09 01:19:07.828] [Elevator3] Currently at floor 18.
+[2024-04-09 01:19:17.831] [Elevator3] Currently at floor 19.
+[2024-04-09 01:19:27.835] [Elevator3] Arrived at floor 20.
+[2024-04-09 01:19:27.836] [Elevator3] State: ReachedDestination
+[2024-04-09 01:19:27.836] [Elevator3] State: DoorsOpening
+[2024-04-09 01:19:33.842] [Elevator3] State: DoorsClosing
+[2024-04-09 01:19:39.851] [Elevator3] State: NotifyingScheduler
+[2024-04-09 01:19:39.851] [Elevator3] Sending {Elevator: Elevator3, Time: 02:25:47.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: false} to Scheduler.

@@ -276,11 +276,9 @@ public class Elevator implements Runnable {
                         finished.set(1);
                         timer.cancel();
                         hardFault = true;
-//                        System.out.println("Hard Fault True");
                         view.updateFloor(Elevator.this);
                         // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
-                        //view.updateFaults(Elevator.this);
                         scheduler.killElevatorThread(name, floorEvents.size());
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
@@ -327,6 +325,7 @@ public class Elevator implements Runnable {
                     // FIXME: non-UDP way of implementing this...
                     // notify the Scheduler that we have picked up a floor event
                     scheduler.pickedUpFloorEvent(this, hardwareDevice);
+                    hardwareDevice.setElevator(name);
                 }
             }
 
@@ -418,7 +417,6 @@ public class Elevator implements Runnable {
         AtomicInteger finished = new AtomicInteger(0);
 
         if (fault) {
-            view.updateFaults(Elevator.this);
             faultTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -428,7 +426,6 @@ public class Elevator implements Runnable {
                         throw new RuntimeException(e);
                     }
                     setState(faultState); // assume a fault if doors don't open/close within 7.8 seconds
-                    view.updateFaults(Elevator.this);
                     finished.set(1);
                     timer.cancel();
                 }
@@ -683,5 +680,9 @@ public class Elevator implements Runnable {
      */
     public void setHardFault(boolean fault) {
         hardFault = fault;
+    }
+
+    public ElevatorSystemView getView() {
+        return view;
     }
 }
