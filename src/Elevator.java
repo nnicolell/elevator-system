@@ -478,11 +478,13 @@ public class Elevator implements Runnable {
      * Increment the number of passengers in the Elevator car by passengers.
      */
     public void addPassenger(int passengers) {
-
         numPassengers += passengers;
-        if(numPassengers == CAPACITY){
+        if (numPassengers > CAPACITY) {
+            numPassengers -= passengers;
+            logger.info("Cannot fit anymore passengers.");
+        } else if (numPassengers == CAPACITY) {
             maxCapacity = true;
-            logger.info("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
+            logger.info("Reached max capacity. Cannot fit anymore passengers.");
         }
     }
 

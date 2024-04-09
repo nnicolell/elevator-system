@@ -122,7 +122,6 @@ public class Scheduler implements Runnable {
         }
 
         floorEventsToHandle = new ArrayList<>();
-        numReqsHandled = 1;
 
         try {
             sendReceiveSocket = new DatagramSocket();
@@ -405,6 +404,7 @@ public class Scheduler implements Runnable {
         }
 
         numReqsHandled++;
+        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         notifyFloor(message);
@@ -525,6 +525,7 @@ public class Scheduler implements Runnable {
         busyElevators.remove(elevator);
 
         numReqsHandled += numFloorEventsHandling;
+        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         for (Thread elevatorThread : elevatorThreads) {
