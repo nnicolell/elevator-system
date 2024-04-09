@@ -53,7 +53,7 @@ public class ElevatorTest {
         elevatorPortNumbers.add(elevatorPortNum);
         scheduler = new Scheduler(elevatorPortNumbers, generateRandomInt());
         elevator = scheduler.getFirstAvailableElevator();
-        floorListener = scheduler.getFloorListener();
+//        floorListener = scheduler.getFloorListener();
     }
 
     /**

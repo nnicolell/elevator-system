@@ -52,10 +52,10 @@ public class Scheduler implements Runnable {
      */
     private final List<Elevator> busyElevators;
 
-    /**
-     * The FloorListener for the Scheduler.
-     */
-    private final FloorListener floorListener;
+//    /**
+//     * The FloorListener for the Scheduler.
+//     */
+//    private final FloorListener floorListener;
 
     /**
      * A List of Threads representing the threads for the elevators.
@@ -134,10 +134,10 @@ public class Scheduler implements Runnable {
         // create a logger for Scheduler and FloorListener to log events on
         logger = new ElevatorSystemLogger("Scheduler");
 
-        // start the FloorListener thread
-        floorListener = new FloorListener(this, portFloor, logger);
-        Thread floorListenerThread = new Thread(floorListener);
-        floorListenerThread.start();
+//        // start the FloorListener thread
+//        floorListener = new FloorListener(this, portFloor, logger);
+//        Thread floorListenerThread = new Thread(floorListener);
+//        floorListenerThread.start();
 
         states = new HashMap<>();
         addState("WaitingForFloorEvent", new WaitingForFloorEvent());
@@ -209,8 +209,10 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice A HardwareDevice representing the floor event.
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
+        logger.info("Received " + hardwareDevice + " from Floor.");
         floorEventsToHandle.add(hardwareDevice);
         notifyAll();
+        logger.info("Sending ACK " + hardwareDevice + " to Floor.");
     }
 
     /**
@@ -436,16 +438,17 @@ public class Scheduler implements Runnable {
     private void notifyFloor(String fulfilledFloorEvent) {
         // notify Floor that a floor event has been fulfilled
         byte[] sendBytes = fulfilledFloorEvent.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(sendBytes, sendBytes.length, floorListener.getFloorAddress(),
-                floorListener.getFloorPort());
         try {
+            DatagramPacket sendPacket = new DatagramPacket(sendBytes, sendBytes.length, InetAddress.getLocalHost(),
+                    5000);
             DatagramSocket sendSocket = new DatagramSocket();
             sendSocket.send(sendPacket);
             sendSocket.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
+
         currentState.handleRequest(this);
         logger.info("Sending " + fulfilledFloorEvent + " to Floor.");
 
@@ -507,14 +510,14 @@ public class Scheduler implements Runnable {
         sendReceiveSocket.close();
     }
 
-    /**
-     * Returns the floor listener.
-     *
-     * @return The floor listener.
-     */
-    public FloorListener getFloorListener() {
-        return floorListener;
-    }
+//    /**
+//     * Returns the floor listener.
+//     *
+//     * @return The floor listener.
+//     */
+//    public FloorListener getFloorListener() {
+//        return floorListener;
+//    }
 
     /**
      * Kills the specified elevator thread.

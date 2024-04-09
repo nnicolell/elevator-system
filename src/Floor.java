@@ -106,8 +106,13 @@ public class Floor implements Runnable {
                 logger.info("Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
 
                 // send the floor event to the Scheduler and receive an acknowledgment
-                sendPacket(createHardwareDevice(info).toString());
-                receivePacket();
+//                sendPacket(createHardwareDevice(info).toString());
+//                receivePacket();
+
+                HardwareDevice floorEvent = createHardwareDevice(info);
+                logger.info("Sending " + floorEvent + " to Scheduler.");
+                scheduler.addFloorEvent(createHardwareDevice(info));
+                logger.info("Received ACK " + floorEvent + " from Scheduler.");
             }
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
