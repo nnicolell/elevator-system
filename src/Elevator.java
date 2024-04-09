@@ -216,7 +216,6 @@ public class Elevator implements Runnable {
         if (!floorEvent.startsWith("ACK")) {
             mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
             floorEvents.add(mainFloorEvent);
-            System.out.println(name + " -> adding " + mainFloorEvent + " to floorEvents");
             addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
         }
 
@@ -319,7 +318,6 @@ public class Elevator implements Runnable {
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
-                    System.out.println(name + " -> adding " + hardwareDevice + " to floorEvents");
                     addPassenger(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 

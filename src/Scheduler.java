@@ -267,7 +267,6 @@ public class Scheduler implements Runnable {
         int distance = 0;
         while (floorEventsToHandle.isEmpty() && numReqsHandled<=numReqs) {
             try {
-                System.out.println("in wait()");
                 wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -275,7 +274,6 @@ public class Scheduler implements Runnable {
 
         }
         if (numReqsHandled<=numReqs) {
-            System.out.println("out wait()");
             Iterator<Elevator> iterator = availableElevators.iterator();
             while (iterator.hasNext()) {
                 Elevator e = iterator.next();
@@ -411,8 +409,6 @@ public class Scheduler implements Runnable {
             distributeFloorEvents();
         }
 
-//        numReqsHandled++;
-//        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         notifyFloor(message);
