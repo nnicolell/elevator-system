@@ -1,6 +1,5 @@
 import java.time.LocalTime;
 import java.util.*;
-
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,8 +18,9 @@ class SchedulerTest {
      * A HardwareDevice to test with.
      */
     private HardwareDevice hardwareDevice;
+
     /**
-     * A Elevator to test with.
+     * An Elevator to test with.
      */
     private Elevator elevator;
 
@@ -35,7 +35,8 @@ class SchedulerTest {
         int y = generateRandomInt();
         scheduler = new Scheduler(elevatorPortNumbers, y);
         elevator = scheduler.getFirstAvailableElevator();
-        hardwareDevice = new HardwareDevice("E1",LocalTime.parse("13:02:56.0"), 4, FloorButton.UP, 6, 1, Fault.NO_FAULT);
+        hardwareDevice = new HardwareDevice("E1",LocalTime.parse("13:02:56.0"), 4, FloorButton.UP,
+                6, 1, Fault.NO_FAULT);
     }
 
     /**
@@ -61,9 +62,9 @@ class SchedulerTest {
      */
     @Test
     void testScheduler() {
-        assertEquals(1, scheduler.getNumReqsHandled());
+        assertEquals(0, scheduler.getNumReqsHandled());
         assertEquals(5, scheduler.getNumReqs());
-        assertEquals(4, scheduler.getStates().size());
+        assertEquals(5, scheduler.getStates().size());
         assertInstanceOf(WaitingForFloorEvent.class, scheduler.getCurrentState());
     }
 
@@ -84,7 +85,7 @@ class SchedulerTest {
     void testGetStates() {
         HashMap<String, SchedulerState> states = scheduler.getStates();
         assertNotNull(states);
-        assertEquals(4, states.size());
+        assertEquals(5, states.size());
     }
 
     /**
@@ -105,10 +106,10 @@ class SchedulerTest {
     @Test
     void testAddState() {
         String testStateName = "TestState";
-        assertEquals(4, scheduler.getStates().size());
+        assertEquals(5, scheduler.getStates().size());
         scheduler.addState(testStateName, new WaitingForFloorEvent());
         HashMap<String, SchedulerState> states = scheduler.getStates();
-        assertEquals(5, states.size());
+        assertEquals(6, states.size());
         assertTrue(states.containsKey(testStateName));
     }
 
@@ -117,7 +118,8 @@ class SchedulerTest {
      */
     @Test
     void testAddFloorEvent() {
-        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4, 2, Fault.NO_FAULT);
+        hardwareDevice = new HardwareDevice("Elevator1", LocalTime.parse("14:05:15.0"),2,
+                FloorButton.UP, 4, 2, Fault.NO_FAULT);
         scheduler.addFloorEvent(hardwareDevice);
     }
 
@@ -143,7 +145,7 @@ class SchedulerTest {
      */
     @Test
     void testGetNumReqsHandled() {
-        assertEquals(1, scheduler.getNumReqsHandled());
+        assertEquals(0, scheduler.getNumReqsHandled());
     }
 
     /**
@@ -157,13 +159,13 @@ class SchedulerTest {
         assertEquals(busy, scheduler.getBusyElevators());
     }
 
-
     /**
      * Tests getting the list of floor events to handle
      */
     @Test
     void testGetFloorEventsToHandle() {
-        hardwareDevice = new HardwareDevice("E1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP, 4, 3, Fault.NO_FAULT);
+        hardwareDevice = new HardwareDevice("E1", LocalTime.parse("14:05:15.0"),2, FloorButton.UP,
+                4, 3, Fault.NO_FAULT);
         scheduler.addFloorEvent(hardwareDevice);
         ArrayList<HardwareDevice> floorEvents = new ArrayList<>();
         floorEvents.add(hardwareDevice);

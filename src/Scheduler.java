@@ -265,7 +265,7 @@ public class Scheduler implements Runnable {
      */
     public synchronized void distributeFloorEvents() {
         int distance = 0;
-        while (floorEventsToHandle.isEmpty()) {
+        while (floorEventsToHandle.isEmpty() && numReqsHandled<=numReqs) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -273,21 +273,25 @@ public class Scheduler implements Runnable {
             }
 
         }
-        Iterator<Elevator> iterator = availableElevators.iterator();
-        while (iterator.hasNext()) {
-            Elevator e = iterator.next();
-            HardwareDevice floorEvent = floorEventsToHandle.get(0);
-            if (e != null && !e.isMaxCapacity()) { //if the elevator is not full
-                int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
-                if (elevatorDistance < distance) {
-                    distance = elevatorDistance;
+        if (numReqsHandled<=numReqs) {
+            Iterator<Elevator> iterator = availableElevators.iterator();
+            while (iterator.hasNext()) {
+                Elevator e = iterator.next();
+                HardwareDevice floorEvent = floorEventsToHandle.get(0);
+                if (e != null && !e.isMaxCapacity()) { //if the elevator is not full
+                    int elevatorDistance = Math.abs(e.getCurrentFloor() - floorEvent.getFloor());
+                    if (elevatorDistance < distance) {
+                        distance = elevatorDistance;
+                    }
+                    floorEventsToHandle.remove(0);
+                    addBusyElevator(e);
+                    iterator.remove();
+                    numReqsHandled++;
+                    System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+                    floorEvent.setElevator(e.getName());
+                    sendElevatorFloorEvent(e, floorEvent);
+                    break;
                 }
-                floorEventsToHandle.remove(0);
-                addBusyElevator(e);
-                iterator.remove();
-                floorEvent.setElevator(e.getName());
-                sendElevatorFloorEvent(e, floorEvent);
-                break;
             }
         }
         notifyAll();
@@ -405,8 +409,6 @@ public class Scheduler implements Runnable {
             distributeFloorEvents();
         }
 
-        numReqsHandled++;
-        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         notifyFloor(message);
@@ -421,6 +423,7 @@ public class Scheduler implements Runnable {
             endTime = System.nanoTime();
             logger.info("It took " + ((endTime - startTime) / 100000) + " ms to execute " + numReqs
                     + " floor event(s).");
+            logger.info(numMovements + " movement(s) were completed.");
         }
     }
 

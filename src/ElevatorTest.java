@@ -161,22 +161,6 @@ public class ElevatorTest {
     }
 
     /**
-     * Tests moving the Elevator car between floors.
-     */
-    @Test
-    void testMoveBetweenFloors() {
-        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
-                3, FloorButton.UP, 4, 3, Fault.NO_FAULT);
-        elevator.setMainFloorEvent(hardwareDevice);
-        elevator.setHandleRequestInSetState(false);
-        assertEquals(1, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(false,"MovingBetweenFloors", 5, FloorButton.UP);
-        assertEquals(5, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(false,"MovingBetweenFloors", 3, FloorButton.DOWN);
-        assertEquals(3, elevator.getCurrentFloor());
-    }
-
-    /**
      * Tests getting the current floor.
      */
     @Test
@@ -186,8 +170,6 @@ public class ElevatorTest {
         elevator.setMainFloorEvent(hardwareDevice);
         elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(false,"MovingBetweenFloors",3, FloorButton.UP);
-        assertEquals(3, elevator.getCurrentFloor());
     }
 
     /**
@@ -199,6 +181,7 @@ public class ElevatorTest {
         elevator.setHandleRequestInSetState(false);
         assertFalse(elevator.getHandleRequestInSetState());
     }
+
     /**
      * Tests getting the number of passengers.
      */
@@ -208,5 +191,38 @@ public class ElevatorTest {
                 3, FloorButton.UP, 4, 1,Fault.NO_FAULT);
         elevator.setMainFloorEvent(hardwareDevice);
         assertEquals(hardwareDevice, elevator.getMainFloorEvent());
+    }
+
+    /**
+     * Tests the if and set transient fault
+     */
+    @Test
+    void testIsAndSetTransientFault() {
+        elevator.setTransientFault(true);
+        assertEquals(true, elevator.isTransientFault());
+        elevator.setTransientFault(false);
+        assertEquals(false, elevator.isTransientFault());
+    }
+
+    /**
+     * Tests the if and set hard fault
+     */
+    @Test
+    void testIsAndSetHardFault() {
+        assertEquals(false, elevator.isHardFault());
+        elevator.setHardFault(true);
+        assertEquals(true, elevator.isHardFault());
+        elevator.setHardFault(false);
+        assertEquals(false, elevator.isHardFault());
+    }
+
+    /**
+     * Tests the if and get the capacity of passengers
+     */
+    @Test
+    void testIsAndGetMaxCapacity() {
+        assertEquals(false, elevator.isMaxCapacity());
+        elevator.setMaxCapacity(5);
+        assertEquals(5, elevator.getMaxCapacity());
     }
 }

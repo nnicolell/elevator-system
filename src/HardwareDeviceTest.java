@@ -43,7 +43,7 @@ class HardwareDeviceTest {
     void testToString() {
         LocalTime time = LocalTime.parse("13:14:15.6");
         HardwareDevice hardwareDevice = new HardwareDevice("Elevator1", time,1, FloorButton.UP, 2, 3,Fault.NO_FAULT);
-        assertEquals("{Elevator: Elevator1, Time: 13:14:15.600, Requested Floor: 1, Direction: UP, Car Button: 2, Arrived: false, Fault: No Fault}",
+        assertEquals("{Elevator: Elevator1, Time: 13:14:15.600, Requested Floor: 1, Direction: UP, Car Button: 2, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false}",
                 hardwareDevice.toString());
     }
 
