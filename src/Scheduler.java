@@ -289,6 +289,7 @@ public class Scheduler implements Runnable {
                     addBusyElevator(e);
                     iterator.remove();
                     numReqsHandled++;
+                    System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
                     floorEvent.setElevator(e.getName());
                     sendElevatorFloorEvent(e, floorEvent);
                     break;
@@ -411,7 +412,7 @@ public class Scheduler implements Runnable {
         }
 
 //        numReqsHandled++;
-        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+//        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         notifyFloor(message);
@@ -426,6 +427,7 @@ public class Scheduler implements Runnable {
             endTime = System.nanoTime();
             logger.info("It took " + ((endTime - startTime) / 100000) + " ms to execute " + numReqs
                     + " floor event(s).");
+            logger.info(numMovements + " movement(s) were completed.");
         }
     }
 

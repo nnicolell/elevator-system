@@ -49,6 +49,7 @@ public class FloorTest {
         int x = generateRandomInt();
         Scheduler scheduler = new Scheduler(elevatorPortNumbers, x);
         Floor floor = new Floor(scheduler);
+        System.out.println(lines.get(0));
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.get(0).split(" "));
         LocalTime localTime = LocalTime.parse("13:02:56.0");
         HardwareDevice expectedHardwareDevice = new HardwareDevice("Elevator1", localTime, 4, FloorButton.UP, 6, 3, Fault.NO_FAULT);
