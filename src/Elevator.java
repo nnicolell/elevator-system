@@ -212,9 +212,13 @@ public class Elevator implements Runnable {
         // process the received floor event
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
         logger.info("Received " + floorEvent + " from Scheduler.");
-        mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-        floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
+
+        if (!floorEvent.startsWith("ACK")) {
+            mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
+            floorEvents.add(mainFloorEvent);
+            System.out.println(name + " -> adding " + mainFloorEvent + " to floorEvents");
+            addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
+        }
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -235,8 +239,6 @@ public class Elevator implements Runnable {
 
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-//        floorEvents.add(mainFloorEvent);
-//        addPassenger(mainFloorEvent.getNumPassengers());
         view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
@@ -317,6 +319,7 @@ public class Elevator implements Runnable {
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
+                    System.out.println(name + " -> adding " + hardwareDevice + " to floorEvents");
                     addPassenger(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 
@@ -347,8 +350,9 @@ public class Elevator implements Runnable {
     public boolean moreFloorEventsToFulfill() {
         // main floor event has been fulfilled
         HardwareDevice fulfilledFloorEvent = mainFloorEvent;
+        System.out.println("fulfilledFloorEvent: " + fulfilledFloorEvent);
         removePassenger(mainFloorEvent.getNumPassengers());
-        floorEvents.remove(mainFloorEvent);
+        floorEvents.remove(0);
         mainFloorEvent = null;
 
         // TODO: what if there's more than one floor event that has finished when we reach the current floor?
@@ -359,11 +363,16 @@ public class Elevator implements Runnable {
 
         // determine if the Elevator has picked up passengers on its way to its main destination
         boolean moreEventsToFulfill = false;
+        System.out.println("floorEvents.size(): " + floorEvents.size());
         // if its has picked up passengers, it must continue executing the rest of the floor events
         if (floorEvents.size() > 0) {
+            for (HardwareDevice floorEvent : floorEvents) {
+                System.out.println(floorEvent);
+            }
             moreEventsToFulfill = true;
             mainFloorEvent = getClosestFloorEvent(); // assign a new main floor event
         }
+        System.out.println(name + " -> moreFloorEventsToFulfill: " + moreEventsToFulfill);
 
         // update the fulfilled floor event to allow the Scheduler to know if there's more floor events to be completed
         // or not

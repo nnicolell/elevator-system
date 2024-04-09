@@ -25,9 +25,8 @@ class WaitingForFloorEvent implements SchedulerState {
 
     @Override
     public void handleRequest(Scheduler scheduler) {
-            scheduler.setState("SelectElevator");
-            scheduler.distributeFloorEvents();
-
+        scheduler.setState("SelectElevator");
+        scheduler.distributeFloorEvents();
     }
 
     @Override
