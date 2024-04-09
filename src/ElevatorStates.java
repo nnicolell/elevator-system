@@ -119,6 +119,7 @@ class ReachedDestination implements ElevatorState {
         if (context.getFloorEventsSize() > 1) {
             // the Elevator has picked up passengers on its way to its initial destination, must notify the Scheduler
             // that we have dropped the initial passenger off before executing the other floor events
+            context.getView().updateElevator(context);
             context.setState("NotifyScheduler");
         } else {
             context.setState("DoorsOpening");
@@ -176,6 +177,7 @@ class MovingBetweenFloors implements ElevatorState {
             // Elevator car is not currently on the floor it was requested on
             FloorButton directionToMove = (currentFloor < mainFloorEvent.getFloor())
                     ? FloorButton.UP : FloorButton.DOWN;
+            context.getView().updateFloor(context);
             context.moveBetweenFloors(fault, "DoorsOpening", mainFloorEvent.getFloor(), directionToMove);
         }
     }

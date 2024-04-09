@@ -237,6 +237,7 @@ public class Elevator implements Runnable {
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
 //        floorEvents.add(mainFloorEvent);
 //        addPassenger(mainFloorEvent.getNumPassengers());
+        view.addRequests(mainFloorEvent);
         view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
@@ -363,6 +364,8 @@ public class Elevator implements Runnable {
         if (floorEvents.size() > 0) {
             moreEventsToFulfill = true;
             mainFloorEvent = getClosestFloorEvent(); // assign a new main floor event
+            view.addRequests(mainFloorEvent);
+            view.updateElevator(this);
         }
 
         // update the fulfilled floor event to allow the Scheduler to know if there's more floor events to be completed
@@ -612,6 +615,21 @@ public class Elevator implements Runnable {
         return maxCapacity;
     }
 
+    /**
+     * Returns true, if there was a transient fault
+     * @return True, if there was a transient fault
+     */
     public boolean getTransientFault() { return transientFault; }
+    /**
+     * Returns true, if there was a hard fault
+     * @return True, if there was a hard fault
+     */
     public boolean getHardFault() { return hardFault; }
+    /**
+     * Returns the elevator view
+     * @return The elevator view
+     */
+    public ElevatorSystemView getView() {
+        return view;
+    }
 }

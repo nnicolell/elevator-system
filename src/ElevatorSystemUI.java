@@ -49,6 +49,10 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
      * A controller object
      */
     private ElevatorSystemController esController;
+    /**
+     * ListModel for the request log
+     */
+    private DefaultListModel<HardwareDevice> listRequest;
 
     /**
      * Initializes an ElevatorSystemUI
@@ -95,8 +99,12 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
 
         addElevators();
         elevatorsPanel.add(elevatorsCloseUp);
-        requestsLog = new JList();
-        elevatorsPanel.add(requestsLog);
+        listRequest = new DefaultListModel<>();
+        requestsLog = new JList<>(listRequest);
+        JScrollPane scrollPaneRequest = new JScrollPane(requestsLog);
+        scrollPaneRequest.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPaneRequest.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        elevatorsPanel.add(scrollPaneRequest);
         elevatorsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JLabel titleLabel = new JLabel("ELEVATOR SYSTEM");
@@ -146,7 +154,6 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
         for (int i = 0; i < numElevators; i++) {
             buildingFloors.add(new JLabel(""+ (i+1)));
         }
-        //buildingFloors.add()
     }
 
     /**
@@ -220,5 +227,14 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
                 }
             }
         }
+    }
+
+    /**
+     * Adds a request to the JList
+     * @param request The new request
+     */
+    @Override
+    public void addRequests(HardwareDevice request) {
+            listRequest.addElement(request);
     }
 }

@@ -1,20 +1,29 @@
-[2024-04-08 19:30:54.333] [Floor] Elevator requested to go up at floor 4.
-[2024-04-08 19:30:54.353] [Floor] Sending {Elevator: Elevator?, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
-[2024-04-08 19:30:54.354] [Floor] Received ACK {Elevator: Elevator?, Time: 13:02:56, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
-[2024-04-08 19:30:55.360] [Floor] Elevator requested to go up at floor 2.
-[2024-04-08 19:30:55.361] [Floor] Sending {Elevator: Elevator?, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Number of Passengers: 2, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} to Scheduler.
-[2024-04-08 19:30:55.363] [Floor] Received ACK {Elevator: Elevator?, Time: 14:05:15, Requested Floor: 2, Direction: UP, Car Button: 4, Number of Passengers: 2, Arrived: false, Fault: Elevator stuck between floors, More Floor Events: false} from Scheduler.
-[2024-04-08 19:30:56.374] [Floor] Elevator requested to go down at floor 5.
-[2024-04-08 19:30:56.375] [Floor] Sending {Elevator: Elevator?, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} to Scheduler.
-[2024-04-08 19:30:56.376] [Floor] Received ACK {Elevator: Elevator?, Time: 16:06:35, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: false, Fault: Doors not opening, More Floor Events: false} from Scheduler.
-[2024-04-08 19:30:57.379] [Floor] Elevator requested to go down at floor 2.
-[2024-04-08 19:30:57.380] [Floor] Sending {Elevator: Elevator?, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Number of Passengers: 2, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
-[2024-04-08 19:30:57.382] [Floor] Received ACK {Elevator: Elevator?, Time: 19:08:23, Requested Floor: 2, Direction: DOWN, Car Button: 1, Number of Passengers: 2, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
-[2024-04-08 19:30:58.394] [Floor] Elevator requested to go up at floor 1.
-[2024-04-08 19:30:58.395] [Floor] Sending {Elevator: Elevator?, Time: 19:10:23, Requested Floor: 1, Direction: UP, Car Button: 5, Number of Passengers: 1, Arrived: false, Fault: Doors not closing, More Floor Events: false} to Scheduler.
-[2024-04-08 19:32:08.463] [Floor] Received {Elevator: Elevator1, Time: 13:03:58, Requested Floor: 4, Direction: UP, Car Button: 6, Number of Passengers: 3, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
-[2024-04-08 19:32:08.463] [Floor] All floor events from input.txt have been sent to Scheduler.
-[2024-04-08 19:32:08.463] [Floor] Waiting for a completed floor event from Scheduler...
-[2024-04-08 19:32:41.845] [Floor] Received {Elevator: Elevator3, Time: 16:07:37, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: true, Fault: Doors not opening, More Floor Events: true} from Scheduler.
-[2024-04-08 19:32:41.846] [Floor] Sending ACK {Elevator: Elevator3, Time: 16:07:37, Requested Floor: 5, Direction: DOWN, Car Button: 4, Number of Passengers: 5, Arrived: true, Fault: Doors not opening, More Floor Events: true} to Scheduler.
-[2024-04-08 19:32:41.846] [Floor] Waiting for a completed floor event from Scheduler...
+[2024-04-08 20:18:33.927] [Floor] Elevator requested to go up at floor 2.
+[2024-04-08 20:18:33.948] [Floor] Sending {Elevator: Elevator?, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:18:33.950] [Floor] Received ACK {Elevator: Elevator?, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 20:18:34.952] [Floor] Elevator requested to go up at floor 1.
+[2024-04-08 20:18:34.953] [Floor] Sending {Elevator: Elevator?, Time: 02:22:12.450, Requested Floor: 1, Direction: UP, Car Button: 19, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:18:34.954] [Floor] Received ACK {Elevator: Elevator?, Time: 02:22:12.450, Requested Floor: 1, Direction: UP, Car Button: 19, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 20:18:35.957] [Floor] Elevator requested to go up at floor 1.
+[2024-04-08 20:18:35.958] [Floor] Sending {Elevator: Elevator?, Time: 02:22:25.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:18:35.959] [Floor] Received ACK {Elevator: Elevator?, Time: 02:22:25.300, Requested Floor: 1, Direction: UP, Car Button: 20, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 20:18:36.963] [Floor] Elevator requested to go down at floor 2.
+[2024-04-08 20:18:36.964] [Floor] Sending {Elevator: Elevator?, Time: 02:22:38, Requested Floor: 2, Direction: DOWN, Car Button: 1, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:18:36.965] [Floor] Received ACK {Elevator: Elevator?, Time: 02:22:38, Requested Floor: 2, Direction: DOWN, Car Button: 1, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 20:18:37.966] [Floor] Elevator requested to go up at floor 3.
+[2024-04-08 20:18:37.968] [Floor] Sending {Elevator: Elevator?, Time: 02:22:50.450, Requested Floor: 3, Direction: UP, Car Button: 7, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:18:37.970] [Floor] Received ACK {Elevator: Elevator?, Time: 02:22:50.450, Requested Floor: 3, Direction: UP, Car Button: 7, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 20:18:38.971] [Floor] Elevator requested to go down at floor 6.
+[2024-04-08 20:18:38.975] [Floor] Sending {Elevator: Elevator?, Time: 02:23:03.150, Requested Floor: 6, Direction: DOWN, Car Button: 1, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:18:38.976] [Floor] Received ACK {Elevator: Elevator?, Time: 02:23:03.150, Requested Floor: 6, Direction: DOWN, Car Button: 1, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-08 20:18:39.980] [Floor] Elevator requested to go up at floor 9.
+[2024-04-08 20:18:39.981] [Floor] Sending {Elevator: Elevator?, Time: 02:23:15.450, Requested Floor: 9, Direction: UP, Car Button: 12, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:19:21.021] [Floor] Received {Elevator: Elevator4, Time: 02:23:10, Requested Floor: 2, Direction: DOWN, Car Button: 1, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-08 20:19:22.022] [Floor] Elevator requested to go up at floor 12.
+[2024-04-08 20:19:22.023] [Floor] Sending {Elevator: Elevator?, Time: 02:23:28.150, Requested Floor: 12, Direction: UP, Car Button: 15, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:20:02.040] [Floor] Received {Elevator: Elevator5, Time: 02:24:02.450, Requested Floor: 3, Direction: UP, Car Button: 7, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-08 20:20:03.043] [Floor] Elevator requested to go down at floor 15.
+[2024-04-08 20:20:03.044] [Floor] Sending {Elevator: Elevator?, Time: 02:23:40.450, Requested Floor: 15, Direction: DOWN, Car Button: 10, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-08 20:21:59.059] [Floor] Received {Elevator: Elevator2, Time: 02:25:24.450, Requested Floor: 1, Direction: UP, Car Button: 19, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-08 20:22:00.060] [Floor] Elevator requested to go down at floor 10.
+[2024-04-08 20:22:00.061] [Floor] Sending {Elevator: Elevator?, Time: 02:23:53.150, Requested Floor: 10, Direction: DOWN, Car Button: 5, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
