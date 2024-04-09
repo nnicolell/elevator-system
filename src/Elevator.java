@@ -318,7 +318,7 @@ public class Elevator implements Runnable {
                 currentFloor--;
             }
 
-            ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
+            ArrayList<HardwareDevice> floorEvent = new ArrayList<>(scheduler.getFloorEventsToHandle());
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);

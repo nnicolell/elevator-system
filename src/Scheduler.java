@@ -467,11 +467,11 @@ public class Scheduler implements Runnable {
      * @param elevator An Elevator that has picked up a floor event.
      * @param hardwareDevice A HardwareDevice representing a floor event the specified Elevator picked up.
      */
-    public synchronized void pickedUpFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
+    public void pickedUpFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
         logger.info(elevator.getName() + " has picked up " + hardwareDevice.toString() + ".");
         floorEventsToHandle.remove(hardwareDevice);
-        notifyAll();
     }
+
 
     /**
      * Returns the Elevator with the specified name.
