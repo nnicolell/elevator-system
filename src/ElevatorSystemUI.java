@@ -179,8 +179,10 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
             if (elevators.get(i).getName().equals(elevator.getName())) {
                 HardwareDevice floorEvent = elevator.getMainFloorEvent();
                 JLabel e = elevators.get(i);
-                e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
-                        "<br/>Destination Floor: " + floorEvent.getCarButton() + "<br/>Arrived: " + floorEvent.getArrived() + "</html>");
+                if (floorEvent != null) {
+                    e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
+                            "<br/>Destination Floor: " + floorEvent.getCarButton() + "<br/>Arrived: " + floorEvent.getArrived() + "</html>");
+                }
             }
         }
     }

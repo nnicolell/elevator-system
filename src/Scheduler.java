@@ -122,7 +122,6 @@ public class Scheduler implements Runnable {
         }
 
         floorEventsToHandle = new ArrayList<>();
-        numReqsHandled = 1;
 
         try {
             sendReceiveSocket = new DatagramSocket();
@@ -363,20 +362,22 @@ public class Scheduler implements Runnable {
     private void sendElevatorFloorEvent(Elevator elevator, HardwareDevice hardwareDevice) {
         // send the floor event to the elevator and receive an acknowledgment
         currentState.handleRequest(this);
-        sendElevatorPacket(elevator, hardwareDevice.toString());
+        if (!hardwareDevice.getArrived()) {
+            sendElevatorPacket(elevator, hardwareDevice.toString());
 
-        // start the timer if its hasn't been started already
-        if (startTime == -1) {
-            startTime = System.nanoTime();
-            logger.info("Timer has been started!");
+            // start the timer if its hasn't been started already
+            if (startTime == -1) {
+                startTime = System.nanoTime();
+                logger.info("Timer has been started!");
+            }
+
+            currentState.handleRequest(this);
+            receiveElevatorPacket();
+
+            distributeFloorEvents();
+            receiveElevatorFloorEvent();
+            //setState("NotifyElevator");
         }
-
-        currentState.handleRequest(this);
-        receiveElevatorPacket();
-
-        distributeFloorEvents();
-        receiveElevatorFloorEvent();
-        //setState("NotifyElevator");
     }
 
     /**
@@ -405,6 +406,7 @@ public class Scheduler implements Runnable {
         }
 
         numReqsHandled++;
+        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         notifyFloor(message);
@@ -525,6 +527,7 @@ public class Scheduler implements Runnable {
         busyElevators.remove(elevator);
 
         numReqsHandled += numFloorEventsHandling;
+        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         for (Thread elevatorThread : elevatorThreads) {

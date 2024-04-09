@@ -212,9 +212,13 @@ public class Elevator implements Runnable {
         // process the received floor event
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
         logger.info("Received " + floorEvent + " from Scheduler.");
-        mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
-        floorEvents.add(mainFloorEvent);
-        addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
+
+        if (!floorEvent.startsWith("ACK")) {
+            mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
+            floorEvents.add(mainFloorEvent);
+            System.out.println(name + " -> adding " + mainFloorEvent + " to floorEvents");
+            addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
+        }
 
         // save the Scheduler's address and port to communicate with it later
         schedulerAddress = receivePacket.getAddress();
@@ -349,7 +353,7 @@ public class Elevator implements Runnable {
         // main floor event has been fulfilled
         HardwareDevice fulfilledFloorEvent = mainFloorEvent;
         removePassenger(mainFloorEvent.getNumPassengers());
-        floorEvents.remove(mainFloorEvent);
+        floorEvents.remove(0);
         mainFloorEvent = null;
 
         // TODO: what if there's more than one floor event that has finished when we reach the current floor?
@@ -362,6 +366,9 @@ public class Elevator implements Runnable {
         boolean moreEventsToFulfill = false;
         // if its has picked up passengers, it must continue executing the rest of the floor events
         if (floorEvents.size() > 0) {
+            for (HardwareDevice floorEvent : floorEvents) {
+                System.out.println(floorEvent);
+            }
             moreEventsToFulfill = true;
             mainFloorEvent = getClosestFloorEvent(); // assign a new main floor event
             view.addRequests(mainFloorEvent);
@@ -481,11 +488,13 @@ public class Elevator implements Runnable {
      * Increment the number of passengers in the Elevator car by passengers.
      */
     public void addPassenger(int passengers) {
-
         numPassengers += passengers;
-        if(numPassengers == CAPACITY){
+        if (numPassengers > CAPACITY) {
+            numPassengers -= passengers;
+            logger.info("Cannot fit anymore passengers.");
+        } else if (numPassengers == CAPACITY) {
             maxCapacity = true;
-            logger.info("[" + name + "] has reached max capacity. Cannot fit anymore passengers.");
+            logger.info("Reached max capacity. Cannot fit anymore passengers.");
         }
     }
 
