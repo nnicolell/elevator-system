@@ -17,8 +17,8 @@ public interface ElevatorSystemView {
     void updateFloor(Elevator elevator);
 
     /**
-     * Updates the faults for the specified elevator
-     * @param elevator The elevator that is to be updated
+     * Adds a request
+     * @param request The new request
      */
-    void updateFaults(Elevator elevator);
+    void addRequests(HardwareDevice request);
 }

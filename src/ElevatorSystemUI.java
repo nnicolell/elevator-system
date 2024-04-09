@@ -45,9 +45,9 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
      */
     private List<Elevator> elevatorList;
     /**
-     * A controller object
+     * ListModel for the request log
      */
-    private ElevatorSystemController esController;
+    private DefaultListModel<HardwareDevice> listRequest;
 
     /**
      * Initializes an ElevatorSystemUI
@@ -65,8 +65,7 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
         // Sets the elevator JLabels
         setElevators();
 
-        // Creates a controller and adds views to the elevators
-        esController = new ElevatorSystemController(this, elevatorList);
+        // Adds views to the elevators
         for (Elevator e : elevatorList) {
             e.setView(this);
         }
@@ -94,8 +93,12 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
 
         addElevators();
         elevatorsPanel.add(elevatorsCloseUp);
-        requestsLog = new JList();
-        elevatorsPanel.add(requestsLog);
+        listRequest = new DefaultListModel<>();
+        requestsLog = new JList<>(listRequest);
+        JScrollPane scrollPaneRequest = new JScrollPane(requestsLog);
+        scrollPaneRequest.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPaneRequest.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        elevatorsPanel.add(scrollPaneRequest);
         elevatorsPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         JLabel titleLabel = new JLabel("ELEVATOR SYSTEM");
@@ -145,7 +148,6 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
         for (int i = 0; i < numElevators; i++) {
             buildingFloors.add(new JLabel(""+ (i+1)));
         }
-        //buildingFloors.add()
     }
 
     /**
@@ -154,7 +156,7 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     private void addElevators() {
         for (int i = 0; i < numElevators; i++) {
             JLabel e = elevators.get(i);
-            e.setText("<html>" + e.getName() +"<br/>Direction: "+ "<br/>Destination Floor: "+ "<br/>Arrived: "+ "</html>");
+            e.setText("<html>" + e.getName() +"<br/>Direction: "+ "<br/>Destination Floor: "+ "</html>");
             e.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
             e.setOpaque(true);
             elevatorsCloseUp.add(e);
@@ -173,7 +175,7 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
                 JLabel e = elevators.get(i);
                 if (floorEvent != null) {
                     e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
-                            "<br/>Destination Floor: " + floorEvent.getCarButton() + "<br/>Arrived: " + floorEvent.getArrived() + "</html>");
+                            "<br/>Destination Floor: " + floorEvent.getCarButton() + "</html>");
                 }
             }
         }
@@ -187,9 +189,9 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     public void updateFloor(Elevator elevator) {
         for (int i = 0; i < elevators.size(); i++) {
             if (elevators.get(i).getName().equals(elevator.getName())) {
-                if (elevator.isTransientFault() == true) {
+                if (elevator.isTransientFault()) {
                     grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.YELLOW);
-                } else if (elevator.isHardFault() == true) {
+                } else if (elevator.isHardFault()) {
                     grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.RED);
                 } else {
                     grid[i][elevator.getCurrentFloor() - 1].setBackground(Color.GREEN);
@@ -203,23 +205,11 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     }
 
     /**
-     * Updates the colour of the elevator based on if there are faults or not
-     * @param elevator The elevator that is to be updated.
+     * Adds a request to the JList
+     * @param request The new request
      */
     @Override
-    public void updateFaults(Elevator elevator) {
-        for (int i = 0; i < elevators.size(); i++) {
-            if (elevators.get(i).getName().equals(elevator.getName())) {
-                if (elevator.getCurrentState() == null){
-                    grid[i][elevator.getCurrentFloor()-1].setBackground(Color.RED);
-                }
-                else if ((elevator.getCurrentState() instanceof DoorsNotClosing) || elevator.getCurrentState() instanceof DoorsNotOpening){
-                    grid[i][elevator.getCurrentFloor()-1].setBackground(Color.YELLOW);
-                }
-                else {
-                    grid[i][elevator.getCurrentFloor()-1].setBackground(Color.GREEN);
-                }
-            }
-        }
+    public void addRequests(HardwareDevice request) {
+            listRequest.addElement(request);
     }
 }

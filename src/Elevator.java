@@ -38,7 +38,7 @@ public class Elevator implements Runnable {
 
     /**
      * A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
-     * <p>
+     *
      * It does not represent the floor events that were picked up while executing the floor event the Scheduler assigned
      * to the Elevator.
      */
@@ -61,7 +61,7 @@ public class Elevator implements Runnable {
 
     /**
      * An integer representing the port number to send DatagramPackets to the Scheduler.
-     * <p>
+     *
      * If 0, the Elevator has not received a DatagramPacket from the Scheduler yet.
      */
     private int schedulerPort = 0;
@@ -238,6 +238,8 @@ public class Elevator implements Runnable {
 
         // the floor event received from the Scheduler is the main floor event
         mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
+
+        view.addRequests(mainFloorEvent);
         view.updateElevator(this);
 
         sendPacketToScheduler(("ACK " + mainFloorEvent).getBytes()); // send an acknowledgment packet to the Scheduler
@@ -274,11 +276,9 @@ public class Elevator implements Runnable {
                         finished.set(1);
                         timer.cancel();
                         hardFault = true;
-//                        System.out.println("Hard Fault True");
                         view.updateFloor(Elevator.this);
                         // shut down the Elevator and notify the Scheduler of how many floor events it was working on
                         logger.severe("Stuck between floors. Shutting down...");
-                        //view.updateFaults(Elevator.this);
                         scheduler.killElevatorThread(name, floorEvents.size());
                     }
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
@@ -314,16 +314,18 @@ public class Elevator implements Runnable {
                 currentFloor--;
             }
 
-            ArrayList<HardwareDevice> floorEvent = scheduler.getFloorEventsToHandle();
+            ArrayList<HardwareDevice> floorEvent = new ArrayList<>(scheduler.getFloorEventsToHandle());
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
+                    System.out.println(name + " -> adding " + hardwareDevice + " to floorEvents");
                     addPassenger(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 
                     // FIXME: non-UDP way of implementing this...
                     // notify the Scheduler that we have picked up a floor event
                     scheduler.pickedUpFloorEvent(this, hardwareDevice);
+                    hardwareDevice.setElevator(name);
                 }
             }
 
@@ -348,7 +350,6 @@ public class Elevator implements Runnable {
     public boolean moreFloorEventsToFulfill() {
         // main floor event has been fulfilled
         HardwareDevice fulfilledFloorEvent = mainFloorEvent;
-        System.out.println("fulfilledFloorEvent: " + fulfilledFloorEvent);
         removePassenger(mainFloorEvent.getNumPassengers());
         floorEvents.remove(0);
         mainFloorEvent = null;
@@ -361,7 +362,6 @@ public class Elevator implements Runnable {
 
         // determine if the Elevator has picked up passengers on its way to its main destination
         boolean moreEventsToFulfill = false;
-        System.out.println("floorEvents.size(): " + floorEvents.size());
         // if its has picked up passengers, it must continue executing the rest of the floor events
         if (floorEvents.size() > 0) {
             for (HardwareDevice floorEvent : floorEvents) {
@@ -369,8 +369,9 @@ public class Elevator implements Runnable {
             }
             moreEventsToFulfill = true;
             mainFloorEvent = getClosestFloorEvent(); // assign a new main floor event
+            view.addRequests(mainFloorEvent);
+            view.updateElevator(this);
         }
-        System.out.println(name + " -> moreFloorEventsToFulfill: " + moreEventsToFulfill);
 
         // update the fulfilled floor event to allow the Scheduler to know if there's more floor events to be completed
         // or not
@@ -416,7 +417,6 @@ public class Elevator implements Runnable {
         AtomicInteger finished = new AtomicInteger(0);
 
         if (fault) {
-            view.updateFaults(Elevator.this);
             faultTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -426,7 +426,6 @@ public class Elevator implements Runnable {
                         throw new RuntimeException(e);
                     }
                     setState(faultState); // assume a fault if doors don't open/close within 7.8 seconds
-                    view.updateFaults(Elevator.this);
                     finished.set(1);
                     timer.cancel();
                 }
@@ -619,6 +618,7 @@ public class Elevator implements Runnable {
         view = v;
     }
 
+
     /**
      * Returns true, if car has reached maximum capacity
      *
@@ -680,5 +680,9 @@ public class Elevator implements Runnable {
      */
     public void setHardFault(boolean fault) {
         hardFault = fault;
+    }
+
+    public ElevatorSystemView getView() {
+        return view;
     }
 }

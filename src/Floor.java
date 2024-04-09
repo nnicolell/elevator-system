@@ -2,6 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.file.*;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -91,7 +92,7 @@ public class Floor implements Runnable {
     public void run() {
         // send all floor events from input.txt to the Scheduler
         try {
-            List<String> lines = Files.readAllLines(Paths.get("input.txt"));
+            List<String> lines = Files.readAllLines(Paths.get("iteration5_input_v1.txt"));
             scheduler.setNumReqs(lines.size()); // notify Scheduler of how many floor events it will be receiving
 
             if (lines.isEmpty()) {
@@ -139,7 +140,8 @@ public class Floor implements Runnable {
      */
     public HardwareDevice createHardwareDevice(String[] info) {
         // process the time, floor, floor button, and car button that was selected
-        LocalTime time = LocalTime.parse(info[0]);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
+        LocalTime time = LocalTime.parse(info[0], formatter);
         int floor = Integer.parseInt(info[1]);
         FloorButton floorButton = info[2].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
         int carButton = Integer.parseInt(info[3]);
