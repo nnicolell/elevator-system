@@ -1,4 +1,5 @@
-13:02:56.0 4 Up 6
-14:05:15.0 2 Up 4
-16:06:35.0 5 Down 4
-19:08:23.0 2 Down 1
+13:02:56.0 4 up 6 3 No fault
+14:05:15.0 2 up 4 2 Elevator stuck between floors
+16:06:35.0 5 down 4 5 Doors not opening
+19:08:23.0 2 down 1 2 No fault
+19:10:23.0 1 up 5 1 Doors not closing

@@ -147,7 +147,7 @@ public class Floor implements Runnable {
         }
         String fault = faultStringBuilder.toString().trim();
 
-        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, numPassengers,Fault.stringToFault(fault));
+        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, numPassengers, Fault.stringToFault(fault));
     }
 
 }

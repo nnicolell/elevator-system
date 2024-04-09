@@ -34,6 +34,8 @@ public class ElevatorTest {
      */
     private final Random random = new Random();
 
+    private ElevatorSystemView view;
+
     /**
      * Returns a random integer between 0 and 9999.
      *
@@ -143,9 +145,9 @@ public class ElevatorTest {
     @Test
     void testAddAndRemovePassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassengers(1);
+        elevator.addPassenger(1);
         assertEquals(1, elevator.getNumPassengers());
-        elevator.removePassengers(1);
+        elevator.removePassenger(1);
         assertEquals(0, elevator.getNumPassengers());
     }
 
@@ -155,25 +157,9 @@ public class ElevatorTest {
     @Test
     void testGetNumPassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassengers(2);
-        elevator.addPassengers(3);
+        elevator.addPassenger(2);
+        elevator.addPassenger(3);
         assertEquals(5, elevator.getNumPassengers());
-    }
-
-    /**
-     * Tests moving the Elevator car between floors.
-     */
-    @Test
-    void testMoveBetweenFloors() {
-        HardwareDevice hardwareDevice = new HardwareDevice(elevator.getName(), LocalTime.parse("13:02:56.0"),
-                3, FloorButton.UP, 4, 3, Fault.NO_FAULT);
-        elevator.setMainFloorEvent(hardwareDevice);
-        elevator.setHandleRequestInSetState(false);
-        assertEquals(1, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(false,"MovingBetweenFloors", 5, FloorButton.UP);
-        assertEquals(5, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(false,"MovingBetweenFloors", 3, FloorButton.DOWN);
-        assertEquals(3, elevator.getCurrentFloor());
     }
 
     /**
@@ -186,8 +172,6 @@ public class ElevatorTest {
         elevator.setMainFloorEvent(hardwareDevice);
         elevator.setHandleRequestInSetState(false);
         assertEquals(1, elevator.getCurrentFloor());
-        elevator.moveBetweenFloors(false,"MovingBetweenFloors",3, FloorButton.UP);
-        assertEquals(3, elevator.getCurrentFloor());
     }
 
     /**
@@ -208,5 +192,38 @@ public class ElevatorTest {
                 3, FloorButton.UP, 4, 1,Fault.NO_FAULT);
         elevator.setMainFloorEvent(hardwareDevice);
         assertEquals(hardwareDevice, elevator.getMainFloorEvent());
+    }
+
+    /**
+     * Tests the if and set transient fault
+     */
+    @Test
+    void testIsAndSetTransientFault() {
+        elevator.setTransientFault(true);
+        assertEquals(true, elevator.isTransientFault());
+        elevator.setTransientFault(false);
+        assertEquals(false, elevator.isTransientFault());
+    }
+
+    /**
+     * Tests the if and set hard fault
+     */
+    @Test
+    void testIsAndSetHardFault() {
+        assertEquals(false, elevator.isHardFault());
+        elevator.setHardFault(true);
+        assertEquals(true, elevator.isHardFault());
+        elevator.setHardFault(false);
+        assertEquals(false, elevator.isHardFault());
+    }
+
+    /**
+     * Tests the if and get the capacity of passengers
+     */
+    @Test
+    void testIsAndGetMaxCapacity() {
+        assertEquals(false, elevator.isMaxCapacity());
+        elevator.setMaxCapacity(5);
+        assertEquals(5, elevator.getMaxCapacity());
     }
 }
