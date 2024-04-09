@@ -181,6 +181,7 @@ public class ElevatorTest {
         elevator.setHandleRequestInSetState(false);
         assertFalse(elevator.getHandleRequestInSetState());
     }
+
     /**
      * Tests getting the number of passengers.
      */
