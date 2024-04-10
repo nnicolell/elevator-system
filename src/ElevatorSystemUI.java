@@ -9,83 +9,72 @@ import java.util.List;
 public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
 
     /**
-     * Width and height of the UI
+     * Integers representing the number of elevators and floors for the ElevatorSystem.
      */
-    private int width, height;
-    /**
-     * Number of elevators and floors for the system
-     */
-    private int numElevators, numFloors;
-    /**
-     * Grid for the elevators and floors
-     */
-    private JLabel[][] grid;
-    /**
-     * List of JLabels of running elevators
-     */
-    private ArrayList<JLabel> elevators;
-    /**
-     * JPanel that contains the floors and the elevators
-     */
-    private JPanel buildingFloors;
-    /**
-     * JPanel that contains a more detail elevator
-     */
-    private JPanel elevatorsCloseUp;
-    /**
-     * JPanel that contains the elevators information
-     */
-    private JPanel elevatorsPanel;
-    /**
-     * JList that contains a log of the requests
-     */
-    private JList requestsLog;
-    /**
-     * List of elevators
-     */
-    private List<Elevator> elevatorList;
-    /**
-     * ListModel for the request log
-     */
-    private DefaultListModel<HardwareDevice> listRequest;
+    private final int numElevators, numFloors;
 
     /**
-     * Initializes an ElevatorSystemUI
-     * @param numElevators Number of elevators
-     * @param numFloors Number of floors
-     * @param elevatorList List of elevators
+     * A 2D array of JLabels representing the grid for the elevators and floors.
+     */
+    private final JLabel[][] grid;
+
+    /**
+     * An ArrayList of JLabels of running elevators.
+     */
+    private final ArrayList<JLabel> elevators;
+
+    /**
+     * A JPanel that contains the floors and the elevators.
+     */
+    private final JPanel buildingFloors;
+
+    /**
+     * A JPanel that contains a more details about the elevator cars.
+     */
+    private final JPanel elevatorsCloseUp;
+
+    /**
+     * A DefaultListModel of HardwareDevices for the request log.
+     */
+    private final DefaultListModel<HardwareDevice> listRequest;
+
+    /**
+     * Initializes an ElevatorSystemUI.
+     *
+     * @param numElevators An integer representing the number of elevators.
+     * @param numFloors  An integer representing the number of floors.
+     * @param elevatorList A List of Elevators to run.
      */
     public ElevatorSystemUI(int numElevators, int numFloors, List<Elevator> elevatorList) {
         super("Elevator System");
         this.numElevators = numElevators;
         this.numFloors = numFloors;
-        this.elevatorList = elevatorList;
+
         elevators = new ArrayList<>();
 
-        // Sets the elevator JLabels
-        setElevators();
+        setElevators(); // sets the JLabels of the elevators
 
-        // Adds views to the elevators
+        // adds views to the elevators
         for (Elevator e : elevatorList) {
             e.setView(this);
         }
 
-        // Sets the width and height
+        // sets the width and height of the UI
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        width = (int) screenSize.getWidth();
-        height = (int) screenSize.getHeight();
+        int width = (int) screenSize.getWidth();
+        int height = (int) screenSize.getHeight();
 
-        // Panel for the building floors
+        // panel for the building floors
         buildingFloors = new JPanel();
         buildingFloors.setLayout(new GridLayout(numFloors+1, numElevators));
         buildingFloors.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // Grid of the floors
+        // grid of the floors
         grid = new JLabel[numElevators][numFloors];
         addFloors();
 
-        // Panel for the elevators and its closeups
-        elevatorsPanel = new JPanel();
+        // panel for the elevators and its closeups
+        JPanel elevatorsPanel = new JPanel();
         elevatorsPanel.setLayout(new GridLayout(2, 1));
 
         elevatorsCloseUp = new JPanel();
@@ -94,7 +83,8 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
         addElevators();
         elevatorsPanel.add(elevatorsCloseUp);
         listRequest = new DefaultListModel<>();
-        requestsLog = new JList<>(listRequest);
+
+        JList requestsLog = new JList<>(listRequest);
         JScrollPane scrollPaneRequest = new JScrollPane(requestsLog);
         scrollPaneRequest.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPaneRequest.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -109,13 +99,13 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
         this.add(buildingFloors, BorderLayout.WEST);
         this.add(elevatorsPanel);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(width/2,height/2);
+        this.setSize(width /2, height /2);
         this.setResizable(true);
         this.setVisible(true);
     }
 
     /**
-     * Sets the elevator JLabels
+     * Sets the elevator JLabels.
      */
     private void setElevators() {
         for (int i = 0; i < numElevators; i++) {
@@ -127,7 +117,7 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     }
 
     /**
-     * Adds the floors and elevators grid to the buildingFloors JPanel
+     * Adds the floors and elevators grid to the buildingFloors JPanel.
      */
     private void addFloors() {
         for (int i = numFloors; i > 0; i--) {
@@ -151,7 +141,7 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     }
 
     /**
-     * Adds a close up of each elevator
+     * Adds a close up of each elevator.
      */
     private void addElevators() {
         for (int i = 0; i < numElevators; i++) {
@@ -164,17 +154,17 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     }
 
     /**
-     * Updates the close up of the specified elevator
-     * @param elevator Elevator that has to be updated
+     * Updates the close up of the specified elevator.
+     *
+     * @param elevator An Elevator representing the elevator that has to be updated.
      */
     @Override
     public void updateElevator(Elevator elevator) {
-        for (int i = 0; i < elevators.size(); i++) {
-            if (elevators.get(i).getName().equals(elevator.getName())) {
+        for (JLabel jLabel : elevators) {
+            if (jLabel.getName().equals(elevator.getName())) {
                 HardwareDevice floorEvent = elevator.getMainFloorEvent();
-                JLabel e = elevators.get(i);
                 if (floorEvent != null) {
-                    e.setText("<html>" + e.getName() +"<br/>Direction: " + floorEvent.getFloorButton() +
+                    jLabel.setText("<html>" + jLabel.getName() + "<br/>Direction: " + floorEvent.getFloorButton() +
                             "<br/>Destination Floor: " + floorEvent.getCarButton() + "</html>");
                 }
             }
@@ -182,8 +172,9 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     }
 
     /**
-     * Updates the floor of the elevator to be filled in with the required colour
-     * @param elevator The elevator that has to be updated
+     * Updates the floor of the elevator to be filled in with the required colour.
+     *
+     * @param elevator An Elevator representing the elevator that has to be updated.
      */
     @Override
     public void updateFloor(Elevator elevator) {
@@ -205,11 +196,13 @@ public class ElevatorSystemUI extends JFrame implements ElevatorSystemView {
     }
 
     /**
-     * Adds a request to the JList
-     * @param request The new request
+     * Adds a request to the JList.
+     *
+     * @param request A HardwareDevice representing the new request.
      */
     @Override
     public void addRequests(HardwareDevice request) {
             listRequest.addElement(request);
     }
+
 }
