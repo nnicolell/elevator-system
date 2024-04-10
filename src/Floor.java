@@ -105,14 +105,9 @@ public class Floor implements Runnable {
                 String[] info = s.split(" ");
                 sleep(1000);
                 logger.info("Elevator requested to go " + info[2] + " at floor " + info[1] + ".");
-
-                // send the floor event to the Scheduler and receive an acknowledgment
-//                sendPacket(createHardwareDevice(info).toString());
-//                receivePacket();
-
                 HardwareDevice floorEvent = createHardwareDevice(info);
                 logger.info("Sending " + floorEvent + " to Scheduler.");
-                scheduler.addFloorEvent(createHardwareDevice(info));
+                scheduler.addFloorEvent(floorEvent);
                 logger.info("Received ACK " + floorEvent + " from Scheduler.");
             }
         } catch (IOException | InterruptedException e) {
@@ -154,7 +149,8 @@ public class Floor implements Runnable {
         }
         String fault = faultStringBuilder.toString().trim();
 
-        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, numPassengers, Fault.stringToFault(fault));
+        return new HardwareDevice("Elevator?", time, floor, floorButton, carButton, numPassengers,
+                Fault.stringToFault(fault));
     }
 
 }

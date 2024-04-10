@@ -8,14 +8,17 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * A class to test the Floor
+ * A class to test the Floor subsystem.
  */
 public class FloorTest {
 
+    /**
+     * A List of Strings representing the lines in the input file.
+     */
     private List<String> lines;
 
     /**
-     * Setup before each method to read from test input file
+     * Setup before each method to read from test input file.
      */
     @BeforeEach
     void setup() {
@@ -27,8 +30,9 @@ public class FloorTest {
     }
 
     /**
-     * Generates a random integer
-     * @return Integer
+     * Generates a random integer from 1 to 9999.
+     *
+     * @return A random integer.
      */
     private int generateRandomInt() {
         Random random = new Random();
@@ -36,7 +40,7 @@ public class FloorTest {
     }
 
     /**
-     * Tests the creation of HardwareDevice from a given string
+     * Tests the creation of HardwareDevice from a given string.
      */
     @Test
     void testCreateHardwareDevice() {
@@ -62,7 +66,7 @@ public class FloorTest {
     }
 
     /**
-     * Tests if the correct number of lines are read from the test_input file
+     * Tests if the correct number of lines are read from the test_input file.
      */
     @Test
     void testReadCorrectNumberOfLines() {
