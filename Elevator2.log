@@ -1,31 +1,202 @@
-[2024-04-09 01:16:02.639] [Elevator2] State: WaitingForElevatorRequest
-[2024-04-09 01:16:02.733] [Elevator2] Waiting for a floor event from Scheduler...
-[2024-04-09 01:16:04.715] [Elevator2] Received {Elevator: Elevator2, Time: 02:22:12.450, Requested Floor: 1, Direction: UP, Car Button: 19, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
-[2024-04-09 01:16:04.725] [Elevator2] Sending ACK {Elevator: Elevator2, Time: 02:22:12.450, Requested Floor: 1, Direction: UP, Car Button: 19, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
-[2024-04-09 01:16:04.727] [Elevator2] State: DoorsOpening
-[2024-04-09 01:16:10.734] [Elevator2] State: DoorsClosing
-[2024-04-09 01:16:16.745] [Elevator2] State: MovingBetweenFloors
-[2024-04-09 01:16:16.745] [Elevator2] Currently at floor 1, moving to floor 19...
-[2024-04-09 01:16:26.751] [Elevator2] Currently at floor 2.
-[2024-04-09 01:16:36.753] [Elevator2] Currently at floor 3.
-[2024-04-09 01:16:46.758] [Elevator2] Currently at floor 4.
-[2024-04-09 01:16:56.760] [Elevator2] Currently at floor 5.
-[2024-04-09 01:17:06.763] [Elevator2] Currently at floor 6.
-[2024-04-09 01:17:16.769] [Elevator2] Currently at floor 7.
-[2024-04-09 01:17:26.774] [Elevator2] Currently at floor 8.
-[2024-04-09 01:17:36.780] [Elevator2] Currently at floor 9.
-[2024-04-09 01:17:46.784] [Elevator2] Currently at floor 10.
-[2024-04-09 01:17:56.787] [Elevator2] Currently at floor 11.
-[2024-04-09 01:18:06.791] [Elevator2] Currently at floor 12.
-[2024-04-09 01:18:16.796] [Elevator2] Currently at floor 13.
-[2024-04-09 01:18:26.796] [Elevator2] Currently at floor 14.
-[2024-04-09 01:18:36.802] [Elevator2] Currently at floor 15.
-[2024-04-09 01:18:46.806] [Elevator2] Currently at floor 16.
-[2024-04-09 01:18:56.810] [Elevator2] Currently at floor 17.
-[2024-04-09 01:19:06.815] [Elevator2] Currently at floor 18.
-[2024-04-09 01:19:16.819] [Elevator2] Arrived at floor 19.
-[2024-04-09 01:19:16.820] [Elevator2] State: ReachedDestination
-[2024-04-09 01:19:16.820] [Elevator2] State: DoorsOpening
-[2024-04-09 01:19:22.829] [Elevator2] State: DoorsClosing
-[2024-04-09 01:19:28.836] [Elevator2] State: NotifyingScheduler
-[2024-04-09 01:19:28.836] [Elevator2] Sending {Elevator: Elevator2, Time: 02:25:24.450, Requested Floor: 1, Direction: UP, Car Button: 19, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-09 09:48:38.759] [Elevator2] State: WaitingForElevatorRequest
+[2024-04-09 09:48:38.805] [Elevator2] Waiting for a floor event from Scheduler...
+[2024-04-09 09:48:39.806] [Elevator2] Received {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} from Scheduler.
+[2024-04-09 09:48:39.808] [Elevator2] Sending ACK {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false} to Scheduler.
+[2024-04-09 09:48:39.808] [Elevator2] State: MovingBetweenFloors
+[2024-04-09 09:48:39.808] [Elevator2] Currently at floor 1, moving to floor 2...
+[2024-04-09 09:48:41.815] [Elevator2] Picked up floor event {Elevator: Elevator5, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.816] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.817] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.817] [Elevator2] Reached max capacity. Cannot fit anymore passengers.
+[2024-04-09 09:48:41.817] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.818] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.818] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.818] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.818] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.819] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.819] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.819] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.819] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.820] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.820] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.821] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.821] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.821] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.821] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.822] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.822] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.823] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.823] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.823] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.824] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.824] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.825] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.826] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.826] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.827] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.827] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.828] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.828] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.828] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.829] [Elevator2] Picked up floor event {Elevator: Elevator5, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.829] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.829] [Elevator2] Picked up floor event {Elevator: Elevator3, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.830] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.830] [Elevator2] Picked up floor event {Elevator: Elevator3, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.831] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.831] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.831] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.831] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.832] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.832] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.833] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.833] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.833] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.834] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.834] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.834] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.835] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.835] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.835] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.835] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.836] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.836] [Elevator2] Picked up floor event {Elevator: Elevator3, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.837] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.837] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.837] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.837] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.838] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.838] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.838] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.839] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.839] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.839] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.839] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.840] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.840] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.840] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.840] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.840] [Elevator2] Picked up floor event {Elevator: Elevator4, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.846] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.846] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.847] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.847] [Elevator2] Picked up floor event {Elevator: Elevator3, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.847] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.847] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.847] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.847] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.847] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.848] [Elevator2] Picked up floor event {Elevator: Elevator1, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.848] [Elevator2] Cannot fit anymore passengers.
+[2024-04-09 09:48:41.848] [Elevator2] Picked up floor event {Elevator: Elevator2, Time: 02:22:00.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: false, Fault: No fault, More Floor Events: false}
+[2024-04-09 09:48:41.848] [Elevator2] Arrived at floor 2.
+[2024-04-09 09:48:41.848] [Elevator2] State: DoorsOpening
+[2024-04-09 09:48:47.863] [Elevator2] State: DoorsClosing
+[2024-04-09 09:48:53.873] [Elevator2] State: MovingBetweenFloors
+[2024-04-09 09:48:53.874] [Elevator2] Currently at floor 2, moving to floor 18...
+[2024-04-09 09:48:55.877] [Elevator2] Currently at floor 3.
+[2024-04-09 09:48:57.883] [Elevator2] Currently at floor 4.
+[2024-04-09 09:48:59.889] [Elevator2] Currently at floor 5.
+[2024-04-09 09:49:01.895] [Elevator2] Currently at floor 6.
+[2024-04-09 09:49:03.901] [Elevator2] Currently at floor 7.
+[2024-04-09 09:49:05.904] [Elevator2] Currently at floor 8.
+[2024-04-09 09:49:07.909] [Elevator2] Currently at floor 9.
+[2024-04-09 09:49:09.915] [Elevator2] Currently at floor 10.
+[2024-04-09 09:49:11.918] [Elevator2] Currently at floor 11.
+[2024-04-09 09:49:13.925] [Elevator2] Currently at floor 12.
+[2024-04-09 09:49:15.931] [Elevator2] Currently at floor 13.
+[2024-04-09 09:49:17.933] [Elevator2] Currently at floor 14.
+[2024-04-09 09:49:19.940] [Elevator2] Currently at floor 15.
+[2024-04-09 09:49:21.947] [Elevator2] Currently at floor 16.
+[2024-04-09 09:49:23.953] [Elevator2] Currently at floor 17.
+[2024-04-09 09:49:25.961] [Elevator2] Arrived at floor 18.
+[2024-04-09 09:49:25.961] [Elevator2] State: ReachedDestination
+[2024-04-09 09:49:25.963] [Elevator2] State: NotifyingScheduler
+[2024-04-09 09:49:25.965] [Elevator2] Sending {Elevator: Elevator2, Time: 02:24:56.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} to Scheduler.
+[2024-04-09 09:49:25.971] [Elevator2] Received ACK {Elevator: Elevator2, Time: 02:24:56.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-09 09:49:25.972] [Elevator2] State: MovingBetweenFloors
+[2024-04-09 09:49:25.972] [Elevator2] Currently at floor 18, moving to floor 2...
+[2024-04-09 09:49:27.979] [Elevator2] Currently at floor 17.
+[2024-04-09 09:49:29.984] [Elevator2] Currently at floor 16.
+[2024-04-09 09:49:31.986] [Elevator2] Currently at floor 15.
+[2024-04-09 09:49:33.989] [Elevator2] Currently at floor 14.
+[2024-04-09 09:49:35.999] [Elevator2] Currently at floor 13.
+[2024-04-09 09:49:38.002] [Elevator2] Currently at floor 12.
+[2024-04-09 09:49:40.007] [Elevator2] Currently at floor 11.
+[2024-04-09 09:49:42.013] [Elevator2] Currently at floor 10.
+[2024-04-09 09:49:44.022] [Elevator2] Currently at floor 9.
+[2024-04-09 09:49:46.025] [Elevator2] Currently at floor 8.
+[2024-04-09 09:49:48.033] [Elevator2] Currently at floor 7.
+[2024-04-09 09:49:50.045] [Elevator2] Currently at floor 6.
+[2024-04-09 09:49:52.057] [Elevator2] Currently at floor 5.
+[2024-04-09 09:49:54.061] [Elevator2] Currently at floor 4.
+[2024-04-09 09:49:56.064] [Elevator2] Currently at floor 3.
+[2024-04-09 09:49:58.068] [Elevator2] Arrived at floor 2.
+[2024-04-09 09:49:58.069] [Elevator2] State: DoorsOpening
+[2024-04-09 09:50:04.074] [Elevator2] State: DoorsClosing
+[2024-04-09 09:50:10.077] [Elevator2] State: MovingBetweenFloors
+[2024-04-09 09:50:10.078] [Elevator2] Currently at floor 2, moving to floor 18...
+[2024-04-09 09:50:12.082] [Elevator2] Currently at floor 3.
+[2024-04-09 09:50:14.086] [Elevator2] Currently at floor 4.
+[2024-04-09 09:50:16.098] [Elevator2] Currently at floor 5.
+[2024-04-09 09:50:18.116] [Elevator2] Currently at floor 6.
+[2024-04-09 09:50:20.124] [Elevator2] Currently at floor 7.
+[2024-04-09 09:50:22.132] [Elevator2] Currently at floor 8.
+[2024-04-09 09:50:24.143] [Elevator2] Currently at floor 9.
+[2024-04-09 09:50:26.150] [Elevator2] Currently at floor 10.
+[2024-04-09 09:50:28.162] [Elevator2] Currently at floor 11.
+[2024-04-09 09:50:30.168] [Elevator2] Currently at floor 12.
+[2024-04-09 09:50:32.174] [Elevator2] Currently at floor 13.
+[2024-04-09 09:50:34.180] [Elevator2] Currently at floor 14.
+[2024-04-09 09:50:36.188] [Elevator2] Currently at floor 15.
+[2024-04-09 09:50:38.193] [Elevator2] Currently at floor 16.
+[2024-04-09 09:50:40.199] [Elevator2] Currently at floor 17.
+[2024-04-09 09:50:42.205] [Elevator2] Arrived at floor 18.
+[2024-04-09 09:50:42.206] [Elevator2] State: ReachedDestination
+[2024-04-09 09:50:42.206] [Elevator2] State: NotifyingScheduler
+[2024-04-09 09:50:42.208] [Elevator2] Sending {Elevator: Elevator2, Time: 02:38:08.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} to Scheduler.
+[2024-04-09 09:50:42.397] [Elevator2] Received ACK {Elevator: Elevator2, Time: 02:38:08.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-09 09:50:42.398] [Elevator2] State: MovingBetweenFloors
+[2024-04-09 09:50:42.398] [Elevator2] Currently at floor 18, moving to floor 2...
+[2024-04-09 09:50:44.401] [Elevator2] Currently at floor 17.
+[2024-04-09 09:50:46.407] [Elevator2] Currently at floor 16.
+[2024-04-09 09:50:48.414] [Elevator2] Currently at floor 15.
+[2024-04-09 09:50:50.421] [Elevator2] Currently at floor 14.
+[2024-04-09 09:50:52.424] [Elevator2] Currently at floor 13.
+[2024-04-09 09:50:54.427] [Elevator2] Currently at floor 12.
+[2024-04-09 09:50:56.432] [Elevator2] Currently at floor 11.
+[2024-04-09 09:50:58.436] [Elevator2] Currently at floor 10.
+[2024-04-09 09:51:00.445] [Elevator2] Currently at floor 9.
+[2024-04-09 09:51:02.451] [Elevator2] Currently at floor 8.
+[2024-04-09 09:51:04.454] [Elevator2] Currently at floor 7.
+[2024-04-09 09:51:06.462] [Elevator2] Currently at floor 6.
+[2024-04-09 09:51:08.467] [Elevator2] Currently at floor 5.
+[2024-04-09 09:51:10.471] [Elevator2] Currently at floor 4.
+[2024-04-09 09:51:12.478] [Elevator2] Currently at floor 3.
+[2024-04-09 09:51:14.486] [Elevator2] Arrived at floor 2.
+[2024-04-09 09:51:14.487] [Elevator2] State: DoorsOpening
+[2024-04-09 09:51:20.492] [Elevator2] State: DoorsClosing
+[2024-04-09 09:51:26.501] [Elevator2] State: NotifyingScheduler
+[2024-04-09 09:51:26.503] [Elevator2] Sending {Elevator: Elevator2, Time: 02:40:54.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} to Scheduler.
+[2024-04-09 09:51:26.510] [Elevator2] Received ACK {Elevator: Elevator2, Time: 02:40:54.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} from Scheduler.
+[2024-04-09 09:51:26.510] [Elevator2] State: MovingBetweenFloors
+[2024-04-09 09:51:26.511] [Elevator2] Currently at floor 2, moving to floor 18...
+[2024-04-09 09:51:28.517] [Elevator2] Currently at floor 3.
+[2024-04-09 09:51:30.520] [Elevator2] Currently at floor 4.
+[2024-04-09 09:51:32.522] [Elevator2] Currently at floor 5.
+[2024-04-09 09:51:34.528] [Elevator2] Currently at floor 6.
+[2024-04-09 09:51:36.530] [Elevator2] Currently at floor 7.
+[2024-04-09 09:51:38.537] [Elevator2] Currently at floor 8.
+[2024-04-09 09:51:40.544] [Elevator2] Currently at floor 9.
+[2024-04-09 09:51:42.546] [Elevator2] Currently at floor 10.
+[2024-04-09 09:51:44.552] [Elevator2] Currently at floor 11.
+[2024-04-09 09:51:46.555] [Elevator2] Currently at floor 12.
+[2024-04-09 09:51:48.565] [Elevator2] Currently at floor 13.
+[2024-04-09 09:51:50.572] [Elevator2] Currently at floor 14.
+[2024-04-09 09:51:52.578] [Elevator2] Currently at floor 15.
+[2024-04-09 09:51:54.582] [Elevator2] Currently at floor 16.
+[2024-04-09 09:51:56.584] [Elevator2] Currently at floor 17.
+[2024-04-09 09:51:58.586] [Elevator2] Arrived at floor 18.
+[2024-04-09 09:51:58.587] [Elevator2] State: ReachedDestination
+[2024-04-09 09:51:58.587] [Elevator2] State: NotifyingScheduler
+[2024-04-09 09:51:58.588] [Elevator2] Sending {Elevator: Elevator2, Time: 02:43:34.150, Requested Floor: 2, Direction: UP, Car Button: 18, Number of Passengers: 1, Arrived: true, Fault: No fault, More Floor Events: true} to Scheduler.

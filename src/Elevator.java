@@ -284,7 +284,7 @@ public class Elevator implements Runnable {
                 }, 11000); // assume a fault if elevator doesn't arrive within 11 seconds
             } else {
                 try {
-                    sleep(10000);
+                    sleep(2000);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

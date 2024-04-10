@@ -209,10 +209,14 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice A HardwareDevice representing the floor event.
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
-        logger.info("Received " + hardwareDevice + " from Floor.");
-        floorEventsToHandle.add(hardwareDevice);
+//        notifyAll();
+        while (floorEventsToHandle.size() <= numReqs) {
+//            System.out.println("numre  " + floorEventsToHandle.size() + " " + numReqs);
+            logger.info("Received " + hardwareDevice + " from Floor.");
+            floorEventsToHandle.add(hardwareDevice);
+            logger.info("Sending ACK " + hardwareDevice + " to Floor.");
+        }
         notifyAll();
-        logger.info("Sending ACK " + hardwareDevice + " to Floor.");
     }
 
     /**
@@ -269,13 +273,17 @@ public class Scheduler implements Runnable {
         int distance = 0;
         while (floorEventsToHandle.isEmpty() && numReqsHandled<=numReqs) {
             try {
+                System.out.println("wait");
                 wait();
+
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
         }
+
         if (numReqsHandled<=numReqs) {
+            System.out.println("if");
             Iterator<Elevator> iterator = availableElevators.iterator();
             while (iterator.hasNext()) {
                 Elevator e = iterator.next();
@@ -413,6 +421,9 @@ public class Scheduler implements Runnable {
 
         isFloorEventsComplete();
 
+        endTime = System.nanoTime();
+        logger.info("It took " + ((endTime - startTime) / 100000) + " ms to execute " + numReqs
+                + " floor event(s).");
         notifyFloor(message);
     }
 
