@@ -6,7 +6,7 @@ import java.time.LocalTime;
 public class HardwareDevice {
 
     /**
-     * A String representing the elevator executing the floor event.
+     * A String representing the name of the elevator executing the floor event.
      */
     private String elevator;
 
@@ -52,10 +52,7 @@ public class HardwareDevice {
     private final int numPassengers;
 
     /**
-     * Initializes a HardwareDevice with a LocalTime representing when a passenger requests an elevator, an integer
-     * representing the floor number a passenger requested an elevator at, a FloorButton representing whether the
-     * passenger would like to move up or down, and an integer representing the floor number a passenger would like to
-     * move to.
+     * Initializes a HardwareDevice.
      *
      * @param elevator A String representing the elevator running the request.
      * @param time A LocalTime representing when a passenger requests an elevator.
@@ -65,7 +62,8 @@ public class HardwareDevice {
      * @param carButton An integer representing the floor number a passenger would like to move to.
      * @param fault A Fault related to the floor event.
      */
-    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton, int numPassengers, Fault fault) {
+    public HardwareDevice (String elevator, LocalTime time, int floor, FloorButton floorButton, int carButton,
+                           int numPassengers, Fault fault) {
         this.elevator = elevator;
         this.time = time;
         this.floor = floor;
@@ -153,7 +151,9 @@ public class HardwareDevice {
     }
 
     /**
-     * Updates the Elevator time
+     * Updates the time of the floor event.
+     *
+     * @param time A LocalTime representing when a passenger requests an elevator.
      */
     public void setTime(LocalTime time) {
         this.time = time;
@@ -222,7 +222,8 @@ public class HardwareDevice {
         String e = hardwareDeviceStringArray[0];
         LocalTime t = LocalTime.parse(hardwareDeviceStringArray[1]);
         int f = Integer.parseInt(hardwareDeviceStringArray[2]);
-        FloorButton fb = hardwareDeviceStringArray[3].equalsIgnoreCase("up") ? FloorButton.UP : FloorButton.DOWN;
+        FloorButton fb = hardwareDeviceStringArray[3].equalsIgnoreCase("up")
+                ? FloorButton.UP : FloorButton.DOWN;
         int cb = Integer.parseInt(hardwareDeviceStringArray[4]);
         int np = Integer.parseInt(hardwareDeviceStringArray[5]);
         boolean a = hardwareDeviceStringArray[6].equalsIgnoreCase("true");
