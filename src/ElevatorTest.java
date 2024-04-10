@@ -22,7 +22,7 @@ public class ElevatorTest {
     /**
      * An integer representing the port number the Elevator receives DatagramPackets on.
      */
-    private int elevatorPortNum;
+    private int elevatorPort;
 
     /**
      * A Random object to test the Elevator subsystem with.
@@ -44,8 +44,8 @@ public class ElevatorTest {
     @BeforeEach
     void setup() {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
-        elevatorPortNum = generateRandomInt();
-        elevatorPortNumbers.add(elevatorPortNum);
+        elevatorPort = generateRandomInt();
+        elevatorPortNumbers.add(elevatorPort);
         scheduler = new Scheduler(elevatorPortNumbers, generateRandomInt());
         elevator = scheduler.getFirstAvailableElevator();
 //        floorListener = scheduler.getFloorListener();
@@ -56,7 +56,6 @@ public class ElevatorTest {
      */
     @AfterEach
     void cleanup() {
-        //floorListener.setRunningToFalse();
         scheduler.closeSendReceiveSocket();
     }
 
@@ -66,7 +65,7 @@ public class ElevatorTest {
     @Test
     void testElevator() {
         assertEquals(scheduler, elevator.getScheduler());
-        assertEquals(elevatorPortNum, elevator.getPort());
+        assertEquals(elevatorPort, elevator.getPort());
         assertEquals(0, elevator.getFloorEventsSize());
         assertEquals(8, elevator.getStates().size());
     }
@@ -138,9 +137,9 @@ public class ElevatorTest {
     @Test
     void testAddAndRemovePassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassenger(1);
+        elevator.addPassengers(1);
         assertEquals(1, elevator.getNumPassengers());
-        elevator.removePassenger(1);
+        elevator.removePassengers(1);
         assertEquals(0, elevator.getNumPassengers());
     }
 
@@ -150,8 +149,8 @@ public class ElevatorTest {
     @Test
     void testGetNumPassengers() {
         assertEquals(0, elevator.getNumPassengers());
-        elevator.addPassenger(2);
-        elevator.addPassenger(3);
+        elevator.addPassengers(2);
+        elevator.addPassengers(3);
         assertEquals(5, elevator.getNumPassengers());
     }
 
@@ -189,35 +188,36 @@ public class ElevatorTest {
     }
 
     /**
-     * Tests the if and set transient fault
+     * Tests isTransientFault() and setTransientFault().
      */
     @Test
     void testIsAndSetTransientFault() {
         elevator.setTransientFault(true);
-        assertEquals(true, elevator.isTransientFault());
+        assertTrue(elevator.isTransientFault());
         elevator.setTransientFault(false);
-        assertEquals(false, elevator.isTransientFault());
+        assertFalse(elevator.isTransientFault());
     }
 
     /**
-     * Tests the if and set hard fault
+     * Tests ifHardFault() and setHardFault().
      */
     @Test
     void testIsAndSetHardFault() {
-        assertEquals(false, elevator.isHardFault());
+        assertFalse(elevator.isHardFault());
         elevator.setHardFault(true);
-        assertEquals(true, elevator.isHardFault());
+        assertTrue(elevator.isHardFault());
         elevator.setHardFault(false);
-        assertEquals(false, elevator.isHardFault());
+        assertFalse(elevator.isHardFault());
     }
 
     /**
-     * Tests the if and get the capacity of passengers
+     * Tests isMaxCapacity() and setMaxCapacity().
      */
     @Test
-    void testIsAndGetMaxCapacity() {
-        assertEquals(false, elevator.isMaxCapacity());
+    void testIsAndSetMaxCapacity() {
+        assertFalse(elevator.isMaxCapacity());
         elevator.setMaxCapacity(5);
         assertEquals(5, elevator.getMaxCapacity());
     }
+
 }

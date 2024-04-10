@@ -219,7 +219,7 @@ public class Elevator implements Runnable {
         if (!floorEvent.startsWith("ACK")) {
             mainFloorEvent = HardwareDevice.stringToHardwareDevice(floorEvent);
             floorEvents.add(mainFloorEvent);
-            addPassenger(mainFloorEvent.getNumPassengers()); // increase the total passengers
+            addPassengers(mainFloorEvent.getNumPassengers()); // increase the total passengers
         }
 
         // save the Scheduler's address and port to communicate with it later
@@ -249,12 +249,12 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Moves the Elevator between floors.
+     * Moves the Elevator to the specified floor.
      *
-     * @param fault  True, if a fault should occur. False, if not.
-     * @param state  A String representing the state the Elevator state machine should transition to after the elevator
-     *               car has finished moving between floors.
-     * @param floor  An integer representing the floor the Elevator needs to move to.
+     * @param fault True, if a fault should occur. False, if not.
+     * @param state A String representing the state the Elevator state machine should transition to after the elevator
+     *              car has finished moving between floors.
+     * @param floor An integer representing the floor the Elevator needs to move to.
      * @param button A FloorButton representing the direction the Elevator needs to move.
      */
     public void moveBetweenFloors(boolean fault, String state, int floor, FloorButton button) {
@@ -322,10 +322,9 @@ public class Elevator implements Runnable {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
                     System.out.println(name + " -> adding " + hardwareDevice + " to floorEvents");
-                    addPassenger(hardwareDevice.getNumPassengers());
+                    addPassengers(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 
-                    // FIXME: non-UDP way of implementing this...
                     // notify the Scheduler that we have picked up a floor event
                     scheduler.pickedUpFloorEvent(this, hardwareDevice);
                     hardwareDevice.setElevator(name);
@@ -339,7 +338,7 @@ public class Elevator implements Runnable {
             view.updateFloor(this);
         }
 
-        if (!fault) { // transition to the next state if a fault does not occur,f
+        if (!fault) { // transition to the next state if a fault does not occur
             setState(state);
         }
     }
@@ -353,15 +352,9 @@ public class Elevator implements Runnable {
     public boolean moreFloorEventsToFulfill() {
         // main floor event has been fulfilled
         HardwareDevice fulfilledFloorEvent = mainFloorEvent;
-        removePassenger(mainFloorEvent.getNumPassengers());
+        removePassengers(mainFloorEvent.getNumPassengers());
         floorEvents.remove(0);
         mainFloorEvent = null;
-
-        // TODO: what if there's more than one floor event that has finished when we reach the current floor?
-        // make a list of fulfilled floor events (remove fulfilled floor events from floorEvents)
-        // check if the Elevator has more floor events to fulfill (floorEvents.size() > 0) after checking if there are more fulfilled floor events
-        // set the moreFloorEvents param for each floor event in the list of fulfilled floor events appropriately
-        // send DatagramPackets to the Scheduler and receive acknowledgements from the Scheduler for each fulfilled floor event
 
         // determine if the Elevator has picked up passengers on its way to its main destination
         boolean moreEventsToFulfill = false;
@@ -408,9 +401,9 @@ public class Elevator implements Runnable {
     /**
      * Sets a timer to handle a fault in the case where a door does not open or close.
      *
-     * @param fault       True, if a fault should occur. False, if not.
-     * @param faultState  A String representing the state the Elevator state machine should transition to if a fault
-     *                    occurs.
+     * @param fault True, if a fault should occur. False, if not.
+     * @param faultState A String representing the state the Elevator state machine should transition to if a fault
+     *                   occurs.
      * @param normalState A String representing the state the Elevator state machine should transition to if a fault
      *                    does not occur.
      */
@@ -468,14 +461,15 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Forces the Elevator car doors to close.
+     * Forces the Elevator car doors to open or close.
+     *
+     * @param forceOpen True, if the elevator car doors should be forced open. False, if forced closed.
      */
     public void forceOpenOrCloseDoors(boolean forceOpen) {
         try {
             transientFault = true;
             view.updateFloor(this);
             transientFault = false;
-//            System.out.println("Transient Fault Set True");
             logger.warning("Forcing doors " + (forceOpen ? "open" : "closed") + "...");
             sleep(7680); // load time including doors opening and closing
         } catch (InterruptedException e) {
@@ -484,9 +478,11 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Increment the number of passengers in the Elevator car by passengers.
+     * Adds the specified amount of passengers to the elevator car.
+     *
+     * @param passengers An integer representing the number of passengers to add to the elevator car.
      */
-    public void addPassenger(int passengers) {
+    public void addPassengers(int passengers) {
         numPassengers += passengers;
         if (numPassengers > CAPACITY) {
             numPassengers -= passengers;
@@ -498,9 +494,11 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Decrement the number of passengers in the Elevator car by passengers.
+     * Removes the specified amount of passengers to the elevator car.
+     *
+     * @param passengers An integer representing the number of passengers to remove from the elevator car.
      */
-    public void removePassenger(int passengers) {
+    public void removePassengers(int passengers) {
         numPassengers -= passengers;
         if (numPassengers < CAPACITY) {
             maxCapacity = false;
@@ -517,9 +515,9 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Returns the current state of the Elevator state machine.
+     * Returns an ElevatorState representing the current state of the Elevator state machine.
      *
-     * @return The current state of the Elevator state machine.
+     * @return An ElevatorState representing the current state of the Elevator state machine.
      */
     public ElevatorState getCurrentState() {
         return currentState;
@@ -590,6 +588,8 @@ public class Elevator implements Runnable {
 
     /**
      * Sets a HardwareDevice to the mainFloorEvent.
+     *
+     * @param hardwareDevice A HardwareDevice representing the main floor event.
      */
     public void setMainFloorEvent(HardwareDevice hardwareDevice) {
         mainFloorEvent = hardwareDevice;
@@ -614,82 +614,84 @@ public class Elevator implements Runnable {
     }
 
     /**
-     * Sets the view for the ElevatorSystemView
-     * @param v View for the ElevatorsSystem
+     * Sets the view to the specified view.
+     *
+     * @param view An ElevatorSystemView representing the view of the ElevatorSystem in the MVC pattern.
      */
-    public void setView(ElevatorSystemView v) {
-        view = v;
+    public void setView(ElevatorSystemView view) {
+        this.view = view;
     }
 
-
     /**
-     * Returns true, if car has reached maximum capacity
+     * Returns a boolean representing if the elevator car has reached its maximum capacity or not.
      *
-     * @return True, if car has reached maximum capacity
+     * @return True, if elevator car has reached maximum capacity. False, if not.
      */
     public boolean isMaxCapacity() {
         return maxCapacity;
     }
 
     /**
-     * Returns the max capacity of passengers
+     * Returns an integer representing the maximum capacity of passengers of the elevator car.
      *
-     * @return int of max passengers
+     * @return An integer representing the maximum capacity of passengers of the elevator car.
      */
     public int getMaxCapacity() {
         return CAPACITY;
     }
 
     /**
-     * Sets the max capacity of passengers
+     * Sets the maximum capacity of passengers to the specified amount.
      *
-     * @param cap the number of passengers
+     * @param capacity An integer representing the maximum capacity of passengers.
      */
-    public void setMaxCapacity(int cap) {
-        CAPACITY = cap;
+    public void setMaxCapacity(int capacity) {
+        CAPACITY = capacity;
     }
 
     /**
-     * Returns if a transient fault occurs
+     * Returns a boolean representing if a transient fault occurs or not.
      *
-     * @return True, if there is a transient fault
+     * @return True, if there is a transient fault. False, if not.
      */
     public boolean isTransientFault() {
         return transientFault;
     }
 
     /**
-     * Returns if a hard fault occurs
+     * Returns a boolean representing if a hard fault occurs or not.
      *
-     * @return True if there is a hard fault
+     * @return True, if there is a hard fault. False, if not.
      */
     public boolean isHardFault() {
         return hardFault;
     }
 
     /**
-     * Sets the transient fault
+     * Sets the transient fault to the specified boolean.
      *
-     * @param transFault if there is a transient fault or not
+     * @param transientFault True, if there is a transient fault. False, if not.
      */
-    public void setTransientFault(boolean transFault) {
-        transientFault = transFault;
+    public void setTransientFault(boolean transientFault) {
+        this.transientFault = transientFault;
     }
 
     /**
-     * Sets the hard fault
+     * Sets the hard fault to the specified boolean.
      *
-     * @param fault if there is a hard fault or not
+     * @param hardFault True, if there is a hard fault. False, if not.
      */
-    public void setHardFault(boolean fault) {
-        hardFault = fault;
+    public void setHardFault(boolean hardFault) {
+        this.hardFault = hardFault;
     }
 
     /**
-     * Gets the view of the Elevator
-     * @return The elevator's view
+     * Returns an ElevatorSystemView representing the view of the ElevatorSystem in the MVC pattern.
+     *
+     * @return An ElevatorSystemView representing the view of the ElevatorSystem in the MVC pattern.
      */
     public ElevatorSystemView getView() {
         return view;
     }
+
 }
