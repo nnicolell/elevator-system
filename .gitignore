@@ -1,7 +1,6 @@
 ### IntelliJ IDEA ###
 !**/src/main/**/out/
 !**/src/test/**/out/
-*.log
 
 ### Eclipse ###
 .apt_generated
@@ -28,5 +27,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-### Ignore .log.lck files ###
+### Ignore .log files ###
+*.log
 *.log.lck
