@@ -25,11 +25,6 @@ public class ElevatorTest {
     private int elevatorPortNum;
 
     /**
-     * A FloorListener to test the Elevator subsystem with.
-     */
-    private FloorListener floorListener;
-
-    /**
      * A Random object to test the Elevator subsystem with.
      */
     private final Random random = new Random();
@@ -61,7 +56,7 @@ public class ElevatorTest {
      */
     @AfterEach
     void cleanup() {
-        floorListener.setRunningToFalse();
+        //floorListener.setRunningToFalse();
         scheduler.closeSendReceiveSocket();
     }
 

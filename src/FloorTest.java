@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.*;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import org.junit.jupiter.api.*;
 
@@ -48,7 +49,8 @@ public class FloorTest {
         Floor floor = new Floor(scheduler);
         System.out.println(lines.get(0));
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.get(0).split(" "));
-        LocalTime localTime = LocalTime.parse("13:02:56.0");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss:SS");
+        LocalTime localTime = LocalTime.parse("13:02:56:20", formatter);
         HardwareDevice expectedHardwareDevice = new HardwareDevice("Elevator1", localTime, 4,
                 FloorButton.UP, 6, 3, Fault.NO_FAULT);
 
