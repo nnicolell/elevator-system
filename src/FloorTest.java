@@ -48,8 +48,7 @@ public class FloorTest {
         elevatorPortNumbers.add(70);
         elevatorPortNumbers.add(64);
         elevatorPortNumbers.add(67);
-        int x = generateRandomInt();
-        Scheduler scheduler = new Scheduler(elevatorPortNumbers, x);
+        Scheduler scheduler = new Scheduler(elevatorPortNumbers);
         Floor floor = new Floor(scheduler);
         System.out.println(lines.get(0));
         HardwareDevice hardwareDevice = floor.createHardwareDevice(lines.get(0).split(" "));
