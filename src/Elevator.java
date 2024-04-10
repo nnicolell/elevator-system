@@ -124,6 +124,7 @@ public class Elevator implements Runnable {
 
         try {
             receiveSocket = new DatagramSocket(port);
+            //receiveSocket.setSoTimeout(20000);
         } catch (SocketException se) {
             System.err.println(se);
             System.exit(1);
@@ -204,10 +205,12 @@ public class Elevator implements Runnable {
         DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
         try {
             receiveSocket.receive(receivePacket);
-        } catch (IOException e) {
+        }  catch (IOException e) {
             System.err.println(e);
             System.exit(1);
         }
+
+
 
         // process the received floor event
         String floorEvent = new String(receivePacket.getData(), 0, receivePacket.getLength());
@@ -306,7 +309,7 @@ public class Elevator implements Runnable {
                         faultTimer.cancel();
                     }
                 }
-            }, 10000);
+            }, 1000);
 
             if (button == FloorButton.UP) {
                 currentFloor++;

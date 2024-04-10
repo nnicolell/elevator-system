@@ -287,7 +287,7 @@ public class Scheduler implements Runnable {
                     addBusyElevator(e);
                     iterator.remove();
                     numReqsHandled++;
-                    System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+                    //System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
                     floorEvent.setElevator(e.getName());
                     sendElevatorFloorEvent(e, floorEvent);
                     break;
@@ -530,7 +530,7 @@ public class Scheduler implements Runnable {
         busyElevators.remove(elevator);
 
         numReqsHandled += numFloorEventsHandling;
-        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
+        //System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         for (Thread elevatorThread : elevatorThreads) {
