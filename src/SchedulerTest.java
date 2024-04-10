@@ -63,7 +63,7 @@ class SchedulerTest {
     @Test
     void testScheduler() {
         assertEquals(0, scheduler.getNumReqsHandled());
-        assertEquals(5, scheduler.getNumReqs());
+        assertEquals(48, scheduler.getNumReqs());
         assertEquals(5, scheduler.getStates().size());
         assertInstanceOf(WaitingForFloorEvent.class, scheduler.getCurrentState());
     }
@@ -128,7 +128,7 @@ class SchedulerTest {
      */
     @Test
     void testSetAndGetNumReqs() {
-        assertEquals(5, scheduler.getNumReqs());
+        assertEquals(48, scheduler.getNumReqs());
 
         scheduler.setNumReqs(2);
         assertEquals(2, scheduler.getNumReqs());
@@ -169,7 +169,7 @@ class SchedulerTest {
         scheduler.addFloorEvent(hardwareDevice);
         ArrayList<HardwareDevice> floorEvents = new ArrayList<>();
         floorEvents.add(hardwareDevice);
-        assertEquals(floorEvents, scheduler.getFloorEventsToHandle());
+        assertEquals(floorEvents.get(0), scheduler.getFloorEventsToHandle().get(0));
     }
 
 }

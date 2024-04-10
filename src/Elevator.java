@@ -682,6 +682,10 @@ public class Elevator implements Runnable {
         hardFault = fault;
     }
 
+    /**
+     * Gets the view of the Elevator
+     * @return The elevator's view
+     */
     public ElevatorSystemView getView() {
         return view;
     }
