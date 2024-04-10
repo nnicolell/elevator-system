@@ -209,9 +209,7 @@ public class Scheduler implements Runnable {
      * @param hardwareDevice A HardwareDevice representing the floor event.
      */
     public synchronized void addFloorEvent(HardwareDevice hardwareDevice) {
-//        notifyAll();
         while (floorEventsToHandle.size() <= numReqs) {
-//            System.out.println("numre  " + floorEventsToHandle.size() + " " + numReqs);
             logger.info("Received " + hardwareDevice + " from Floor.");
             floorEventsToHandle.add(hardwareDevice);
             logger.info("Sending ACK " + hardwareDevice + " to Floor.");
@@ -273,9 +271,7 @@ public class Scheduler implements Runnable {
         int distance = 0;
         while (floorEventsToHandle.isEmpty() && numReqsHandled<=numReqs) {
             try {
-                System.out.println("wait");
                 wait();
-
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -283,7 +279,6 @@ public class Scheduler implements Runnable {
         }
 
         if (numReqsHandled<=numReqs) {
-            System.out.println("if");
             Iterator<Elevator> iterator = availableElevators.iterator();
             while (iterator.hasNext()) {
                 Elevator e = iterator.next();
@@ -297,7 +292,6 @@ public class Scheduler implements Runnable {
                     addBusyElevator(e);
                     iterator.remove();
                     numReqsHandled++;
-                    System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
                     floorEvent.setElevator(e.getName());
                     sendElevatorFloorEvent(e, floorEvent);
                     break;
@@ -544,7 +538,6 @@ public class Scheduler implements Runnable {
         busyElevators.remove(elevator);
 
         numReqsHandled += numFloorEventsHandling;
-        System.out.println("numReqsHandled: " + numReqsHandled + ", numReqs: " + numReqs);
         isFloorEventsComplete();
 
         for (Thread elevatorThread : elevatorThreads) {

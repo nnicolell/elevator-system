@@ -321,7 +321,6 @@ public class Elevator implements Runnable {
             for (HardwareDevice hardwareDevice : floorEvent) {
                 if (hardwareDevice.getFloor() == currentFloor && hardwareDevice.getFloorButton() == button) {
                     floorEvents.add(hardwareDevice);
-                    System.out.println(name + " -> adding " + hardwareDevice + " to floorEvents");
                     addPassengers(hardwareDevice.getNumPassengers());
                     logger.info("Picked up floor event " + hardwareDevice);
 
@@ -360,9 +359,6 @@ public class Elevator implements Runnable {
         boolean moreEventsToFulfill = false;
         // if its has picked up passengers, it must continue executing the rest of the floor events
         if (floorEvents.size() > 0) {
-            for (HardwareDevice floorEvent : floorEvents) {
-                System.out.println(floorEvent);
-            }
             moreEventsToFulfill = true;
             mainFloorEvent = getClosestFloorEvent(); // assign a new main floor event
             view.addRequests(mainFloorEvent);
