@@ -1,8 +1,0 @@
-[2024-04-08 23:58:45.492] [Elevator1] State: WaitingForElevatorRequest
-[2024-04-08 23:58:45.493] [Elevator1] Waiting for a floor event from Scheduler...
-[2024-04-08 23:58:45.493] [Elevator1] State: WaitingForElevatorRequest
-[2024-04-08 23:58:45.494] [Elevator1] State: MovingBetweenFloors
-[2024-04-08 23:58:45.494] [Elevator1] State: ReachedDestination
-[2024-04-08 23:58:45.494] [Elevator1] State: DoorsClosing
-[2024-04-08 23:58:45.494] [Elevator1] State: DoorsOpening
-[2024-04-08 23:58:45.494] [Elevator1] State: NotifyingScheduler

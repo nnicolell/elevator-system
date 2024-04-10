@@ -12,6 +12,11 @@ import static java.lang.Thread.sleep;
 public class Elevator implements Runnable {
 
     /**
+     * An integer representing the maximum passenger capacity for an elevator car.
+     */
+    private int CAPACITY = 5;
+
+    /**
      * A Scheduler representing the elevator scheduler to receive and send events to.
      */
     private final Scheduler scheduler;
@@ -38,14 +43,14 @@ public class Elevator implements Runnable {
 
     /**
      * A HardwareDevice representing the floor event the Scheduler assigned to the Elevator.
-     *
+     * <p>
      * It does not represent the floor events that were picked up while executing the floor event the Scheduler assigned
      * to the Elevator.
      */
     private HardwareDevice mainFloorEvent = null;
 
     /**
-     * The current state of the Elevator state machine.
+     * An ElevatorState representing the current state of the Elevator state machine.
      */
     private ElevatorState currentState;
 
@@ -61,7 +66,7 @@ public class Elevator implements Runnable {
 
     /**
      * An integer representing the port number to send DatagramPackets to the Scheduler.
-     *
+     * <p>
      * If 0, the Elevator has not received a DatagramPacket from the Scheduler yet.
      */
     private int schedulerPort = 0;
@@ -74,12 +79,16 @@ public class Elevator implements Runnable {
     /**
      * An integer representing the number of passengers currently in the Elevator car.
      */
-    private int numPassengers = 0; // TODO: implement numPassengers
+    private int numPassengers = 0;
 
     /**
      * True, if request should be handled when state is being set. False, if not.
      */
     private boolean handleRequestInSetState = true;
+
+    /**
+     * An ElevatorSystemView representing the view of the ElevatorSystem in the MVC pattern.
+     */
     private ElevatorSystemView view;
 
     /**
@@ -88,22 +97,17 @@ public class Elevator implements Runnable {
     private final ElevatorSystemLogger logger;
 
     /**
-     * The maximum passenger capacity for a car
+     * True, if the car has reached maximum capacity. False, if not.
      */
-    private int CAPACITY = 5;
+    private boolean maxCapacity = false;
 
     /**
-     * True if the car has reached maximum capacity
-     */
-    private boolean maxCapacity;
-
-    /**
-     * True if a transient fault occurs
+     * True, if a transient fault occurs. False, if not.
      */
     private boolean transientFault = false;
 
     /**
-     * True if a hard fault occurs
+     * True, if a hard fault occurs. False, if not.
      */
     private boolean hardFault = false;
 
@@ -111,14 +115,13 @@ public class Elevator implements Runnable {
      * Initializes an Elevator.
      *
      * @param scheduler A Scheduler representing the elevator scheduler to receive and send events to.
-     * @param port      An integer representing the port number to receive DatagramPackets from the Scheduler on.
-     * @param name      A String representing the name of the Elevator.
+     * @param port An integer representing the port number to receive DatagramPackets from the Scheduler on.
+     * @param name A String representing the name of the Elevator.
      */
     public Elevator(Scheduler scheduler, int port, String name) {
         this.scheduler = scheduler;
         this.port = port;
         this.name = name;
-        maxCapacity = false;
 
         floorEvents = new ArrayList<>(); // initialize the ArrayList of floor events
 
@@ -158,7 +161,7 @@ public class Elevator implements Runnable {
     /**
      * Adds the given state to the Elevator state machine.
      *
-     * @param name          A String representing the name of the state.
+     * @param name A String representing the name of the state.
      * @param elevatorState An ElevatorState to be added to the Elevator state machine.
      */
     public void addState(String name, ElevatorState elevatorState) {
