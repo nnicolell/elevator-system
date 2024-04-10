@@ -32,16 +32,16 @@ class SchedulerTest {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
         int x = generateRandomInt();
         elevatorPortNumbers.add(x);
-        int y = generateRandomInt();
-        scheduler = new Scheduler(elevatorPortNumbers, y);
+        scheduler = new Scheduler(elevatorPortNumbers);
         elevator = scheduler.getFirstAvailableElevator();
         hardwareDevice = new HardwareDevice("E1",LocalTime.parse("13:02:56.0"), 4, FloorButton.UP,
                 6, 1, Fault.NO_FAULT);
     }
 
     /**
-     * Generates a random integer
-     * @return Integer
+     * Generates a random integer between 0 and 9999.
+     *
+     * @return A random integer.
      */
     private int generateRandomInt() {
         Random random = new Random();
@@ -49,12 +49,11 @@ class SchedulerTest {
     }
 
     /**
-     * Closes the sockets after each test
+     * Closes the sockets after each test.
      */
     @AfterEach
     void cleanup() {
         scheduler.closeSendReceiveSocket();
-
     }
 
     /**

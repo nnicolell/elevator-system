@@ -18,12 +18,7 @@ public class Scheduler implements Runnable {
     private int numReqsHandled;
 
     /**
-     * An integer representing the number of requests that have been received from the Floor subsystem.
-     */
-    private int numReqsReceived = 0;
-
-    /**
-     * The current state of the Scheduler state machine.
+     * A SchedulerState representing the current state of the Scheduler state machine.
      */
     private SchedulerState currentState;
 
@@ -52,23 +47,13 @@ public class Scheduler implements Runnable {
      */
     private final List<Elevator> busyElevators;
 
-//    /**
-//     * The FloorListener for the Scheduler.
-//     */
-//    private final FloorListener floorListener;
-
     /**
      * A List of Threads representing the threads for the elevators.
      */
     private final List<Thread> elevatorThreads;
 
     /**
-     * A List containing the failed elevators.
-     */
-    private final List<Elevator> failedElevators;
-
-    /**
-     * A List containing all elevators.
+     * A List of Elevators containing all elevators.
      */
     private final List<Elevator> allElevators;
 
@@ -81,6 +66,7 @@ public class Scheduler implements Runnable {
      * An integer to represent the number of movements the elevators have made.
      */
     private int numMovements = 0;
+
     /**
      * A boolean to signal that the elevator has arrived.
      */
@@ -98,8 +84,11 @@ public class Scheduler implements Runnable {
 
     /**
      * Initializes a Scheduler.
+     *
+     * @param portNumbers An ArrayList of Integers representing the port numbers each Elevator will receive UDP packets
+     *                    on.
      */
-    public Scheduler(ArrayList<Integer> portNumbers, int portFloor) {
+    public Scheduler(ArrayList<Integer> portNumbers) {
         // start the Floor thread
         Thread floor = new Thread(new Floor(this),"Floor");
         floor.start();
@@ -108,7 +97,6 @@ public class Scheduler implements Runnable {
         int numElevators = portNumbers.size();
         availableElevators = new ArrayList<>();
         busyElevators = new ArrayList<>();
-        failedElevators = new ArrayList<>();
         elevatorThreads = new ArrayList<>();
         allElevators = new ArrayList<>();
         for (int i = 0; i < numElevators; i++) {
@@ -125,7 +113,6 @@ public class Scheduler implements Runnable {
 
         try {
             sendReceiveSocket = new DatagramSocket();
-//            sendReceiveSocket.setSoTimeout(78000);
         } catch (SocketException se){
             se.printStackTrace();
             System.exit(1);
@@ -133,11 +120,6 @@ public class Scheduler implements Runnable {
 
         // create a logger for Scheduler and FloorListener to log events on
         logger = new ElevatorSystemLogger("Scheduler");
-
-//        // start the FloorListener thread
-//        floorListener = new FloorListener(this, portFloor, logger);
-//        Thread floorListenerThread = new Thread(floorListener);
-//        floorListenerThread.start();
 
         states = new HashMap<>();
         addState("WaitingForFloorEvent", new WaitingForFloorEvent());
@@ -147,22 +129,6 @@ public class Scheduler implements Runnable {
         addState("WaitingForElevator", new WaitingForElevator());
         setState("WaitingForFloorEvent");
         arrived = false;
-    }
-
-    /**
-     * Returns an integer representing the number of requests that have been received from the Floor subsystem.
-     *
-     * @return An integer representing the number of requests that have been received from the Floor subsystem.
-     */
-    public int getNumReqsReceived() {
-        return numReqsReceived;
-    }
-
-    /**
-     * Increments the number of requests received from the Floor subsystem by one.
-     */
-    public void incrementNumReqsReceived() {
-        numReqsReceived++;
     }
 
     /**
@@ -384,14 +350,13 @@ public class Scheduler implements Runnable {
 
             distributeFloorEvents();
             receiveElevatorFloorEvent();
-            //setState("NotifyElevator");
         }
     }
 
     /**
      * Receives a message from an Elevator and sends an acknowledgement back.
      */
-    public void receiveElevatorFloorEvent() {
+    private void receiveElevatorFloorEvent() {
         distributeFloorEvents();
 
         // receive a completed floor event from an elevator and send an acknowledgment back
@@ -414,7 +379,6 @@ public class Scheduler implements Runnable {
         }
 
         isFloorEventsComplete();
-
         endTime = System.nanoTime();
         logger.info("It took " + ((endTime - startTime) / 100000) + " ms to execute " + numReqs
                 + " floor event(s).");
@@ -436,7 +400,7 @@ public class Scheduler implements Runnable {
 
     /**
      * Notifies the Floor subsystem of a fulfilled floor event. Sends the String representation of the fulfilled floor
-     * event to the Floor susbsystem, and receives an acknowledgment back.
+     * event to the Floor subsystem, and receives an acknowledgment back.
      *
      * @param fulfilledFloorEvent A String representing the fulfilled floor event to send to the Floor subsystem.
      */
@@ -470,7 +434,6 @@ public class Scheduler implements Runnable {
                 + " from Floor.");
     }
 
-    // FIXME: non-UDP way of implementing this...
     /**
      * The specified Elevator has picked up the specified floor event to fulfill. Removes the specified floor event
      * from the list of floor events to handle.
@@ -482,7 +445,6 @@ public class Scheduler implements Runnable {
         logger.info(elevator.getName() + " has picked up " + hardwareDevice.toString() + ".");
         floorEventsToHandle.remove(hardwareDevice);
     }
-
 
     /**
      * Returns the Elevator with the specified name.
@@ -515,15 +477,6 @@ public class Scheduler implements Runnable {
         sendReceiveSocket.close();
     }
 
-//    /**
-//     * Returns the floor listener.
-//     *
-//     * @return The floor listener.
-//     */
-//    public FloorListener getFloorListener() {
-//        return floorListener;
-//    }
-
     /**
      * Kills the specified elevator thread.
      *
@@ -533,7 +486,6 @@ public class Scheduler implements Runnable {
      */
     public synchronized void killElevatorThread(String name, int numFloorEventsHandling) {
         Elevator elevator = getElevator(name);
-        failedElevators.add(elevator);
         availableElevators.remove(elevator);
         busyElevators.remove(elevator);
 
@@ -561,8 +513,9 @@ public class Scheduler implements Runnable {
     }
 
     /**
-     * Returns the arrived boolean
-     * @return arrived boolean
+     * Returns a boolean representing if an elevator has arrived at its destination floor or not.
+     *
+     * @return True, if an elevator has arrived at its destination floor. False, if not.
      */
     public boolean getArrived() {
         return arrived;
