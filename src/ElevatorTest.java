@@ -46,9 +46,8 @@ public class ElevatorTest {
         ArrayList<Integer> elevatorPortNumbers = new ArrayList<>();
         elevatorPort = generateRandomInt();
         elevatorPortNumbers.add(elevatorPort);
-        scheduler = new Scheduler(elevatorPortNumbers, generateRandomInt());
+        scheduler = new Scheduler(elevatorPortNumbers);
         elevator = scheduler.getFirstAvailableElevator();
-//        floorListener = scheduler.getFloorListener();
     }
 
     /**
